@@ -12,7 +12,7 @@
 
 	var Engine = window.NightShiftEngine;
 	var GAME_ID = 'night-shift';
-	var KEY_SAVE = 'night-shift.save', KEY_SET = 'night-shift.settings', KEY_STATS = 'arcade.stats';
+	var KEY_SAVE = 'night-shift.save', KEY_SET = 'night-shift.settings', KEY_STATS = 'arcade.stats', KEY_SYNC = 'night-shift.sync', KEY_NAME = 'arcade_name';
 	var SPICE = ['off', 'mild', 'medium', 'hot'];
 	var TWO = { use: 'on', give: 'to', ask: 'about' };   // verbs that take a second word, and the joining word
 
@@ -25,6 +25,8 @@
 
 	var world, eng, state, settings;
 	var undoStack = [], cmdHistory = [], histPos = 0, lastCmd = '', pending = null;
+	var meta = { hints: 0, t0: Date.now() };   // per-run extras for the leaderboard, saved with the game
+	var online = false, syncTimer = 0;       // online: the optional server (leaderboard, cloud save) answered
 
 	/* ---------- storage (every access guarded: it can be blocked or full) ---------- */
 	function read(key) { try { return window.localStorage.getItem(key); } catch (e) { return null; } }
@@ -110,7 +112,76 @@
 	}
 
 	/* ---------- running commands ---------- */
-	function autosave() { write(KEY_SAVE, JSON.stringify({ v: 1, state: state })); }
+	function autosave() {
+		write(KEY_SAVE, JSON.stringify({ v: 1, state: state, meta: meta }));
+		pushCloud();
+	}
+
+	/* ---------- optional server: leaderboard and cloud save (the game works without it) ---------- */
+	function api(path, opts) {
+		return fetch('api/' + path, opts).then(function (r) {
+			return r.json().then(function (j) { return { status: r.status, body: j }; });
+		});
+	}
+	function syncCode() { return read(KEY_SYNC) || ''; }
+	function setSyncState(t) { var e = $('sync-state'); if (e) { e.textContent = t; } }
+	function pushCloud() {
+		if (!online || !syncCode()) { return; }
+		window.clearTimeout(syncTimer);
+		syncTimer = window.setTimeout(function () {
+			api('save.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: syncCode(), state: state }) })
+				.then(function (r) { setSyncState(r.status === 200 ? 'Cloud save is on.' : 'Cloud save failed. Your game is still saved here.'); })
+				.catch(function () { setSyncState('Cloud save is offline. Your game is still saved here.'); });
+		}, 800);
+	}
+	function newCode() {
+		var a = new Uint8Array(20), out = '', set = 'abcdefghijkmnpqrstuvwxyz23456789';
+		(window.crypto || window.msCrypto).getRandomValues(a);
+		for (var i = 0; i < a.length; i++) { out += set.charAt(a[i] % set.length); }
+		return out;
+	}
+	function probeServer() {
+		return api('get-scores.php?limit=1').then(function (r) {
+			online = r.status === 200;
+		}).catch(function () { online = false; }).then(function () {
+			$('tab-board').hidden = !online;
+			$('cloud').hidden = !online;
+			if (online) { setSyncState(syncCode() ? 'Cloud save is on. Your code: ' + syncCode() : 'Cloud save is off.'); $('sync-on').hidden = !!syncCode(); }
+		});
+	}
+	function loadBoard() {
+		var ol = $('board'), note = $('board-note');
+		ol.textContent = ''; note.textContent = 'Loading...';
+		api('get-scores.php?limit=10').then(function (r) {
+			if (r.status !== 200) { note.textContent = 'The leaderboard is not available right now.'; return; }
+			r.body.scores.forEach(function (s) {
+				var li = document.createElement('li'), n = document.createElement('span'), st = document.createElement('span');
+				n.textContent = s.name; st.className = 'stat'; st.textContent = s.moves + ' moves, ' + s.hints + ' hints';
+				li.appendChild(n); li.appendChild(st); ol.appendChild(li);
+			});
+			note.textContent = r.body.scores.length ? 'Fewest moves first, then fewest hints. Scores are not verified.' : 'No finishes yet. Be the first.';
+		}).catch(function () { note.textContent = 'The leaderboard is not available right now.'; });
+	}
+	function submitFinish(name) {
+		name = String(name || '').trim().slice(0, 20);
+		if (!name) { return; }
+		write(KEY_NAME, name);
+		var body = { name: name, score: state.score, moves: state.moves, hints: meta.hints, duration_ms: Math.min(Date.now() - meta.t0, 6 * 86400000) };
+		api('submit-score.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+			.then(function (r) {
+				addLine({ k: 'note', t: r.status === 200 ? 'Leaderboard: you are number ' + r.body.rank + ' of ' + r.body.total + '.' : 'Could not post to the leaderboard (' + (r.body.error || r.status).toString().replace(/_/g, ' ') + ').' });
+			}).catch(function () { addLine({ k: 'note', t: 'The leaderboard is offline. Your finish is saved here.' }); });
+	}
+	function offerSubmit(p) {
+		if (!online) { return; }
+		var name = read(KEY_NAME);
+		if (name) { submitFinish(name); return; }
+		var box = document.createElement('div'); box.className = 'namebox';
+		var inp = document.createElement('input'); inp.type = 'text'; inp.maxLength = 20; inp.placeholder = 'Name for the leaderboard'; inp.setAttribute('aria-label', 'Name for the leaderboard');
+		var b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost'; b.textContent = 'Post score';
+		b.addEventListener('click', function () { if (inp.value.trim()) { box.remove(); submitFinish(inp.value); } });
+		box.appendChild(inp); box.appendChild(b); p.appendChild(box);
+	}
 
 	function endOfChapter() {
 		var p = addLine({ k: 'note', t: '' });
@@ -118,6 +189,7 @@
 		b.type = 'button'; b.className = 'btn'; b.textContent = 'Play again';
 		b.addEventListener('click', function () { newGame(false); });
 		p.appendChild(b);
+		return p;
 	}
 
 	function run(input) {
@@ -129,6 +201,7 @@
 		histPos = cmdHistory.length;
 
 		var res = eng.exec(state, input);
+		if (window.NightShiftParser.parse(input).verb === 'hint' && !state.ended) { meta.hints++; }
 		var ui = res.events.filter(function (e) { return e.type === 'ui'; })[0];
 		if (ui) { handleUi(ui.verb); return; }
 
@@ -145,7 +218,7 @@
 			}
 			if (e.type === 'end') { finished = true; }
 		});
-		if (finished) { updateStats(true); endOfChapter(); }
+		if (finished) { updateStats(true); offerSubmit(endOfChapter()); }
 		autosave();
 		refresh();
 		finishInput();
@@ -200,6 +273,7 @@
 	function readSave() {
 		try {
 			var raw = JSON.parse(read(KEY_SAVE) || 'null');
+			if (raw && raw.meta && typeof raw.meta.hints === 'number' && typeof raw.meta.t0 === 'number') { meta = { hints: raw.meta.hints, t0: raw.meta.t0 }; }
 			if (raw && raw.v === 1 && raw.state && raw.state.room && world.rooms[raw.state.room] && raw.state.loc) { return raw.state; }
 		} catch (e) { /* damaged save: ignore it */ }
 		return null;
@@ -213,7 +287,7 @@
 	function newGame(askFirst) {
 		if (askFirst && !window.confirm('Start a new game? Your saved progress will be erased.')) { return; }
 		remove(KEY_SAVE);
-		state = eng.newState(); undoStack = []; lastCmd = '';
+		state = eng.newState(); undoStack = []; lastCmd = ''; meta = { hints: 0, t0: Date.now() };
 		els.log.textContent = '';
 		intro();
 		addLines(eng.describeRoom(state));
@@ -286,17 +360,37 @@
 		});
 		$('new-game').addEventListener('click', function () { newGame(true); });
 
-		var tabs = [$('tab-game'), $('tab-access'), $('tab-spice')], panels = [$('panel-game'), $('panel-access'), $('panel-spice')];
+		var tabs = [$('tab-game'), $('tab-access'), $('tab-spice'), $('tab-board')], panels = [$('panel-game'), $('panel-access'), $('panel-spice'), $('panel-board')];
+		function shown() { return tabs.filter(function (t) { return !t.hidden; }); }
 		function select(i) {
 			tabs.forEach(function (t, j) { t.setAttribute('aria-selected', j === i ? 'true' : 'false'); t.tabIndex = j === i ? 0 : -1; panels[j].hidden = j !== i; });
 			tabs[i].focus();
+			if (i === 3) { loadBoard(); }
 		}
 		tabs.forEach(function (t, i) {
 			t.addEventListener('click', function () { select(i); });
 			t.addEventListener('keydown', function (e) {
-				if (e.key === 'ArrowRight') { e.preventDefault(); select((i + 1) % tabs.length); }
-				if (e.key === 'ArrowLeft') { e.preventDefault(); select((i + tabs.length - 1) % tabs.length); }
+				var vis = shown(), at = vis.indexOf(t), to = -1;
+				if (e.key === 'ArrowRight') { to = vis[(at + 1) % vis.length]; }
+				if (e.key === 'ArrowLeft') { to = vis[(at + vis.length - 1) % vis.length]; }
+				if (to !== -1) { e.preventDefault(); select(tabs.indexOf(to)); }
 			});
+		});
+		$('sync-on').addEventListener('click', function () {
+			write(KEY_SYNC, newCode()); $('sync-on').hidden = true;
+			setSyncState('Cloud save is on. Your code: ' + syncCode());
+			pushCloud();
+		});
+		$('sync-load').addEventListener('click', function () {
+			var code = $('sync-code').value.trim();
+			if (!code) { return; }
+			api('save.php?code=' + encodeURIComponent(code)).then(function (r) {
+				if (r.status !== 200 || !r.body.state || !world.rooms[r.body.state.room] || !r.body.state.loc || !Array.isArray(r.body.state.cards)) { setSyncState(r.status === 404 ? 'No save found for that code.' : 'Could not load that save.'); return; }
+				if (!window.confirm('Replace the game on this device with the cloud save?')) { return; }
+				state = r.body.state; undoStack = []; write(KEY_SYNC, code); $('sync-on').hidden = true;
+				els.log.textContent = ''; addLine({ k: 'note', t: 'Loaded your cloud save.' }); addLines(eng.describeRoom(state));
+				autosave(); refresh(); setSyncState('Cloud save is on. Your code: ' + code); els.dlg.close();
+			}).catch(function () { setSyncState('Could not reach the server.'); });
 		});
 		els.openSettings.addEventListener('click', function () { syncRadios(); dlg.showModal(); });
 		dlg.addEventListener('click', function (e) { if (e.target === dlg) { dlg.close(); } });
@@ -361,6 +455,7 @@
 			setupSettings();
 			wire();
 			start();
+			probeServer();
 			window.NightShift = { engine: eng, get state() { return state; }, run: run };
 		})
 		.catch(function () { failed('Night Shift could not load its story file. If you opened this page straight from disk, serve the folder from a web server instead (see the README).'); });

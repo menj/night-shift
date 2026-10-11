@@ -78,11 +78,22 @@
         <button type="button" role="tab" id="tab-game" aria-controls="panel-game" aria-selected="true">Game</button>
         <button type="button" role="tab" id="tab-access" aria-controls="panel-access" aria-selected="false" tabindex="-1">Accessibility</button>
         <button type="button" role="tab" id="tab-spice" aria-controls="panel-spice" aria-selected="false" tabindex="-1">Spice</button>
+        <button type="button" role="tab" id="tab-board" aria-controls="panel-board" aria-selected="false" tabindex="-1" hidden>Leaderboard</button>
       </div>
       <div class="dlg-body">
         <div role="tabpanel" id="panel-game" aria-labelledby="tab-game">
           <p class="muted">Progress is saved automatically in this browser.</p>
           <button type="button" class="btn ghost" id="new-game">Start a new game</button>
+          <section id="cloud" hidden>
+            <h3>Cloud save</h3>
+            <p class="muted small">Carry your game to another device with a sync code. Keep the code private: anyone who has it can load your save.</p>
+            <p id="sync-state" class="small" aria-live="polite"></p>
+            <p><button type="button" class="btn ghost" id="sync-on">Turn on cloud save</button></p>
+            <label class="field">Use a code from another device
+              <input id="sync-code" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+            </label>
+            <button type="button" class="btn ghost" id="sync-load">Load that save</button>
+          </section>
         </div>
         <div role="tabpanel" id="panel-access" aria-labelledby="tab-access" hidden>
           <label class="switch"><input type="checkbox" id="opt-large"><span>Larger text</span></label>
@@ -102,6 +113,10 @@
             <ul id="cards" class="cards"></ul>
             <p class="muted small">Gallery artwork is not included with the game's code. Cards unlock as you play.</p>
           </section>
+        </div>
+        <div role="tabpanel" id="panel-board" aria-labelledby="tab-board" hidden>
+          <ol id="board" class="board"></ol>
+          <p id="board-note" class="muted small"></p>
         </div>
       </div>
       <footer class="dlg-foot"><button class="btn" value="close">Done</button></footer>

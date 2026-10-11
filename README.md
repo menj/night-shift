@@ -21,13 +21,24 @@ Tap the buttons and highlighted words, or type commands (`look`, `take token`, `
     js/ui.js          DOM, autosave, undo, settings tabs, arcade.stats
     data/world.json   rooms, items, people, rules, hints
     tools/test.js     engine tests incl. exhaustive dead-end search
-    tools/smoke.js    headless-browser test of the real page
+    tools/smoke.js    headless-browser test of the real page (static mode)
+    tools/server-test.js  php -S + SQLite: installer, API, admin, leaderboard and sync in the browser
     tests/walkthrough.txt   shortest full playthrough
+
+## Database (optional, like Beberd and Pixel Run)
+
+Without PHP or a database the game is static and saves in the browser. Open `install.php` on a PHP host to add a leaderboard and cloud saves: it supports SQLite (default), MySQL/MariaDB and PostgreSQL, writes `includes/config.local.php` (git-ignored) and locks itself afterwards. Delete `install.php` once done. The page probes `api/get-scores.php` and only shows the Leaderboard tab and cloud-save controls when the server answers.
+
+- `api/submit-score.php`, `api/get-scores.php`: finish board (fewest moves, then fewest hints). The story engine runs in the browser, so entries are bounds-checked and rate-limited but **not replay-verified** (Beberd's are).
+- `api/save.php`: cloud save by a random sync code; only a salted hash of the code is stored.
+- `admin.php`: password sign-in, Overview and Leaderboard tabs, delete entries.
+- `includes/`, `sql/` and `db/` carry `.htaccess` deny rules (Apache). On nginx add an equivalent deny.
 
 ## Tests
 
     node tools/test.js                                   # 211 checks, 0 dead ends
     NODE_PATH=$(npm root -g) node tools/smoke.js         # needs Playwright + Chromium
+    NODE_PATH=$(npm root -g) node tools/server-test.js   # also needs php with pdo_sqlite
 
 ## Design rules
 

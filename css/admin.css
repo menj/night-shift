@@ -1,0 +1,15 @@
+/* Install and admin pages: same neon-on-navy variables as game.css. */
+body.page { height: auto; min-height: 100dvh; overflow: auto; display: block; }
+.panel { position: relative; z-index: 1; width: min(100% - 24px, 720px); margin: 24px auto; padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.panel h1 { margin: 0 0 12px; font-size: 1.3rem; font-weight: 400; letter-spacing: 0.12em; text-transform: uppercase; }
+.panel label { display: block; margin: 12px 0; color: var(--muted); font-size: 0.85rem; letter-spacing: 0.06em; }
+.panel input, .panel select { display: block; width: 100%; margin-top: 6px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--text); font: inherit; }
+.panel .btn { display: inline-block; margin-top: 8px; text-decoration: none; }
+.ok { color: var(--cool); } .bad { color: var(--hot); }
+table.scores { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+table.scores th, table.scores td { padding: 8px 6px; border-bottom: 1px solid var(--line); text-align: left; }
+table.scores th { color: var(--muted); font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.75rem; }
+table.scores form { margin: 0; } table.scores .btn { margin: 0; padding: 4px 10px; font-size: 0.8rem; }
+.tabbar { display: flex; gap: 6px; margin: 0 0 14px; }
+.tabbar a { padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); text-decoration: none; }
+.tabbar a[aria-current="page"] { color: var(--text); border-color: var(--cool); background: var(--surface-2); }

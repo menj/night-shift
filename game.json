@@ -5,16 +5,41 @@
   "tagline": "The arcade is closing. Something is unplugging it.",
   "summary": "A free text adventure set after hours in the arcade. Solve puzzles, meet the gang from Beberd and Pixel Run, and stop the Glitch. Tap the buttons or type commands.",
   "description": "Night Shift is a short text adventure that picks up where Beberd and Pixel Run leave off. The arcade has closed, the Glitch is unplugging the machines one by one, and you are the only attendant left. Explore, solve puzzles and bump into Hamilton, Eeny, Meeny, Miny and Moe along the way. Play with tappable words and buttons or type your own commands. Progress saves automatically. It's free.",
-  "badges": ["Text adventure", "Puzzles", "Free to play"],
-  "tags": ["text-adventure", "interactive-fiction", "puzzle", "arcade", "story", "mobile-friendly", "browser-game", "free"],
-  "version": "0.1.0",
+  "badges": [
+    "Text adventure",
+    "Puzzles",
+    "Free to play"
+  ],
+  "tags": [
+    "text-adventure",
+    "interactive-fiction",
+    "puzzle",
+    "arcade",
+    "story",
+    "mobile-friendly",
+    "browser-game",
+    "free"
+  ],
+  "version": "0.2.0",
   "url": "./",
   "thumbnail": "img/thumb.png",
   "icon": "img/icon-192.png",
   "shareImage": "img/og.png",
   "themeColor": "#0a0820",
   "players": 1,
-  "input": { "keyboard": true, "touch": true, "gamepad": false },
-  "features": ["stories", "autosave"],
-  "requires": { "php": "none", "database": "none" }
+  "input": {
+    "keyboard": true,
+    "touch": true,
+    "gamepad": false
+  },
+  "features": [
+    "stories",
+    "autosave",
+    "leaderboard",
+    "cloud-save"
+  ],
+  "requires": {
+    "php": "optional",
+    "database": "optional"
+  }
 }

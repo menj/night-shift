@@ -39,25 +39,39 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	await type('open desk'); // typed override
 	// typed walkthrough
 	await page.evaluate(() => { document.querySelector('[data-act="i"]'); });
-	const cmds = fs.readFileSync(path.join(root, 'tests/ch1.txt'), 'utf8').split('\n').map(s => s.trim()).filter(s => s && s[0] !== '#');
+	const chap = n => fs.readFileSync(path.join(root, 'tests/ch' + n + '.txt'), 'utf8').split('\n').map(s => s.trim()).filter(s => s && s[0] !== '#');
+	const N = JSON.parse(fs.readFileSync(path.join(root, 'data/chapters.json'), 'utf8')).chapters.length;
+	const maxes = JSON.parse(fs.readFileSync(path.join(root, 'data/chapters.json'), 'utf8')).chapters.map(c => c.maxScore);
+	const sum = maxes.reduce((a, b) => a + b, 0);
+	const cmds = chap(1);
 	// restart clean for the walkthrough
 	await page.evaluate(() => localStorage.clear()); await page.reload(); await page.waitForFunction(() => window.NightShift);
-	for (const c of cmds) await type(c);
-	ok(await page.$eval('#score', e => e.textContent) === '4/4', 'score 4/4 after walkthrough');
-	ok(await page.evaluate(() => window.NightShift.state.ended), 'chapter ended');
-	ok(!!(await page.$('text=Play again')), 'play again button');
+	for (let n = 1; n <= N; n++) {
+		for (const c of chap(n)) await type(c);
+		ok(await page.evaluate(() => window.NightShift.state.ended), 'chapter ' + n + ' ended');
+		ok((await page.$eval('#score', e => e.textContent)).endsWith(maxes[n - 1] + '/' + maxes[n - 1]), 'chapter ' + n + ' full score');
+		if (n < N) {
+			await page.click('text=Next chapter');
+			ok(await page.evaluate(() => window.NightShift.run.chapter) === n + 1, 'moved on to chapter ' + (n + 1));
+			if (n === 1) {   // reload mid-journey: the chapter and the carried flags survive
+				await page.reload(); await page.waitForFunction(() => window.NightShift);
+				ok(await page.evaluate(() => window.NightShift.run.chapter) === 2 && /Welcome back/.test(await logText()), 'reload keeps chapter 2');
+			}
+		}
+	}
+	ok(!!(await page.$('text=Play again')), 'play again button after the last chapter');
 	const stats = await page.evaluate(() => JSON.parse(localStorage.getItem('arcade.stats'))['night-shift']);
-	ok(stats && stats.best === 4 && stats.plays === 1, 'arcade.stats recorded ' + JSON.stringify(stats));
+	ok(stats && stats.best === sum && stats.plays === 1, 'arcade.stats recorded ' + JSON.stringify(stats) + ' want best ' + sum);
 	await page.screenshot({ path: out + '/desktop-end.png' });
 
 	// reload restores autosave
 	await page.reload(); await page.waitForFunction(() => window.NightShift);
 	ok(/Welcome back/.test(await logText()), 'autosave restored');
-	ok(await page.$eval('#score', e => e.textContent) === '4/4', 'restored score');
+	ok(/Ch 5/.test(await page.$eval('#score', e => e.textContent)), 'restored on the last chapter');
 
 	// play again, undo, tap noun
 	await page.click('text=Play again');
-	ok(await page.$eval('#score', e => e.textContent) === '0/4', 'new game resets');
+	ok(/Ch 1 · 0\//.test(await page.$eval('#score', e => e.textContent)), 'new game resets to chapter 1');
 	await type('e'); const before = await page.evaluate(() => window.NightShift.state.room);
 	await type('undo');
 	ok(await page.evaluate(() => window.NightShift.state.room) !== before, 'undo moves back');

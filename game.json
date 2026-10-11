@@ -2,11 +2,12 @@
   "schema": 1,
   "id": "night-shift",
   "title": "Night Shift",
-  "tagline": "The arcade is closing. Something is unplugging it.",
-  "summary": "A free text adventure set after hours in the arcade. Solve puzzles, meet the gang from Beberd and Pixel Run, and stop the Glitch. Tap the buttons or type commands.",
-  "description": "Night Shift is a short text adventure that picks up where Beberd and Pixel Run leave off. The arcade has closed, the Glitch is unplugging the machines one by one, and you are the only attendant left. Explore, solve puzzles and bump into Hamilton, Eeny, Meeny, Miny and Moe along the way. Play with tappable words and buttons or type your own commands. Progress saves automatically. It's free.",
+  "tagline": "Five chapters. One night. The arcade is closing.",
+  "summary": "A free five-chapter text adventure set after hours in the arcade. Solve puzzles, meet the gang from Beberd and Pixel Run, and stop the Glitch. Tap the buttons or type commands.",
+  "description": "Night Shift is a five-chapter text adventure that picks up where Beberd and Pixel Run leave off. You are the new night attendant, the Glitch is unplugging the machines one by one, and you are the only one left. Travel from the lobby into the Beberd and Pixel Run cabinets, down into the cable maze and up to the Power Room, with Hamilton, Eeny, Meeny, Miny and Moe along for the ride. Play with tappable words and buttons or type your own commands. Progress saves automatically, and it works offline-first with optional cloud save. It's free.",
   "badges": [
     "Text adventure",
+    "Five chapters",
     "Puzzles",
     "Free to play"
   ],
@@ -20,7 +21,7 @@
     "browser-game",
     "free"
   ],
-  "version": "0.2.0",
+  "version": "1.0.0",
   "url": "./",
   "thumbnail": "img/thumb.png",
   "icon": "img/icon-192.png",

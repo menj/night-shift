@@ -19,8 +19,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 	try {
 		// before install: everything reports offline, nothing crashes
 		let r = await j('api/get-scores.php'); ok(r.s === 503 && r.b.offline && r.b.reason === 'unconfigured', 'unconfigured -> 503 offline');
-		r = await post('api/submit-score.php', { name: 'A', score: 4, moves: 30 }); ok(r.s === 503, 'submit offline 503');
-		r = await post('api/submit-score.php', { name: '', score: 4, moves: 30 }); ok(r.s === 400, 'validation before db');
+		r = await post('api/submit-score.php', { name: 'A', score: 24, moves: 140 }); ok(r.s === 503, 'submit offline 503');
+		r = await post('api/submit-score.php', { name: '', score: 24, moves: 140 }); ok(r.s === 400, 'validation before db');
 		ok((await fetch(base + 'admin.php')).status === 404, 'admin off before install');
 
 		// install (SQLite) with an admin password
@@ -33,13 +33,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 		// leaderboard
 		r = await j('api/get-scores.php'); ok(r.s === 200 && r.b.total === 0, 'empty board 200');
-		const bad = [{ name: 'x', score: 3, moves: 40 }, { name: 'x', score: 4, moves: 5 }, { name: 'x', score: 4.5, moves: 40 }, { name: '<b>', score: 4, moves: 40 }, { name: 'x', score: 4, moves: '40' }, { name: 'x'.repeat(30), score: 4, moves: 40 }];
+		const bad = [{ name: 'x', score: 3, moves: 400 }, { name: 'x', score: 24, moves: 5 }, { name: 'x', score: 24.5, moves: 400 }, { name: '<b>', score: 24, moves: 400 }, { name: 'x', score: 24, moves: '400' }, { name: 'x'.repeat(30), score: 24, moves: 400 }];
 		for (const b of bad) { r = await post('api/submit-score.php', b); ok(r.s === 400, 'rejects ' + JSON.stringify(b)); }
-		r = await post('api/submit-score.php', { name: 'Ada', score: 4, moves: 31, hints: 1, duration_ms: 90000 }); ok(r.s === 200 && r.b.rank === 1, 'accepts a finish, rank 1');
-		r = await post('api/submit-score.php', { name: 'Ben', score: 4, moves: 29 }); ok(r.s === 429, 'rate limited per client');
+		r = await post('api/submit-score.php', { name: 'Ada', score: 24, moves: 140, hints: 1, duration_ms: 90000 }); ok(r.s === 200 && r.b.rank === 1, 'accepts a finish, rank 1');
+		r = await post('api/submit-score.php', { name: 'Ben', score: 24, moves: 135 }); ok(r.s === 429, 'rate limited per client');
 		const db = tmp + '/db/night-shift.sqlite';
 		execSync(`php -r '$p=new PDO("sqlite:${db}");$p->exec("UPDATE completions SET created_at=\\"2000-01-01 00:00:00\\"");'`);
-		r = await post('api/submit-score.php', { name: 'Ben', score: 4, moves: 29 }); ok(r.s === 200 && r.b.rank === 1 && r.b.total === 2, 'fewer moves ranks first');
+		r = await post('api/submit-score.php', { name: 'Ben', score: 24, moves: 135 }); ok(r.s === 200 && r.b.rank === 1 && r.b.total === 2, 'fewer moves ranks first');
 		r = await j('api/get-scores.php?limit=5'); ok(r.b.scores[0].name === 'Ben' && r.b.scores[1].name === 'Ada' && !('ip_hash' in r.b.scores[0]), 'board order, no ip hash leaked');
 		ok((await j('api/submit-score.php')).s === 405, 'GET submit 405');
 
@@ -86,9 +86,11 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 		await page.waitForFunction(() => !document.getElementById('tab-board').hidden);
 		ok(true, 'leaderboard tab appears when the server answers');
 		const type = async c => { await page.fill('#input', c); await page.press('#input', 'Enter'); };
-		const cmds = fs.readFileSync(src + '/tests/ch1.txt', 'utf8').split('\n').map(s => s.trim()).filter(s => s && s[0] !== '#');
+		const idx = JSON.parse(fs.readFileSync(src + '/data/chapters.json', 'utf8')).chapters;
+		const chap = n => fs.readFileSync(src + '/tests/ch' + n + '.txt', 'utf8').split('\n').map(s => s.trim()).filter(s => s && s[0] !== '#');
+		const totalScore = idx.reduce((a, c) => a + c.maxScore, 0), totalMoves = idx.reduce((a, c) => a + c.minMoves, 0);
 		await page.click('#open-settings'); await page.click('#sync-on'); await page.keyboard.press('Escape');
-		for (const c of cmds) await type(c);
+		for (let n = 1; n <= idx.length; n++) { for (const c of chap(n)) await type(c); if (n < idx.length) await page.click('text=Next chapter'); }
 		await page.fill('.namebox input', 'Tester'); await page.click('text=Post score');
 		await page.waitForFunction(() => /Leaderboard: you are number/.test(document.getElementById('log').innerText));
 		ok(true, 'finish posted through the page');
@@ -98,13 +100,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 		await page.screenshot({ path: process.argv[2] ? process.argv[2] + '/board.png' : os.tmpdir() + '/board.png' });
 		await sleep(1200);
 		const code2 = await page.evaluate(() => localStorage.getItem('night-shift.sync'));
-		r = await j('api/save.php?code=' + code2); ok(r.s === 200 && r.b.state.score === 4, 'cloud save followed the game');
+		r = await j('api/save.php?code=' + code2); ok(r.s === 200 && r.b.state.run && r.b.state.chapter === idx.length, 'cloud save followed the game');
 		// a fresh browser profile loads it with the code
 		const p2 = await (await br.newContext()).newPage(); p2.on('dialog', x => x.accept());
 		await p2.goto(base); await p2.waitForFunction(() => window.NightShift && !document.getElementById('cloud').hidden === true || window.NightShift);
 		await p2.waitForFunction(() => !document.getElementById('cloud').hidden);
 		await p2.click('#open-settings'); await p2.fill('#sync-code', code2); await p2.click('#sync-load');
-		await p2.waitForFunction(() => document.getElementById('score').textContent === '4/4');
+		await p2.waitForFunction(() => /Ch 5/.test(document.getElementById('score').textContent));
 		ok(true, 'sync code restores the game on another device');
 		ok(errs.length === 0, 'no page errors: ' + errs.join('|'));
 		await br.close();

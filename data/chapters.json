@@ -6,6 +6,34 @@
       "file": "data/ch1.json",
       "maxScore": 4,
       "minMoves": 28
+    },
+    {
+      "n": 2,
+      "title": "Flap Zone",
+      "file": "data/ch2.json",
+      "maxScore": 4,
+      "minMoves": 24
+    },
+    {
+      "n": 3,
+      "title": "Dune Run",
+      "file": "data/ch3.json",
+      "maxScore": 5,
+      "minMoves": 21
+    },
+    {
+      "n": 4,
+      "title": "Cable Maze",
+      "file": "data/ch4.json",
+      "maxScore": 5,
+      "minMoves": 25
+    },
+    {
+      "n": 5,
+      "title": "Last Credit",
+      "file": "data/ch5.json",
+      "maxScore": 6,
+      "minMoves": 25
     }
   ]
 }

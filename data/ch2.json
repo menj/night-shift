@@ -1,0 +1,1184 @@
+{
+  "title": "Night Shift",
+  "chapter": "Chapter 2: Flap Zone",
+  "start": "perch",
+  "maxScore": 4,
+  "carry": [
+    "carry:ch1"
+  ],
+  "intro": [
+    "NIGHT SHIFT",
+    "You pressed your nose to the BEBERD cabinet to see why it was flickering, and the cabinet pressed back. The screen goes white, your stomach goes elsewhere, and you land on a very small, very pixelated perch in a very large sky.",
+    "Type commands (try LOOK, TAKE or HELP), or tap the buttons and the highlighted words."
+  ],
+  "help": [
+    "Type short commands: LOOK, TAKE metronome, OPEN tumbler, USE key ON metronome, GIVE seed TO hamilton, ASK hamilton ABOUT pipes.",
+    "Move with N, S, E, W (or tap an exit). I = what you carry. HINT = a nudge. UNDO takes back your last move. SCORE shows progress.",
+    "Tap a highlighted word to examine it. Tap a verb first, then a word, to do something with it."
+  ],
+  "rooms": {
+    "perch": {
+      "name": "Start Perch",
+      "desc": [
+        "You stand on the Start Perch: a wooden rail the size of an ironing board, floating in a pale blue sky. A wooden [[sign|sign]] says TAP TO FLAP. A rubber [[pracpipe|practice pipe]] hangs nearby with an enormous gap in it, and a tin [[metronome|metronome]] sits on the rail. A plank runs east to the plaza."
+      ],
+      "exits": {
+        "e": "plaza",
+        "s": {
+          "to": "perch",
+          "quiet": true,
+          "needs": [
+            {
+              "flag": "never"
+            }
+          ],
+          "blocked": "Past the edge is the blue void of Level Zero. Gravity has been asked to look the other way, but you decline the invitation."
+        }
+      }
+    },
+    "plaza": {
+      "name": "Pipe Gap Plaza",
+      "desc": [
+        "A wide square of sky with a floor you can only half trust. Along the east side stands a green wall of [[pipes|slamming pipes]], their gap opening and shutting in a rhythm that is almost, but not quite, a tune. A [[banner|banner]] sags overhead. Paths lead north to the Cloud Bar, south to a seed stand, and back west to the perch."
+      ],
+      "exits": {
+        "w": "perch",
+        "n": "cloudbar",
+        "s": "seedstand",
+        "e": {
+          "to": "scoreboard",
+          "needs": [
+            {
+              "flag": "unlock:plaza:e"
+            }
+          ],
+          "blocked": "The pipes slam shut across the east side every few seconds. You haven't worked out their rhythm, and neither has your face."
+        }
+      }
+    },
+    "cloudbar": {
+      "name": "Cloud Bar",
+      "desc": [
+        "The Cloud Bar is a counter of cumulus with a few puffy seats, run by nobody. A [[cbar|bar]] of soft white curves along the wall, a glass [[tumbler|tumbler]] sits on it, and a [[menu|chalkboard menu]] leans nearby. A cloud [[stool|stool]] bobs gently at one end. Back south is the plaza."
+      ],
+      "exits": {
+        "s": "plaza"
+      }
+    },
+    "seedstand": {
+      "name": "Seed Stand",
+      "desc": [
+        "A rickety [[sstand|seed stand]] in the shade of a large pixel sunflower, which wears a tiny apron and watches you without blinking. A hand-lettered card says HONOR SYSTEM: ONE SEED, ONE CLEAN CONSCIENCE. A single fat seed sits in a dish. The plaza is back north."
+      ],
+      "exits": {
+        "n": "plaza"
+      }
+    },
+    "scoreboard": {
+      "name": "Scoreboard",
+      "desc": [
+        "A colossal [[scoreboard|scoreboard]] hangs in the sky, its lights flickering between 000 and a sulk. A narrow [[ledge|ledge]] runs along the top, far above your head, and something fat and rubbery dangles off it. The plaza is back west, and a dim cavern mouth opens to the east."
+      ],
+      "exits": {
+        "w": "plaza",
+        "e": "generator"
+      }
+    },
+    "generator": {
+      "name": "Pipe Generator",
+      "desc": [
+        "A cavern of dead pipes around a squat [[generator|pipe generator]], silent and dark. High in the wall is a [[socket|power socket]] with nothing in it, and a [[genpipes|tangle of frozen pipes]] hangs in front of it like a bad idea.",
+        {
+          "when": [
+            {
+              "has": "metronome"
+            }
+          ],
+          "t": "Every pipe in the tangle has turned to face the metronome in your pocket. Tick, and they twitch. Tock, and they SLAM."
+        },
+        {
+          "when": [
+            {
+              "on": "metronome"
+            },
+            {
+              "not": {
+                "has": "metronome"
+              }
+            }
+          ],
+          "t": "The metronome ticks on the floor, and every pipe in the tangle slams at it, over and over, in time."
+        },
+        {
+          "when": [
+            {
+              "not": {
+                "has": "metronome"
+              }
+            },
+            {
+              "not": {
+                "on": "metronome"
+              }
+            }
+          ],
+          "t": "The pipes hang slack. They are listening to nothing, and for once they look like they like it."
+        }
+      ],
+      "exits": {
+        "w": "scoreboard"
+      }
+    }
+  },
+  "items": {
+    "metronome": {
+      "name": "metronome",
+      "aliases": [
+        "metronome",
+        "tin metronome",
+        "ticker"
+      ],
+      "takeable": true,
+      "loc": "perch",
+      "desc": [
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "wound"
+              }
+            }
+          ],
+          "t": "A tin metronome with a little brass pendulum. The pendulum has stopped. There is a keyhole in the side."
+        },
+        {
+          "when": [
+            {
+              "flag": "wound"
+            }
+          ],
+          "t": "A tin metronome, wound up and ticking steadily. Tick. Tock. Smug."
+        }
+      ]
+    },
+    "pracpipe": {
+      "name": "practice pipe",
+      "aliases": [
+        "practice pipe",
+        "rubber pipe",
+        "training pipe"
+      ],
+      "fixed": true,
+      "loc": "perch",
+      "desc": "A rubber pipe with a gap you could drive a bus through. A label reads: BEGINNERS. A second label reads: NO, REALLY."
+    },
+    "sign": {
+      "name": "wooden sign",
+      "aliases": [
+        "sign",
+        "wooden sign",
+        "tap sign"
+      ],
+      "fixed": true,
+      "loc": "perch",
+      "desc": "A wooden sign. It reads TAP TO FLAP.",
+      "read": [
+        "TAP TO FLAP.",
+        "Underneath, in a different hand: \"or don't. Gravity is a suggestion.\""
+      ]
+    },
+    "pipes": {
+      "name": "slamming pipes",
+      "aliases": [
+        "pipes",
+        "slamming pipes",
+        "pipe",
+        "gap",
+        "pipe gap"
+      ],
+      "fixed": true,
+      "loc": "plaza",
+      "desc": "A wall of green pipes with a gap in the middle. The gap does not open on a plain one-two. It goes: one... two-and-three... SLAM. Like a waltz with a grudge."
+    },
+    "banner": {
+      "name": "banner",
+      "aliases": [
+        "banner",
+        "welcome banner"
+      ],
+      "fixed": true,
+      "loc": "plaza",
+      "desc": "WELCOME TO PIPE GAP PLAZA. PLEASE DO NOT TOUCH THE PIPES. WE MEAN IT. (Someone has added: they also mean it.)",
+      "read": "WELCOME TO PIPE GAP PLAZA. PLEASE DO NOT TOUCH THE PIPES. WE MEAN IT. (Someone has added: they also mean it.)"
+    },
+    "cbar": {
+      "name": "cloud bar",
+      "aliases": [
+        "bar",
+        "cloud bar",
+        "cloud"
+      ],
+      "fixed": true,
+      "loc": "cloudbar",
+      "desc": "A counter of cumulus. You lean on it. It leans back. Gravity is clearly more of a rumour in here."
+    },
+    "stool": {
+      "name": "cloud stool",
+      "aliases": [
+        "stool",
+        "cloud stool"
+      ],
+      "takeable": true,
+      "loc": "cloudbar",
+      "desc": "A bar stool made of firm cloud. It is pleasantly solid, which is more than can be said for the rest of the level."
+    },
+    "tumbler": {
+      "name": "cloud tumbler",
+      "aliases": [
+        "tumbler",
+        "glass",
+        "cloud tumbler"
+      ],
+      "fixed": true,
+      "container": true,
+      "loc": "cloudbar",
+      "desc": "A tall glass tumbler with a lid, full of mist.",
+      "openText": "You lift the lid. A little cloud puffs out, sneezes, and leaves.",
+      "contentsLabel": "At the bottom"
+    },
+    "key": {
+      "name": "brass key",
+      "aliases": [
+        "key",
+        "brass key"
+      ],
+      "takeable": true,
+      "loc": "in:tumbler",
+      "desc": "A tiny brass key, damp with mist. It looks exactly metronome-sized."
+    },
+    "menu": {
+      "name": "chalkboard menu",
+      "aliases": [
+        "menu",
+        "chalkboard",
+        "chalkboard menu"
+      ],
+      "fixed": true,
+      "loc": "cloudbar",
+      "desc": "TODAY: Gravity, on the rocks. Fog, neat. Tears of a Lesser Pipe (house special). Nothing is priced. Everything is a bit damp.",
+      "read": "TODAY: Gravity, on the rocks. Fog, neat. Tears of a Lesser Pipe (house special). Nothing is priced. Everything is a bit damp."
+    },
+    "sstand": {
+      "name": "seed stand",
+      "aliases": [
+        "stand",
+        "seed stand",
+        "vendor",
+        "sunflower"
+      ],
+      "fixed": true,
+      "loc": "seedstand",
+      "desc": "A stand with a dish and a sunflower in an apron. The sunflower is the vendor, or possibly the owner, or possibly just a sunflower in an apron. It does not blink."
+    },
+    "seed": {
+      "name": "sunflower seed",
+      "aliases": [
+        "seed",
+        "sunflower seed"
+      ],
+      "takeable": true,
+      "loc": "seedstand",
+      "desc": "One fat, stripy sunflower seed. Hamilton would pretend not to want it."
+    },
+    "scoreboard": {
+      "name": "scoreboard",
+      "aliases": [
+        "scoreboard",
+        "board",
+        "score board"
+      ],
+      "fixed": true,
+      "loc": "scoreboard",
+      "desc": "The board reads HIGH SCORE: HAM 000. Underneath, in smaller lights: PLEASE INSERT COURAGE.",
+      "read": [
+        "HIGH SCORE: HAM 000.",
+        "PLEASE INSERT COURAGE."
+      ]
+    },
+    "ledge": {
+      "name": "high ledge",
+      "aliases": [
+        "ledge",
+        "high ledge",
+        "shelf"
+      ],
+      "fixed": true,
+      "container": true,
+      "loc": "scoreboard",
+      "desc": "A narrow ledge along the top of the scoreboard, much too high to reach. Something fat and rubbery dangles off the edge.",
+      "openText": "Up on the ledge, a thick power plug sits in the dust, trailing a torn cable.",
+      "contentsLabel": "On the ledge"
+    },
+    "plug": {
+      "name": "fat plug",
+      "aliases": [
+        "plug",
+        "fat plug",
+        "power plug",
+        "cable"
+      ],
+      "takeable": true,
+      "loc": "in:ledge",
+      "points": 1,
+      "desc": "A fat power plug on a torn cable. Printed on the side: PIPE GENERATOR. DO NOT UNPLUG. Somebody did."
+    },
+    "generator": {
+      "name": "pipe generator",
+      "aliases": [
+        "generator",
+        "pipe generator",
+        "machine"
+      ],
+      "fixed": true,
+      "loc": "generator",
+      "desc": "A squat iron machine with PIPES stamped on it and nothing else. Without it the level has no pipes to speak of, only a falling feeling."
+    },
+    "socket": {
+      "name": "power socket",
+      "aliases": [
+        "socket",
+        "power socket",
+        "wall socket"
+      ],
+      "fixed": true,
+      "loc": "generator",
+      "desc": "A big power socket, high in the wall, empty. Its cable is gone. Somebody pulled the plug on the whole level."
+    },
+    "genpipes": {
+      "name": "frozen pipes",
+      "aliases": [
+        "frozen pipes",
+        "tangle",
+        "gen pipes"
+      ],
+      "fixed": true,
+      "loc": "generator",
+      "desc": [
+        {
+          "when": [
+            {
+              "has": "metronome"
+            }
+          ],
+          "t": "The pipes lean toward you, quivering, every one of them listening to the metronome."
+        },
+        {
+          "when": [
+            {
+              "not": {
+                "has": "metronome"
+              }
+            }
+          ],
+          "t": "A tangle of green pipes, slack and quiet, hanging in front of the socket."
+        }
+      ]
+    }
+  },
+  "npcs": {
+    "hamilton": {
+      "name": "Hamilton",
+      "aliases": [
+        "hamilton",
+        "bird"
+      ],
+      "loc": "perch",
+      "here": "[[hamilton|Hamilton]] stands on the rail, round and rigid, staring at the practice pipe as if it owes him money.",
+      "hereFollow": "[[hamilton|Hamilton]] rides on your shoulder, round and rigid, pretending the view does not bother him.",
+      "desc": "A small, round, very serious bird. Questionable aerodynamics, unquestionable confidence. His feet are trembling very slightly.",
+      "talk": [
+        {
+          "t": "\"I am not nervous,\" says Hamilton. \"I am simply prepared. For the worst. Constantly.\""
+        },
+        {
+          "t": "\"Pipes,\" says Hamilton darkly. \"Green. Hollow. Smug.\""
+        },
+        {
+          "s": "mild",
+          "t": "\"Your coaching voice is good,\" says Hamilton, not quite looking at you. \"Low. Steady. Do not make it weird.\""
+        },
+        {
+          "t": "\"Gravity is a suggestion,\" Hamilton says. \"I suggest we do not test it.\""
+        }
+      ],
+      "topics": {
+        "scared": "\"Scared? Me? I am a professional bird,\" says Hamilton. His feet are trembling at about sixty beats a minute. You decide not to mention it.",
+        "afraid": "\"Scared? Me? I am a professional bird,\" says Hamilton. His feet are trembling at about sixty beats a minute. You decide not to mention it.",
+        "nervous": "\"Scared? Me? I am a professional bird,\" says Hamilton. His feet are trembling at about sixty beats a minute. You decide not to mention it.",
+        "brave": "\"I am extremely brave,\" says Hamilton. \"Right up until it becomes relevant.\"",
+        "pipe": "\"Never trust a pipe,\" Hamilton says. \"They look hollow because they are hiding something.\"",
+        "glitch": "\"It pulled the plug on the pipe generator,\" says Hamilton. \"Now the pipes come and go as they please. Mostly go. Mostly into me.\"",
+        "metronome": "\"A very reliable little tin man,\" says Hamilton. \"I have placed my life in its hands. Do not tell it.\"",
+        "seed": "Hamilton is not hungry. His beak has been twitching since you said that word.",
+        "mira": "\"The radio lady?\" says Hamilton. \"She has a good voice. She also calls me 'Hammy'. Once. We do not speak of it.\"",
+        "fly": "\"I can fly,\" says Hamilton. \"I simply choose to do it sparingly, and only when nobody is watching.\"",
+        "flap": "\"I can fly,\" says Hamilton. \"I simply choose to do it sparingly, and only when nobody is watching.\"",
+        "hint": "HINT"
+      }
+    },
+    "mira": {
+      "name": "Mira",
+      "aliases": [
+        "mira",
+        "radio",
+        "mira bell",
+        "voice"
+      ],
+      "loc": "perch",
+      "here": "A little [[mira|radio]] is taped to the practice pipe, hissing softly. It sounds like it might have opinions.",
+      "hereFollow": "The [[mira|radio]] on your belt hisses, and sounds like it has opinions.",
+      "desc": "A little radio with a bent aerial. Mira Bell's voice comes out of it, dry and warm and not at all impressed.",
+      "talk": [
+        {
+          "t": "\"Attendant,\" crackles Mira. \"Hamilton is in there with you? Good. Be nice to him. He is a lot of bird in a small bird.\""
+        },
+        {
+          "t": "\"I can't see you,\" says Mira, \"but I can hear you, and you are narrating again.\""
+        },
+        {
+          "s": "mild",
+          "t": "\"You sound better in the dark,\" Mira says. \"Don't let it go to your head. Or anywhere else.\""
+        }
+      ],
+      "topics": {
+        "hint": "HINT",
+        "help": "HINT",
+        "hamilton": "\"He won't say it, but he is scared of heights,\" says Mira. \"Be kind. Bring snacks.\"",
+        "glitch": "\"It's pulling the plug on every machine,\" says Mira. \"Find the pipe generator before it finds you.\""
+      }
+    },
+    "runners": {
+      "name": "The Runners",
+      "aliases": [
+        "runners",
+        "crew",
+        "eeny",
+        "meeny",
+        "miny",
+        "moe",
+        "dino",
+        "cat",
+        "penguin",
+        "robot",
+        "porthole"
+      ],
+      "loc": "cloudbar",
+      "here": "Through a round [[runners|porthole]] in the wall, four pixel faces are pressed against the glass: a dino, a cat, a penguin and a small blue robot.",
+      "desc": "Four pixel faces squashed against a porthole from the next cabinet: Eeny, Meeny, Miny and Moe. They wave. The penguin does not wave. The penguin nods.",
+      "talk": [
+        {
+          "t": "\"HELLO, ATTENDANT,\" shouts Moe, through the glass. \"WE ARE ON A BREAK. THE DESERT IS BUSY.\""
+        },
+        {
+          "t": "\"EEEE-\" says Eeny, helpfully. Meeny elbows him. \"Ignore the lizard,\" she says. \"Good luck with the bird. Don't let him see your face when he fails.\""
+        },
+        {
+          "s": "mild",
+          "t": "\"Hey, cutie,\" Meeny purrs through the glass. \"The jacket. Is that on purpose?\" Miny, deadpan: \"Noot.\""
+        },
+        {
+          "s": "medium",
+          "t": "\"We could use someone with your... timing,\" Meeny says, and Miny coughs. \"NOOT,\" he adds, which in penguin is a lot."
+        },
+        {
+          "t": "\"WE ARE NOT SURE ABOUT THE SAND,\" says Moe. \"IT IS GETTING IN EVERYTHING.\""
+        }
+      ],
+      "topics": {
+        "key": "\"IT IS IN THE DRINK,\" shouts Moe. \"DO NOT ASK. WE DID NOT.\"",
+        "drink": "\"IT IS IN THE DRINK,\" shouts Moe. \"DO NOT ASK. WE DID NOT.\"",
+        "metronome": "\"WINDING KEYS GO IN THE DRINK,\" shouts Moe. \"THAT IS HOW THIS LEVEL WORKS.\"",
+        "pipe": "\"THE PIPES ARE NOT TO BE TRUSTED,\" shouts Moe. Miny nods. Miny has had a pipe experience.",
+        "sand": "\"IT IS EVERYWHERE,\" shouts Moe. \"THE DUNES ARE GETTING WORSE. THERE IS A SANDSTORM IN OUR CABINET.\"",
+        "hamilton": "\"HE IS VERY SMALL,\" shouts Moe. \"AND VERY ROUND. WE LOVE HIM.\" Eeny nods, then forgets and nods again.",
+        "mira": "\"THE DJ?\" shouts Moe. \"TELL HER THE FADER IS STILL UPSIDE DOWN.\""
+      }
+    }
+  },
+  "rules": [
+    {
+      "id": "play-metronome",
+      "on": [
+        {
+          "verb": [
+            "play",
+            "fix"
+          ],
+          "noun": "metronome"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "wound"
+        }
+      ],
+      "skipText": "The metronome ticks along happily. Tick. Tock. It seems to want somebody to use it on somebody.",
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
+      "else": "The pendulum gives one lazy tick, sighs, and stops. There is a keyhole in the side. It wants winding.",
+      "effects": []
+    },
+    {
+      "id": "wind-metronome",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "give",
+            "fix"
+          ],
+          "noun": "key",
+          "with": "metronome"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "wound"
+        }
+      ],
+      "skipText": "The metronome is already wound and ticking.",
+      "requires": [
+        {
+          "has": "key"
+        },
+        {
+          "has": "metronome"
+        }
+      ],
+      "else": "You need to be holding both the key and the metronome.",
+      "effects": [
+        {
+          "move": [
+            "key",
+            "gone"
+          ]
+        },
+        {
+          "flag": "wound"
+        },
+        {
+          "say": "You slot the little key into the metronome and turn it. Tick. Tock. Tick. The pendulum swings, steady as a promise. \"It's a good metronome,\" says a voice in your head, which is probably you."
+        }
+      ]
+    },
+    {
+      "id": "lesson",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "metronome",
+          "with": "hamilton"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "flapTaught"
+        }
+      ],
+      "skipText": "\"ONE,\" Hamilton says to himself, quietly, like a prayer. \"Two. FLAP.\" He has the beat. The beat has him.",
+      "requires": [
+        {
+          "has": "metronome"
+        },
+        {
+          "flag": "wound"
+        }
+      ],
+      "else": [
+        {
+          "when": [
+            {
+              "not": {
+                "has": "metronome"
+              }
+            }
+          ],
+          "t": "Pick the metronome up first. A teacher with no tools is just a person shouting."
+        },
+        {
+          "t": "You set the metronome going. It gives one lazy tick and stops, with the sigh of a clock with no ambition. There is a keyhole in its side."
+        }
+      ],
+      "effects": [
+        {
+          "flag": "flapTaught"
+        },
+        {
+          "follow": "hamilton"
+        },
+        {
+          "score": 1
+        },
+        {
+          "say": [
+            "You hold the metronome up. Tick. Tock. \"On the tock,\" you tell Hamilton. \"Flap on the tock.\"",
+            "Hamilton stares at the practice pipe. The practice pipe stares back. Tick. Tock. He closes his eyes and launches off the rail like a very small, very offended cannonball, flaps once on the tock, once on the next tock, and sails through the gap, bounces off a cloud, and lands upright on the far end of the rail.",
+            "\"Planned,\" he says. \"All of it.\" He hops onto your shoulder. (Hamilton will follow you now. Try ASK MIRA ABOUT HINT if you get stuck.)",
+            {
+              "s": "mild",
+              "t": "\"Your coaching is firm,\" Hamilton adds, not looking at you. \"I approve. Do not make a face.\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "take-radio",
+      "on": [
+        {
+          "verb": [
+            "take",
+            "use"
+          ],
+          "noun": "mira"
+        }
+      ],
+      "skipIf": [
+        {
+          "follow": "mira"
+        }
+      ],
+      "skipText": "The radio is already clipped to your belt, hissing quietly at nothing.",
+      "effects": [
+        {
+          "follow": "mira"
+        },
+        {
+          "say": "You peel the radio off the pipe and clip it to your belt. \"Rude,\" says Mira, from inside it. \"But fine. I'll ride along. Try ASK MIRA ABOUT HINT.\""
+        }
+      ]
+    },
+    {
+      "id": "feed-seed",
+      "on": [
+        {
+          "verb": [
+            "give",
+            "use"
+          ],
+          "noun": "seed",
+          "with": "hamilton"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "brave"
+        }
+      ],
+      "skipText": "Hamilton is full. He is also fine. He is extremely, completely fine.",
+      "requires": [
+        {
+          "has": "seed"
+        }
+      ],
+      "else": "You are not carrying a seed.",
+      "effects": [
+        {
+          "move": [
+            "seed",
+            "gone"
+          ]
+        },
+        {
+          "flag": "brave"
+        },
+        {
+          "say": [
+            "You hold out the seed. Hamilton looks at it, looks at you, and looks very hard at the horizon.",
+            "\"I'm not hungry,\" he says. He eats it in one peck. \"This is not a courage seed. I am not afraid. It is a seed.\"",
+            "His feet have stopped trembling. His eyes have gone distant and heroic. He looks like a bird who could, if pressed, do something fairly dramatic."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "seed-pipes",
+      "on": [
+        {
+          "verb": [
+            "give",
+            "use"
+          ],
+          "noun": "seed",
+          "with": "pipes"
+        }
+      ],
+      "effects": [
+        {
+          "say": "You offer the pipes the seed. A pipe gulps it down with a hollow echo, thinks about it, and spits it back out, slightly damp. \"Rude,\" says Hamilton."
+        }
+      ]
+    },
+    {
+      "id": "sync-pipes",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "metronome",
+          "with": "pipes"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "synced"
+        }
+      ],
+      "skipText": "The metronome is already set to the pipes' beat. One. Two-and-three. SLAM.",
+      "requires": [
+        {
+          "has": "metronome"
+        }
+      ],
+      "else": "You will need the metronome in your hands for that.",
+      "effects": [
+        {
+          "flag": "synced"
+        },
+        {
+          "say": [
+            "You hold the metronome up to the pipes and listen. They do not go one-two. They go one... two-and-three... SLAM. A waltz with a grudge.",
+            "You nudge the little weight along the pendulum until the metronome ticks their way. Hamilton counts under his breath. \"ONE. And-a-TWO. And-a-THREE. SLAM.\" He nods slowly. \"I see it,\" he says. \"I hate it. But I see it.\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cross-gap",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "hamilton",
+          "with": "pipes"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "unlock:plaza:e"
+        }
+      ],
+      "skipText": "You have already crossed. The pipes bear you a grudge, but they are too busy to do anything about it.",
+      "requires": [
+        {
+          "follow": "hamilton"
+        },
+        {
+          "flag": "synced"
+        }
+      ],
+      "else": "Hamilton watches the pipes slam. \"No,\" he says. \"They are not keeping time. They are keeping grudges.\" He will not go until you know their beat. (Your metronome might.)",
+      "effects": [
+        {
+          "flag": "crossed"
+        },
+        {
+          "unlock": "plaza:e"
+        },
+        {
+          "score": 1
+        },
+        {
+          "say": [
+            "\"ONE,\" you say, \"and-a-TWO, and-a-THREE...\" SLAM! The gap yawns wide. \"FLAP!\"",
+            "Hamilton shoots through like a furious cannonball. You sprint after him and duck under the pipe lip just as it thunders shut behind your jacket. Behind you, the pipes slam again, twice, in disappointment.",
+            {
+              "s": "mild",
+              "t": "The gap is a snug fit. You breathe in, hold it, and pop through with a noise you decide not to discuss."
+            },
+            {
+              "s": "medium",
+              "t": "\"Tight timing,\" Hamilton says from the far side, panting. \"Nice and snug. Do not look at me like that.\" You are, you realise, grinning. The pipes slam shut behind you in a very final way, like a door closing on a good time."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "climb-pipes",
+      "on": [
+        {
+          "verb": [
+            "climb",
+            "take"
+          ],
+          "noun": "pipes"
+        }
+      ],
+      "effects": [
+        {
+          "say": "You grab a pipe and swing up. The pipe slams. Gently, by its standards. You are returned to the floor in a spirit of gravity. Somewhere nearby, a very small bird says nothing, loudly."
+        }
+      ]
+    },
+    {
+      "id": "play-board",
+      "on": [
+        {
+          "verb": [
+            "play",
+            "use"
+          ],
+          "noun": "scoreboard"
+        }
+      ],
+      "effects": [
+        {
+          "say": "You press a few lights. The scoreboard shows 000, then a small face with a frown, then 000 again. PLEASE INSERT COURAGE, it repeats."
+        }
+      ]
+    },
+    {
+      "id": "climb-ledge",
+      "on": [
+        {
+          "verb": [
+            "climb"
+          ],
+          "noun": "ledge"
+        }
+      ],
+      "effects": [
+        {
+          "say": "You jump for the ledge. Gravity says \"maybe.\" Then it says \"no.\" You land on your dignity, which breaks the fall."
+        }
+      ]
+    },
+    {
+      "id": "climb-stool",
+      "on": [
+        {
+          "verb": [
+            "climb",
+            "use"
+          ],
+          "noun": "stool"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "onStool"
+        }
+      ],
+      "skipText": "You are already standing on the stool.",
+      "requires": [
+        {
+          "on": "stool"
+        }
+      ],
+      "else": [
+        {
+          "when": [
+            {
+              "has": "stool"
+            }
+          ],
+          "t": "You cannot climb it while you are carrying it. Put it down first."
+        },
+        {
+          "t": "There is no stool here to climb."
+        }
+      ],
+      "effects": [
+        {
+          "flag": "onStool"
+        },
+        {
+          "say": "You climb onto the cloud stool. It holds, which is more than most things in here do. Everything is a little higher and a little softer."
+        }
+      ]
+    },
+    {
+      "id": "open-ledge",
+      "on": [
+        {
+          "verb": [
+            "open"
+          ],
+          "noun": "ledge"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "open:ledge"
+        }
+      ],
+      "skipText": "You have already looked on the ledge.",
+      "requires": [
+        {
+          "flag": "onStool"
+        }
+      ],
+      "else": "The ledge is far too high to reach. You would need something to stand on, or somebody to fly.",
+      "effects": [
+        {
+          "say": "Standing on the stool, you just manage to get your fingers over the edge of the ledge."
+        },
+        {
+          "open": "ledge"
+        }
+      ]
+    },
+    {
+      "id": "hamilton-fetch",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "ask"
+          ],
+          "noun": "hamilton",
+          "with": "ledge"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "open:ledge"
+        }
+      ],
+      "skipText": "The ledge is clear. Hamilton eyes it with the quiet pride of a bird who has done a Thing.",
+      "requires": [
+        {
+          "follow": "hamilton"
+        },
+        {
+          "flag": "brave"
+        }
+      ],
+      "else": [
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "brave"
+              }
+            }
+          ],
+          "t": "Hamilton looks at the ledge. Hamilton looks at the floor. \"It's not the height,\" he says. \"It's the... altitude.\" His toes are trembling. He is absolutely not scared, and he would like a snack to prove it. (A seed, perhaps?)"
+        },
+        {
+          "t": "Hamilton is not with you."
+        }
+      ],
+      "effects": [
+        {
+          "say": [
+            "\"Stand back,\" says Hamilton. \"Give me air.\" He flaps once, hard, and rockets up the side of the scoreboard with his eyes shut, whistling something between a tune and a prayer.",
+            "There is a clatter, a long silence, and a very small cough. Hamilton comes back down in a controlled collapse, a bit of sunflower on his beak. \"Easy,\" he says. \"Barely noticed the height.\" He hasn't opened his eyes yet."
+          ]
+        },
+        {
+          "open": "ledge"
+        }
+      ]
+    },
+    {
+      "id": "genpipes-metronome",
+      "on": [
+        {
+          "verb": [
+            "give",
+            "use"
+          ],
+          "noun": "metronome",
+          "with": "genpipes"
+        }
+      ],
+      "requires": [
+        {
+          "has": "metronome"
+        }
+      ],
+      "else": "You are not carrying the metronome.",
+      "effects": [
+        {
+          "move": [
+            "metronome",
+            "gone"
+          ]
+        },
+        {
+          "flag": "metroGone"
+        },
+        {
+          "say": [
+            "You hold out the metronome. Every pipe in the tangle swivels to face it, quivering with greed. You toss it into the middle of the tangle, where it ticks happily and is promptly eaten.",
+            "The pipes slam shut around it once, twice, and go quiet, chewing. It has served well. \"A fine little tin man,\" says Hamilton, quietly. \"Goodbye.\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "plug-in",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "plug",
+          "with": "socket"
+        }
+      ],
+      "requires": [
+        {
+          "has": "plug"
+        },
+        {
+          "follow": "hamilton"
+        },
+        {
+          "not": {
+            "has": "metronome"
+          }
+        },
+        {
+          "not": {
+            "on": "metronome"
+          }
+        }
+      ],
+      "else": [
+        {
+          "when": [
+            {
+              "not": {
+                "has": "plug"
+              }
+            }
+          ],
+          "t": "Pick the plug up first. Sockets are famously choosy."
+        },
+        {
+          "when": [
+            {
+              "has": "metronome"
+            }
+          ],
+          "t": "You raise the plug toward the socket. Tick. The pipes in front of it snap shut in time with the metronome in your pocket, nearly taking your fingers. \"I told you,\" says Hamilton. \"Never trust a pipe. Or a tin thing that ticks.\" The pipes want the metronome."
+        },
+        {
+          "t": "The metronome ticks on the floor, and the pipes slam at it, in time, over and over. They will not leave the socket alone while there is a beat in the room."
+        }
+      ],
+      "effects": [
+        {
+          "score": 1
+        },
+        {
+          "flag": "complete"
+        },
+        {
+          "flag": "carry:ch2"
+        },
+        {
+          "card": "cloud-nine"
+        },
+        {
+          "say": [
+            "You hold up the plug. The socket is high in the wall, among pipes that now hang perfectly still, because nothing is ticking to wind them up. Hamilton eyes it from your shoulder.",
+            "\"No beat,\" he mutters. \"No seed. Just me and the air.\"",
+            "He takes the plug in both feet, drops off your shoulder, and flaps upward, wobbling, wheezing, round as a dumpling. \"I'm... not... scared...\" Flap. Wobble. Flap. He slams the plug home with his whole body.",
+            "The generator coughs, hums, and roars. Light races along every pipe. Far away, pipes come back into being, spacing themselves out a polite distance apart, and the long falling feeling in the level stops.",
+            "Hamilton lands on your head. \"Fine,\" he says. \"I was a little scared.\" A pause. \"Atmospherically. Do not tell Mira.\"",
+            "\"I heard that,\" says Mira, from every speaker in the sky. \"Good work, both of you.\"",
+            {
+              "s": "mild",
+              "t": "\"Come find me after, Attendant,\" Mira adds. \"I like a coach who can keep a beat.\""
+            },
+            {
+              "s": "medium",
+              "t": "\"Bring whatever's ticking in that jacket,\" she says, in a voice that has just left the chapter. The radio clicks off with a little pause that is a different sentence. Hamilton looks very hard at a cloud."
+            },
+            "CHAPTER 2 COMPLETE: FLAP ZONE. The Beberd screen clears to a bright blue morning and spits you back into the arcade, mostly intact. Next door, the Pixel Run cabinet is sandstorming, and somebody inside is shouting in capitals. Next: Chapter 3, Dune Run."
+          ]
+        },
+        {
+          "end": true
+        }
+      ]
+    }
+  ],
+  "hints": [
+    {
+      "done": [
+        {
+          "flag": "flapTaught"
+        }
+      ],
+      "lines": [
+        "Hamilton needs to learn to flap on the beat. The tin metronome here is the teaching aid, but it has run down.",
+        "The metronome has a keyhole. Keys go in drinks, apparently. Try the Cloud Bar, north of the Pipe Gap Plaza.",
+        "Open the tumbler at the Cloud Bar, take the key, USE KEY ON METRONOME, then USE METRONOME ON HAMILTON."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "unlock:plaza:e"
+        }
+      ],
+      "lines": [
+        "The pipes in the Plaza do not keep time with anything of yours. Listen to them.",
+        "USE METRONOME ON PIPES to learn their beat. Hamilton will not go until you do. A snack may steady his nerves later (the Seed Stand is south of the plaza).",
+        "Then USE HAMILTON ON PIPES to cross east."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "pts:plug"
+        }
+      ],
+      "lines": [
+        "The plug has fallen onto a high ledge at the Scoreboard.",
+        "Hamilton can reach it, if he is brave enough. He will not say he is scared. Food helps: give him the seed from the Seed Stand.",
+        "Or stand on something: the cloud stool at the Cloud Bar. Drop it at the Scoreboard, climb it, and open the ledge. Then take the plug."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "complete"
+        }
+      ],
+      "lines": [
+        "The socket is in the Pipe Generator room, east of the Scoreboard.",
+        "The pipes in there keep time with whatever ticks near them. The metronome has done its job.",
+        "Give the metronome to the frozen pipes, then USE PLUG ON SOCKET."
+      ]
+    }
+  ],
+  "glitch": [
+    "The Glitch eats that command. (Try HELP.)",
+    "Nothing happens, loudly. Somewhere, a pipe slams in judgement.",
+    "You try. The level does not care.",
+    "That does not seem to do anything useful. Hamilton, if he were here, would say so."
+  ],
+  "cards": {
+    "cloud-nine": {
+      "title": "Cloud Nine",
+      "who": "Dolly Starling"
+    }
+  }
+}

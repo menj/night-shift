@@ -272,7 +272,11 @@
 		if (rule.requires && !this.check(rule.requires, st)) { this.firstText(rule.else, st).forEach(function (x) { out.text(x); }); return; }
 		(rule.effects || []).forEach(function (e) {
 			if (e.say !== undefined) { texts(e.say); }
-			if (e.scene !== undefined) { self.text(e.scene, st).forEach(function (x) { out.beat(x); }); out.events.push({ type: 'scene' }); }
+			if (e.scene !== undefined) {
+				if (e.still) { out.lines.push({ k: 'still', t: e.alt || '', src: e.still }); }   // an illustration shown above the beats
+				self.text(e.scene, st).forEach(function (x) { out.beat(x); });
+				out.events.push({ type: 'scene' });
+			}
 			if (e.flag) { st.flags[e.flag] = true; }
 			if (e.unflag) { delete st.flags[e.unflag]; }
 			if (e.move) { st.loc[e.move[0]] = e.move[1]; }

@@ -55,6 +55,8 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 		if (n === 1) {   // the ending is a cutscene: Continue steps through it, Enter works too, Skip shows the rest
 			const beats = () => page.$$eval('#log .beat', e => e.length);
 			ok(!!(await page.$('.scene-ctl')), 'ending cutscene waits for Continue');
+			await page.waitForFunction(() => { const i = document.querySelector('#log figure.still img'); return i && i.complete && i.naturalWidth > 0 && i.alt.length > 20; });
+			ok(true, 'the ending shows its pixel-art still, with alt text');
 			const b0 = await beats(); await page.click('.scene-ctl >> text=Continue');
 			ok((await beats()) === b0 + 1, 'Continue reveals the next beat');
 			if (await page.$('.scene-ctl')) { await page.keyboard.press('Enter'); ok((await beats()) >= b0 + 2, 'Enter continues the scene'); }
@@ -87,6 +89,9 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	// play again, undo, tap noun
 	// a reload after the ending shows the ending text again
 	ok(/CHAPTER 5 COMPLETE/.test(await logText()), 'ending scene text is restored after a reload');
+	await page.waitForFunction(() => { const i = document.querySelector('#log figure.still img'); return i && i.complete && i.naturalWidth > 0; });
+	ok(true, 'the finale still is restored after a reload');
+	await page.screenshot({ path: out + '/finale.png' });
 	await page.click('button:has-text("Play again")'); await skipScenes();
 	ok(/Ch 1 · 0\//.test(await page.$eval('#score', e => e.textContent)), 'new game resets to chapter 1');
 	await type('e'); const before = await page.evaluate(() => window.NightShift.state.room);

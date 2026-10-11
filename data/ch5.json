@@ -1297,7 +1297,9 @@
               "t": "\"Come on,\" she says, taking your hand. \"The booth. I have a record I want you to hear.\" The door of the DJ booth closes with a soft, final click, and a single bar of bass slides under it. Out on the floor, six friends who have never been more tactful look in six different directions and agree that none of this is their business. The mirror ball keeps turning. The night keeps going. Fade to black."
             },
             "THE END. Insert coin to play again."
-          ]
+          ],
+          "still": "img/scenes/ch5-end.png",
+          "alt": "Pixel art: the whole gang lined up in the lit-up arcade, Hamilton, Eeny, Meeny, Miny, Moe, Mira and the Attendant, with the little Glitch smiling above them."
         },
         {
           "end": true

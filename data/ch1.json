@@ -928,7 +928,9 @@
               "t": "\"Meet me by the booth after close,\" she says, and the lights dim just as the shutters rattle. The rest, as they say, is none of the arcade's business."
             },
             "CHAPTER 1 COMPLETE: DEAD AIR. Across the floor, a cabinet marked BEBERD is flickering like a distress signal. Hamilton stares at it and, for once, says nothing. Next: Chapter 2, Flap Zone."
-          ]
+          ],
+          "still": "img/scenes/ch1-end.png",
+          "alt": "Pixel art: the disco comes alive. A mirror ball throws light over Mira at the booth, the Attendant, Hamilton and Moe, with the arcade cabinets glowing."
         },
         {
           "flag": "carry:ch1"

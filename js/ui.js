@@ -85,7 +85,8 @@
 	function scrollDown() { window.requestAnimationFrame(function () { els.log.scrollTop = els.log.scrollHeight; }); }
 	function addLine(line) {
 		var p;
-		if (line.k === 'titlecard') { p = document.createElement('p'); p.className = 'story title-card line'; p.textContent = line.t; }
+		if (line.k === 'still') { p = document.createElement('figure'); p.className = 'still line'; var im = new Image(); im.src = line.src; im.alt = line.t; im.onerror = function () { p.remove(); }; p.appendChild(im); }
+		else if (line.k === 'titlecard') { p = document.createElement('p'); p.className = 'story title-card line'; p.textContent = line.t; }
 		else if (line.k === 'title') { p = document.createElement('h2'); p.className = 'room line'; p.textContent = line.t; }
 		else if (line.k === 'echo') { p = document.createElement('p'); p.className = 'echo line'; p.textContent = '> ' + line.t; }
 		else if (line.k === 'card') { p = document.createElement('p'); p.className = 'note line'; p.textContent = line.t; }
@@ -203,7 +204,7 @@
 	function nextChapter() {
 		var cards = state.cards.slice();
 		useChapter(run_.chapter + 1);
-		state = eng.newState(run_.carry); state.cards = cards; undoStack = []; lastCmd = ''; meta.scene = null;
+		state = eng.newState(run_.carry); state.cards = cards; undoStack = []; lastCmd = ''; meta.scene = null; meta.still = null;
 		els.log.textContent = '';
 		endScene();
 		autosave(); refresh();
@@ -239,7 +240,8 @@
 			updateStats(lastChapter);
 		}
 		var beats = res.lines.filter(function (l) { return l.k === 'beat'; }).map(function (l) { return l.t; });
-		if (beats.length) { meta.scene = beats; }   // kept so a reload after the ending can show it again
+		var still = res.lines.filter(function (l) { return l.k === 'still'; })[0];
+		if (beats.length) { meta.scene = beats; meta.still = still ? { src: still.src, t: still.t } : null; }   // kept so a reload after the ending can show it again
 		autosave();
 		refresh();
 		playLines(res.lines, function () {
@@ -343,7 +345,7 @@
 	function readSave() {
 		try {
 			var raw = JSON.parse(read(KEY_SAVE) || 'null');
-			if (raw && raw.meta && typeof raw.meta.hints === 'number' && typeof raw.meta.t0 === 'number') { meta = { hints: raw.meta.hints, t0: raw.meta.t0, scene: Array.isArray(raw.meta.scene) ? raw.meta.scene.filter(function (t) { return typeof t === 'string'; }) : null }; }
+			if (raw && raw.meta && typeof raw.meta.hints === 'number' && typeof raw.meta.t0 === 'number') { meta = { hints: raw.meta.hints, t0: raw.meta.t0, scene: Array.isArray(raw.meta.scene) ? raw.meta.scene.filter(function (t) { return typeof t === 'string'; }) : null, still: raw.meta.still && typeof raw.meta.still.src === 'string' ? { src: raw.meta.still.src, t: String(raw.meta.still.t || '') } : null }; }
 			var ch = raw && raw.v === 2 && raw.run ? raw.run.chapter : 1;
 			if (raw && (raw.v === 1 || raw.v === 2) && worlds[ch] && raw.state && raw.state.room && worlds[ch].rooms[raw.state.room] && raw.state.loc) {
 				if (raw.v === 2) { run_ = { chapter: ch, carry: raw.run.carry || [], scores: raw.run.scores || [], moves: raw.run.moves || [] }; }
@@ -373,6 +375,7 @@
 		if (saved) {
 			state = saved;
 			addLine({ k: 'note', t: 'Welcome back. Your game was restored.' });
+			if (state.ended && meta.still && /^img\/scenes\/[\w.-]+\.png$/.test(meta.still.src)) { addLine({ k: 'still', src: meta.still.src, t: meta.still.t || '' }); }
 			if (state.ended && meta.scene) { meta.scene.forEach(function (t) { addLine({ k: 'story', t: t }).className += ' beat'; }); }
 			addLines(eng.describeRoom(state));
 			if (state.ended) { endOfChapter(); }

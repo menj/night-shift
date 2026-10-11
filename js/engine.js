@@ -198,6 +198,8 @@
 		this.events = [];
 	}
 	Out.prototype.text = function (t) { this.lines.push({ k: 'text', t: t }); };
+	/** A cutscene beat: the page shows these one at a time with Continue and Skip. */
+	Out.prototype.beat = function (t) { this.lines.push({ k: 'beat', t: t }); };
 	Out.prototype.note = function (t) { this.lines.push({ k: 'note', t: t }); };
 
 	Engine.prototype.exec = function (state, input) {
@@ -270,6 +272,7 @@
 		if (rule.requires && !this.check(rule.requires, st)) { this.firstText(rule.else, st).forEach(function (x) { out.text(x); }); return; }
 		(rule.effects || []).forEach(function (e) {
 			if (e.say !== undefined) { texts(e.say); }
+			if (e.scene !== undefined) { self.text(e.scene, st).forEach(function (x) { out.beat(x); }); out.events.push({ type: 'scene' }); }
 			if (e.flag) { st.flags[e.flag] = true; }
 			if (e.unflag) { delete st.flags[e.unflag]; }
 			if (e.move) { st.loc[e.move[0]] = e.move[1]; }

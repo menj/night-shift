@@ -42,7 +42,7 @@
 		try { s = JSON.parse(read(KEY_SET) || '{}') || {}; } catch (e) { s = {}; }
 		var spice = SPICE.indexOf(s.spice) !== -1 ? s.spice : 'mild';
 		if (spice === 'hot' && !s.ageOk) { spice = 'medium'; }
-		return { spice: spice, ageOk: !!s.ageOk, large: !!s.large, motion: !!s.motion };
+		return { spice: spice, ageOk: !!s.ageOk, large: !!s.large, motion: !!s.motion, skipScenes: !!s.skipScenes };
 	}
 	function saveSettings() { write(KEY_SET, JSON.stringify(settings)); }
 	function applySettings() {
@@ -85,7 +85,8 @@
 	function scrollDown() { window.requestAnimationFrame(function () { els.log.scrollTop = els.log.scrollHeight; }); }
 	function addLine(line) {
 		var p;
-		if (line.k === 'title') { p = document.createElement('h2'); p.className = 'room line'; p.textContent = line.t; }
+		if (line.k === 'titlecard') { p = document.createElement('p'); p.className = 'story title-card line'; p.textContent = line.t; }
+		else if (line.k === 'title') { p = document.createElement('h2'); p.className = 'room line'; p.textContent = line.t; }
 		else if (line.k === 'echo') { p = document.createElement('p'); p.className = 'echo line'; p.textContent = '> ' + line.t; }
 		else if (line.k === 'card') { p = document.createElement('p'); p.className = 'note line'; p.textContent = line.t; }
 		else { p = document.createElement('p'); p.className = (line.k === 'note' ? 'note' : 'story') + ' line'; p.appendChild(markup(line.t)); }
@@ -202,11 +203,11 @@
 	function nextChapter() {
 		var cards = state.cards.slice();
 		useChapter(run_.chapter + 1);
-		state = eng.newState(run_.carry); state.cards = cards; undoStack = []; lastCmd = '';
+		state = eng.newState(run_.carry); state.cards = cards; undoStack = []; lastCmd = ''; meta.scene = null;
 		els.log.textContent = '';
-		intro();
-		addLines(eng.describeRoom(state));
-		autosave(); refresh(); finishInput();
+		endScene();
+		autosave(); refresh();
+		intro(finishInput);
 	}
 
 	function run(input) {
@@ -225,28 +226,72 @@
 		if (res.state.moves !== state.moves) { undoStack.push(state); if (undoStack.length > 200) { undoStack.shift(); } }
 		state = res.state;
 		lastCmd = input;
-		addLines(res.lines);
-		var finished = false;
+		var finished = false, lastChapter = false;
 		res.events.forEach(function (e) {
 			if (e.type === 'score') { updateStats(false); }
-			if (e.type === 'card' && settings.spice === 'hot') {
-				var meta = cardMeta(e.id);
-				addLine({ k: 'card', t: 'Gallery card unlocked: ' + meta.title + '. (Settings, Spice)' });
-			}
 			if (e.type === 'end') { finished = true; }
 		});
 		if (finished) {
 			var i = run_.chapter - 1;
 			run_.scores[i] = state.score; run_.moves[i] = state.moves;
 			Object.keys(state.flags).forEach(function (f) { if (f.indexOf('carry:') === 0 && run_.carry.indexOf(f) === -1) { run_.carry.push(f); } });
-			var lastChapter = run_.chapter >= chapters.length;
+			lastChapter = run_.chapter >= chapters.length;
 			updateStats(lastChapter);
-			var p = endOfChapter();
-			if (lastChapter) { offerSubmit(p); }
 		}
+		var beats = res.lines.filter(function (l) { return l.k === 'beat'; }).map(function (l) { return l.t; });
+		if (beats.length) { meta.scene = beats; }   // kept so a reload after the ending can show it again
 		autosave();
 		refresh();
-		finishInput();
+		playLines(res.lines, function () {
+			res.events.forEach(function (e) {
+				if (e.type === 'card' && settings.spice === 'hot') {
+					var cm = cardMeta(e.id);
+					addLine({ k: 'card', t: 'Gallery card unlocked: ' + cm.title + '. (Settings, Spice)' });
+				}
+			});
+			if (finished) {
+				var p = endOfChapter();
+				if (lastChapter) { offerSubmit(p); }
+			}
+			finishInput();
+		});
+	}
+
+	/* ---------- cutscenes: beats appear one at a time with Continue and Skip ---------- */
+	var sceneStop = null;   // set while a cutscene waits for the player
+	function endScene() { if (sceneStop) { sceneStop = null; els.input.disabled = false; } }
+	function pauseScene(next) {
+		var p = addLine({ k: 'note', t: '' });
+		p.className = 'scene-ctl line';
+		var go = document.createElement('button'), skip = document.createElement('button');
+		go.type = 'button'; go.className = 'btn'; go.textContent = 'Continue';
+		skip.type = 'button'; skip.className = 'btn ghost'; skip.textContent = 'Skip scene';
+		p.appendChild(go); p.appendChild(skip);
+		els.input.disabled = true;
+		function done(all) { sceneStop = null; p.remove(); els.input.disabled = false; next(all); }
+		go.addEventListener('click', function () { done(false); });
+		skip.addEventListener('click', function () { done(true); });
+		sceneStop = done;
+		go.focus();
+	}
+	/** Show lines in order. Ordinary lines at once; cutscene beats one by one unless the player skips. */
+	function playLines(lines, finish) {
+		var i = 0;
+		(function step() {
+			while (i < lines.length) {
+				var l = lines[i++];
+				if (l.k !== 'beat') { addLine(l); continue; }
+				var p = addLine({ k: 'story', t: l.t });
+				p.className += ' beat';
+				if (settings.skipScenes || i >= lines.length || lines[i].k !== 'beat') { continue; }   // the last beat needs no pause
+				pauseScene(function (all) {
+					if (all) { while (i < lines.length && lines[i].k === 'beat') { addLine({ k: 'story', t: lines[i++].t }).className += ' beat'; } }
+					step();
+				});
+				return;
+			}
+			if (finish) { finish(); }
+		})();
 	}
 
 	function handleUi(verb) {
@@ -298,7 +343,7 @@
 	function readSave() {
 		try {
 			var raw = JSON.parse(read(KEY_SAVE) || 'null');
-			if (raw && raw.meta && typeof raw.meta.hints === 'number' && typeof raw.meta.t0 === 'number') { meta = { hints: raw.meta.hints, t0: raw.meta.t0 }; }
+			if (raw && raw.meta && typeof raw.meta.hints === 'number' && typeof raw.meta.t0 === 'number') { meta = { hints: raw.meta.hints, t0: raw.meta.t0, scene: Array.isArray(raw.meta.scene) ? raw.meta.scene.filter(function (t) { return typeof t === 'string'; }) : null }; }
 			var ch = raw && raw.v === 2 && raw.run ? raw.run.chapter : 1;
 			if (raw && (raw.v === 1 || raw.v === 2) && worlds[ch] && raw.state && raw.state.room && worlds[ch].rooms[raw.state.room] && raw.state.loc) {
 				if (raw.v === 2) { run_ = { chapter: ch, carry: raw.run.carry || [], scores: raw.run.scores || [], moves: raw.run.moves || [] }; }
@@ -308,11 +353,9 @@
 		} catch (e) { /* damaged save: ignore it */ }
 		return null;
 	}
-	function intro() {
-		world.intro.forEach(function (t, i) {
-			var p = addLine({ k: 'story', t: t });
-			if (i === 0) { p.className = 'story title-card line'; }
-		});
+	function intro(then) {
+		var lines = world.intro.map(function (t, i) { return i === 0 ? { k: 'titlecard', t: t } : { k: 'beat', t: t }; });
+		playLines(lines, function () { addLines(eng.describeRoom(state)); if (then) { then(); } });
 	}
 	function newGame(askFirst) {
 		if (askFirst && !window.confirm('Start a new game? Your saved progress will be erased.')) { return; }
@@ -320,9 +363,9 @@
 		run_ = { chapter: 1, carry: [], scores: [], moves: [] }; useChapter(1);
 		state = eng.newState(); undoStack = []; lastCmd = ''; meta = { hints: 0, t0: Date.now() };
 		els.log.textContent = '';
-		intro();
-		addLines(eng.describeRoom(state));
-		autosave(); refresh(); finishInput();
+		endScene();
+		autosave(); refresh();
+		intro(finishInput);
 		if (els.dlg.open) { els.dlg.close(); }
 	}
 	function start() {
@@ -330,14 +373,14 @@
 		if (saved) {
 			state = saved;
 			addLine({ k: 'note', t: 'Welcome back. Your game was restored.' });
+			if (state.ended && meta.scene) { meta.scene.forEach(function (t) { addLine({ k: 'story', t: t }).className += ' beat'; }); }
 			addLines(eng.describeRoom(state));
 			if (state.ended) { endOfChapter(); }
 		} else {
 			useChapter(1);
 			state = eng.newState();
-			intro();
-			addLines(eng.describeRoom(state));
 			autosave();
+			intro(function () { if (!coarse) { els.input.focus(); } });
 		}
 		refresh();
 		if (!coarse) { els.input.focus(); }
@@ -378,7 +421,9 @@
 	function setupSettings() {
 		var dlg = els.dlg;
 		if (!dlg || typeof dlg.showModal !== 'function') { els.openSettings.hidden = true; return; }
-		var large = $('opt-large'), motion = $('opt-motion');
+		var large = $('opt-large'), motion = $('opt-motion'), skipS = $('opt-skip');
+		skipS.checked = settings.skipScenes;
+		skipS.addEventListener('change', function () { settings.skipScenes = skipS.checked; saveSettings(); });
 		large.checked = settings.large; motion.checked = settings.motion;
 		large.addEventListener('change', function () { settings.large = large.checked; saveSettings(); applySettings(); });
 		motion.addEventListener('change', function () { settings.motion = motion.checked; saveSettings(); applySettings(); });
@@ -448,6 +493,11 @@
 			else if (e.key === 'ArrowDown' && cmdHistory.length) { e.preventDefault(); histPos = Math.min(cmdHistory.length, histPos + 1); els.input.value = cmdHistory[histPos] || ''; }
 			else if (e.key === 'Tab' && els.input.value && !e.shiftKey) { complete(e); }
 			else if (e.key === 'Escape') { clearPending(); }
+		});
+		document.addEventListener('keydown', function (e) {
+			if (!sceneStop || els.dlg.open) { return; }
+			if (e.key === 'Escape') { e.preventDefault(); sceneStop(true); }
+			else if ((e.key === 'Enter' || e.key === ' ') && !(e.target && e.target.closest && e.target.closest('button'))) { e.preventDefault(); sceneStop(false); }
 		});
 		document.addEventListener('click', function (e) {
 			var t = e.target;

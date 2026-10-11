@@ -1,0 +1,29 @@
+# A complete, shortest-path playthrough of Chapter 1. One command per line; lines starting with # are notes.
+look
+look desk
+open desk
+take memo
+read memo
+e
+take stool
+take token
+open ice machine
+take keycard
+w
+open door
+n
+w
+drop stool
+climb stool
+open cabinet
+take disk
+e
+s
+w
+use disk on terminal
+e
+n
+play claw
+e
+fix mixer
+give record to mira

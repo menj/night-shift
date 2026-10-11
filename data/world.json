@@ -1,0 +1,998 @@
+{
+  "title": "Night Shift",
+  "chapter": "Chapter 1: Dead Air",
+  "start": "lobby",
+  "maxScore": 4,
+  "intro": [
+    "NIGHT SHIFT",
+    "The arcade closed an hour ago. The shutters are down, the music is off, and every few seconds the lights stutter like a bad sprite. Something called the Glitch is unplugging the machines one by one, and you are the only attendant left.",
+    "Type commands (try LOOK, TAKE or HELP), or tap the buttons and the highlighted words."
+  ],
+  "help": [
+    "Type short commands: LOOK, TAKE token, OPEN desk, READ memo, GIVE record TO mira, USE disk ON terminal, ASK moe ABOUT mixer.",
+    "Move with N, S, E, W (or tap an exit). I = what you carry. HINT = a nudge. UNDO takes back your last move. SCORE shows progress.",
+    "Tap a highlighted word to examine it. Tap a verb first, then a word, to do something with it."
+  ],
+  "rooms": {
+    "lobby": {
+      "name": "Lobby",
+      "desc": [
+        "The arcade lobby, lit by a flickering [[sign|EXIT sign]]. A scratched [[desk|reception desk]] sits by the steel [[shutters|shutters]] on the street side. A grey [[door|door]] marked STAFF ONLY is set into the west wall, its card reader glowing red.",
+        {
+          "when": [
+            {
+              "flag": "unlock:lobby:w"
+            }
+          ],
+          "t": "The staff door to the west stands open."
+        }
+      ],
+      "exits": {
+        "n": "floor",
+        "e": "snack",
+        "w": {
+          "to": "office",
+          "needs": [
+            {
+              "flag": "unlock:lobby:w"
+            }
+          ],
+          "blocked": "The staff door is locked. Its card reader glows red."
+        },
+        "s": {
+          "to": "lobby",
+          "quiet": true,
+          "needs": [
+            {
+              "flag": "never"
+            }
+          ],
+          "blocked": "The shutters are down. The Glitch has the power, and apparently the key."
+        }
+      }
+    },
+    "snack": {
+      "name": "Snack Bar",
+      "desc": [
+        "A long [[counter|bar counter]] with a row of sticky stools. A humming [[ice|ice machine]] stands in the corner, and a [[jar|tip jar]] sits by the till."
+      ],
+      "exits": {
+        "w": "lobby"
+      }
+    },
+    "floor": {
+      "name": "Arcade Floor",
+      "desc": [
+        "Rows of dark cabinets stretch off into the gloom. A [[claw|claw machine]] glows faintly by the aisle, and a [[runner|runner cabinet]] flickers nearby.",
+        "A doorway to the east leads to the disco; the prize counter is west."
+      ],
+      "exits": {
+        "s": "lobby",
+        "e": "disco",
+        "w": "prize"
+      }
+    },
+    "prize": {
+      "name": "Prize Counter",
+      "desc": [
+        "Shelves of plush prizes and sealed boxes. A tall [[cabinet|cabinet]] is bolted to the wall, far above arm's reach."
+      ],
+      "exits": {
+        "e": "floor"
+      }
+    },
+    "office": {
+      "name": "Back Office",
+      "desc": [
+        "A cramped office that smells of coffee and warm plastic. A [[terminal|terminal]] sits on the desk, its screen a flat, sad blue."
+      ],
+      "exits": {
+        "e": "lobby"
+      }
+    },
+    "disco": {
+      "name": "Disco",
+      "desc": [
+        "A small disco floor under a dead [[mirrorball|mirror ball]]. A [[booth|DJ booth]] runs along one wall, its [[mixer|mixer]] dark."
+      ],
+      "exits": {
+        "w": "floor"
+      }
+    }
+  },
+  "items": {
+    "desk": {
+      "name": "reception desk",
+      "aliases": [
+        "desk",
+        "reception desk",
+        "drawer"
+      ],
+      "fixed": true,
+      "loc": "lobby",
+      "container": true,
+      "desc": "The reception desk, scratched and sticky. It has one drawer.",
+      "openText": "You pull the drawer open.",
+      "contentsLabel": "In the drawer"
+    },
+    "memo": {
+      "name": "staff memo",
+      "aliases": [
+        "memo",
+        "staff memo",
+        "paper",
+        "note"
+      ],
+      "takeable": true,
+      "loc": "in:desk",
+      "desc": "A staff memo, typed in a hurry.",
+      "read": [
+        "STAFF MEMO (night shift)",
+        "1. The blue keycard lives in the ice machine in the Snack Bar. Do not ask.",
+        "2. Reboot disks are in the cabinet at the Prize Counter. It is high. Use the step stool from behind the bar.",
+        "3. If the disco goes quiet again, DJ Mira needs her lucky record. It is in the claw machine. Tokens are in the tip jar.",
+        "4. Do NOT touch the office terminal. Management.",
+        {
+          "s": "mild",
+          "t": "5. Mira says hi to the new attendant. She says it twice."
+        }
+      ]
+    },
+    "sign": {
+      "name": "EXIT sign",
+      "aliases": [
+        "sign",
+        "exit sign"
+      ],
+      "fixed": true,
+      "loc": "lobby",
+      "desc": "EXIT, in green letters. It flickers. Something small and round is perched on top."
+    },
+    "shutters": {
+      "name": "shutters",
+      "aliases": [
+        "shutters",
+        "shutter",
+        "street door"
+      ],
+      "fixed": true,
+      "loc": "lobby",
+      "desc": "Steel shutters, rattling in their frame. They will not open until the power is back."
+    },
+    "door": {
+      "name": "staff door",
+      "aliases": [
+        "door",
+        "staff door",
+        "office door"
+      ],
+      "fixed": true,
+      "loc": "lobby",
+      "desc": [
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "unlock:lobby:w"
+              }
+            }
+          ],
+          "t": "A grey door marked STAFF ONLY. A card reader beside it glows red."
+        },
+        {
+          "when": [
+            {
+              "flag": "unlock:lobby:w"
+            }
+          ],
+          "t": "The staff door, standing open."
+        }
+      ]
+    },
+    "counter": {
+      "name": "bar counter",
+      "aliases": [
+        "counter",
+        "bar",
+        "bar counter"
+      ],
+      "fixed": true,
+      "loc": "snack",
+      "desc": "A long counter, wiped by someone with strong opinions. A yellow step stool is tucked behind it."
+    },
+    "stool": {
+      "name": "step stool",
+      "aliases": [
+        "stool",
+        "step stool",
+        "steps"
+      ],
+      "takeable": true,
+      "loc": "snack",
+      "desc": "A sturdy yellow step stool. It says NOT A CHAIR, which has never stopped anyone."
+    },
+    "jar": {
+      "name": "tip jar",
+      "aliases": [
+        "jar",
+        "tip jar"
+      ],
+      "fixed": true,
+      "loc": "snack",
+      "container": true,
+      "open": true,
+      "desc": "A tip jar. A single brass token rattles inside.",
+      "contentsLabel": "In the jar"
+    },
+    "token": {
+      "name": "token",
+      "aliases": [
+        "token",
+        "arcade token",
+        "coin"
+      ],
+      "takeable": true,
+      "loc": "in:jar",
+      "desc": "A brass arcade token, worn smooth."
+    },
+    "ice": {
+      "name": "ice machine",
+      "aliases": [
+        "ice machine",
+        "ice",
+        "flap"
+      ],
+      "fixed": true,
+      "loc": "snack",
+      "container": true,
+      "desc": "A humming ice machine with a flap on the front. The metal is freezing to touch.",
+      "openText": "The flap lifts. Cold air rolls out.",
+      "contentsLabel": "Inside"
+    },
+    "keycard": {
+      "name": "blue keycard",
+      "aliases": [
+        "keycard",
+        "blue keycard",
+        "card",
+        "key"
+      ],
+      "takeable": true,
+      "loc": "in:ice",
+      "points": 1,
+      "desc": "A blue keycard, frosted over. It says STAFF.",
+      "takeText": "Taken. It is so cold it hurts a little."
+    },
+    "claw": {
+      "name": "claw machine",
+      "aliases": [
+        "claw",
+        "claw machine",
+        "crane"
+      ],
+      "fixed": true,
+      "loc": "floor",
+      "desc": [
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "gotRecord"
+              }
+            }
+          ],
+          "t": "A claw machine full of plush prizes and one lonely vinyl record. It wants a token."
+        },
+        {
+          "when": [
+            {
+              "flag": "gotRecord"
+            }
+          ],
+          "t": "A claw machine full of plush prizes. The record is gone."
+        }
+      ]
+    },
+    "runner": {
+      "name": "runner cabinet",
+      "aliases": [
+        "runner",
+        "runner cabinet",
+        "dino cabinet"
+      ],
+      "fixed": true,
+      "loc": "floor",
+      "desc": "A cabinet showing a pixel desert. The runner on screen is frozen mid-jump, and something about it looks very much alive."
+    },
+    "cabinet": {
+      "name": "high cabinet",
+      "aliases": [
+        "cabinet",
+        "high cabinet"
+      ],
+      "fixed": true,
+      "loc": "prize",
+      "container": true,
+      "desc": "A tall metal cabinet, bolted to the wall high above arm's reach.",
+      "openText": "The cabinet door swings open.",
+      "contentsLabel": "Inside"
+    },
+    "disk": {
+      "name": "reboot disk",
+      "aliases": [
+        "disk",
+        "reboot disk",
+        "disc",
+        "floppy"
+      ],
+      "takeable": true,
+      "loc": "in:cabinet",
+      "desc": "A square reboot disk. The label says HEROES: IN CASE OF GLITCH."
+    },
+    "terminal": {
+      "name": "terminal",
+      "aliases": [
+        "terminal",
+        "computer",
+        "screen",
+        "blue screen"
+      ],
+      "fixed": true,
+      "loc": "office",
+      "desc": [
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "moeRescued"
+              }
+            }
+          ],
+          "t": "The screen is a flat blue. ERROR 404: HERO NOT FOUND. Below it, a disk slot blinks patiently."
+        },
+        {
+          "when": [
+            {
+              "flag": "moeRescued"
+            }
+          ],
+          "t": "The screen is back to normal, with a small, embarrassed face in one corner."
+        }
+      ]
+    },
+    "booth": {
+      "name": "DJ booth",
+      "aliases": [
+        "booth",
+        "dj booth",
+        "decks",
+        "turntable"
+      ],
+      "fixed": true,
+      "loc": "disco",
+      "desc": "A DJ booth with twin decks and a headphone rack. Everything is dark."
+    },
+    "mixer": {
+      "name": "mixer",
+      "aliases": [
+        "mixer",
+        "fader",
+        "faders"
+      ],
+      "fixed": true,
+      "loc": "disco",
+      "desc": [
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "mixerFixed"
+              }
+            }
+          ],
+          "t": "A mixer with every light out. A tiny sign says: DEAD AIR."
+        },
+        {
+          "when": [
+            {
+              "flag": "mixerFixed"
+            }
+          ],
+          "t": "The mixer glows green, every fader humming."
+        }
+      ]
+    },
+    "mirrorball": {
+      "name": "mirror ball",
+      "aliases": [
+        "mirror ball",
+        "mirrorball",
+        "ball"
+      ],
+      "fixed": true,
+      "loc": "disco",
+      "desc": [
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "complete"
+              }
+            }
+          ],
+          "t": "A dead mirror ball. It has been waiting for this moment all night."
+        },
+        {
+          "when": [
+            {
+              "flag": "complete"
+            }
+          ],
+          "t": "The mirror ball turns slowly, throwing a thousand little stars across the room."
+        }
+      ]
+    },
+    "record": {
+      "name": "lucky record",
+      "aliases": [
+        "record",
+        "lucky record",
+        "vinyl"
+      ],
+      "takeable": true,
+      "loc": "gone",
+      "desc": "A scratched vinyl record. The label says MIRA'S LUCKY ONE, in marker."
+    }
+  },
+  "npcs": {
+    "hamilton": {
+      "name": "Hamilton",
+      "aliases": [
+        "hamilton",
+        "bird"
+      ],
+      "loc": "lobby",
+      "here": "[[hamilton|Hamilton]] is perched on the EXIT sign.",
+      "desc": "A small, round, very serious bird. He has questionable aerodynamics and unquestionable confidence.",
+      "talk": [
+        {
+          "t": "\"Don't mind me,\" says Hamilton. \"I'm not looking.\" He is absolutely looking."
+        },
+        {
+          "t": "\"If you see a pipe, don't trust it,\" Hamilton says darkly."
+        },
+        {
+          "s": "mild",
+          "t": "\"I'll keep my eyes on the sign,\" Hamilton says. \"Whatever happens in the disco stays out of my feathers.\""
+        }
+      ],
+      "topics": {
+        "glitch": "\"It unplugs things,\" says Hamilton. \"Cabinets. Pipes. Morale.\""
+      }
+    },
+    "miny": {
+      "name": "Miny",
+      "aliases": [
+        "miny",
+        "penguin",
+        "bartender"
+      ],
+      "loc": "snack",
+      "here": "[[miny|Miny]] the penguin stands behind the bar in a tiny tuxedo.",
+      "desc": "A penguin in a tiny tuxedo, polishing a glass with great dignity.",
+      "talk": [
+        {
+          "t": "\"NOOT,\" says Miny."
+        },
+        {
+          "t": "Miny slides a napkin across the bar. It says NOOT. You are not sure how."
+        }
+      ],
+      "topics": {
+        "token": "Miny looks at the tip jar, then at you. \"NOOT.\"",
+        "jar": "Miny looks at the tip jar, then at you. \"NOOT.\"",
+        "ice": "Miny shudders. \"NOOT.\" Whatever is in there, he wants no part of it."
+      }
+    },
+    "eeny": {
+      "name": "Eeny",
+      "aliases": [
+        "eeny",
+        "dino",
+        "dinosaur"
+      ],
+      "loc": "floor",
+      "here": "[[eeny|Eeny]] the dinosaur is jammed inside the runner cabinet, running on the spot.",
+      "desc": "Eeny the dinosaur, jammed inside a cabinet and running on the spot, mid-jump, forever.",
+      "talk": [
+        {
+          "t": "\"EEEEEEEE—\" says Eeny, over and over, still in the middle of the jump."
+        },
+        {
+          "t": "Eeny's eyes track you hopefully while the rest of him keeps running."
+        }
+      ]
+    },
+    "meeny": {
+      "name": "Meeny",
+      "aliases": [
+        "meeny",
+        "cat"
+      ],
+      "loc": "prize",
+      "here": "[[meeny|Meeny]] the cat is asleep on the top shelf.",
+      "desc": "Meeny the cat, curled on the top shelf like a small angry loaf.",
+      "talk": [
+        {
+          "t": "Meeny opens one eye. \"No,\" she says, and closes it again."
+        },
+        {
+          "t": "\"If it's about the cabinet,\" Meeny says without moving, \"find a stool. I'm not doing your job.\""
+        }
+      ],
+      "topics": {
+        "cabinet": "\"If it's about the cabinet,\" Meeny says without moving, \"find a stool. I'm not doing your job.\""
+      }
+    },
+    "moe": {
+      "name": "Moe",
+      "aliases": [
+        "moe",
+        "robot",
+        "bot"
+      ],
+      "loc": "gone",
+      "here": "[[moe|Moe]] is a small face on a screen in the terminal.",
+      "hereFollow": "[[moe|Moe]], a small blue face on a handheld screen, bobs along at your elbow.",
+      "desc": "Moe, a robot who lives on screens. His face is a blue rectangle with two very sincere eyes.",
+      "talk": [
+        {
+          "t": "\"HELLO, ATTENDANT,\" says Moe. \"I AM CURRENTLY NOT BROKEN. THIS IS A PERSONAL BEST.\""
+        },
+        {
+          "s": "medium",
+          "t": "\"INNUENDO DETECTED IN CONVERSATION. BZZT. I WILL PRETEND I DID NOT NOTICE.\""
+        }
+      ],
+      "topics": {
+        "hint": "HINT",
+        "help": "HINT"
+      }
+    },
+    "mira": {
+      "name": "Mira",
+      "aliases": [
+        "mira",
+        "dj",
+        "mira bell"
+      ],
+      "loc": "disco",
+      "here": "[[mira|Mira Bell]], the resident DJ, glares at her dead decks.",
+      "desc": [
+        "Mira Bell, resident DJ, 29, headphones round her neck and a wrench in her back pocket.",
+        {
+          "s": "mild",
+          "t": "She gives you a once-over. \"New attendant? You clean up better than the last one.\""
+        }
+      ],
+      "talk": [
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "mixerFixed"
+              }
+            }
+          ],
+          "t": "\"Decks have been dead since the Glitch hit,\" says Mira. \"Fix the mixer and find my lucky record, and I will light this place up.\""
+        },
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "mixerFixed"
+              }
+            }
+          ],
+          "s": "medium",
+          "t": "\"And I'll owe you one,\" she adds. \"A big one. Don't make that face.\""
+        },
+        {
+          "when": [
+            {
+              "flag": "mixerFixed"
+            },
+            {
+              "not": {
+                "flag": "complete"
+              }
+            }
+          ],
+          "t": "\"The decks are alive!\" says Mira. \"Now where is my lucky record?\""
+        }
+      ],
+      "topics": {
+        "record": "\"It lives in the claw machine,\" says Mira. \"Nobody has ever won it. Nobody has had my luck.\"",
+        "mixer": "\"Dead as a doornail,\" Mira says. \"I need someone who really understands machines.\""
+      }
+    }
+  },
+  "rules": [
+    {
+      "id": "open-door",
+      "on": [
+        {
+          "verb": [
+            "open",
+            "use"
+          ],
+          "noun": "door"
+        },
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "keycard",
+          "with": "door"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "unlock:lobby:w"
+        }
+      ],
+      "skipText": "The staff door is already open.",
+      "requires": [
+        {
+          "has": "keycard"
+        }
+      ],
+      "else": "The card reader glows red. It wants a keycard.",
+      "effects": [
+        {
+          "unlock": "lobby:w"
+        },
+        {
+          "say": "You swipe the blue keycard. The reader flashes green and the door clunks open."
+        }
+      ]
+    },
+    {
+      "id": "climb-stool",
+      "on": [
+        {
+          "verb": [
+            "climb",
+            "use"
+          ],
+          "noun": "stool"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "onStool"
+        }
+      ],
+      "skipText": "You are already standing on the stool.",
+      "requires": [
+        {
+          "on": "stool"
+        }
+      ],
+      "else": [
+        {
+          "when": [
+            {
+              "has": "stool"
+            }
+          ],
+          "t": "You cannot climb it while you are carrying it. Put it down first."
+        },
+        {
+          "t": "There is no stool here to climb."
+        }
+      ],
+      "effects": [
+        {
+          "flag": "onStool"
+        },
+        {
+          "say": "You climb onto the stool. Everything is a little higher and a little less steady."
+        }
+      ]
+    },
+    {
+      "id": "open-cabinet",
+      "on": [
+        {
+          "verb": [
+            "open"
+          ],
+          "noun": "cabinet"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "open:cabinet"
+        }
+      ],
+      "skipText": "The cabinet is already open.",
+      "requires": [
+        {
+          "flag": "onStool"
+        }
+      ],
+      "else": "The cabinet is far too high to reach. You would need something to stand on.",
+      "effects": [
+        {
+          "open": "cabinet"
+        }
+      ]
+    },
+    {
+      "id": "rescue-moe",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "disk",
+          "with": "terminal"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "moeRescued"
+        }
+      ],
+      "skipText": "The terminal is already running.",
+      "requires": [
+        {
+          "has": "disk"
+        }
+      ],
+      "else": "You are not carrying a disk.",
+      "effects": [
+        {
+          "move": [
+            "disk",
+            "gone"
+          ]
+        },
+        {
+          "flag": "moeRescued"
+        },
+        {
+          "follow": "moe"
+        },
+        {
+          "score": 1
+        },
+        {
+          "say": [
+            "You feed the disk into the slot. The screen flickers, coughs a line of static, and a small blue face appears.",
+            "\"REBOOT SUCCESSFUL,\" says Moe. \"I WAS STUCK IN THE TERMINAL. IT WAS BORING. THANK YOU, ATTENDANT.\"",
+            "He hops onto a handheld screen at your elbow. (Moe will follow you now. Try ASK MOE ABOUT HINT.)"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "play-claw",
+      "on": [
+        {
+          "verb": [
+            "play"
+          ],
+          "noun": "claw"
+        },
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "token",
+          "with": "claw"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "gotRecord"
+        }
+      ],
+      "skipText": "You already won the record. The rest is only plush.",
+      "requires": [
+        {
+          "has": "token"
+        }
+      ],
+      "else": "The claw machine wants a token.",
+      "effects": [
+        {
+          "move": [
+            "token",
+            "gone"
+          ]
+        },
+        {
+          "give": "record"
+        },
+        {
+          "flag": "gotRecord"
+        },
+        {
+          "say": "You drop the token in. The claw wobbles, lunges, and, against all odds, comes up with the vinyl record. It drops it neatly in the chute. You take it."
+        }
+      ]
+    },
+    {
+      "id": "fix-mixer",
+      "on": [
+        {
+          "verb": [
+            "fix",
+            "use"
+          ],
+          "noun": "mixer"
+        },
+        {
+          "verb": [
+            "use",
+            "ask",
+            "fix"
+          ],
+          "noun": "moe",
+          "with": "mixer"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "mixerFixed"
+        }
+      ],
+      "skipText": "The mixer is already humming.",
+      "requires": [
+        {
+          "follow": "moe"
+        }
+      ],
+      "else": "You poke the mixer. Nothing happens. It needs someone who really understands machines.",
+      "effects": [
+        {
+          "flag": "mixerFixed"
+        },
+        {
+          "score": 1
+        },
+        {
+          "say": [
+            "Moe's screen glows. \"PLUG ME IN,\" he says, and you hold the handheld to the mixer's service port. Lights ripple down the faders: red, amber, green.",
+            "\"FIXED,\" says Moe. \"ALSO, THE FADER WAS UPSIDE DOWN. WHO DOES THAT.\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "give-record",
+      "on": [
+        {
+          "verb": [
+            "give",
+            "use"
+          ],
+          "noun": "record",
+          "with": "mira"
+        },
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "record",
+          "with": "booth"
+        }
+      ],
+      "requires": [
+        {
+          "flag": "mixerFixed"
+        }
+      ],
+      "else": "\"I'd love to,\" says Mira, eyeing the record, \"but my decks are dead.\"",
+      "effects": [
+        {
+          "move": [
+            "record",
+            "gone"
+          ]
+        },
+        {
+          "score": 1
+        },
+        {
+          "flag": "complete"
+        },
+        {
+          "card": "mirror-ball"
+        },
+        {
+          "say": [
+            "Mira takes the record as if it might bite. She blows the dust off, drops the needle, and the first beat rolls through the floor.",
+            "The mirror ball shudders, starts to turn, and throws a thousand little stars across the room. Down on the arcade floor, cabinets blink awake one by one.",
+            {
+              "s": "mild",
+              "t": "\"Not bad, Attendant,\" Mira says over the music. \"Not bad at all.\" She winks."
+            },
+            {
+              "s": "medium",
+              "t": "\"Meet me by the booth after close,\" she says, and the lights dim just as the shutters rattle. The rest, as they say, is none of the arcade's business."
+            },
+            "CHAPTER 1 COMPLETE: DEAD AIR. The Glitch is still out there. To be continued."
+          ]
+        },
+        {
+          "end": true
+        }
+      ]
+    }
+  ],
+  "hints": [
+    {
+      "done": [
+        {
+          "flag": "unlock:lobby:w"
+        }
+      ],
+      "lines": [
+        "Staff leave notes. Try the reception desk in the Lobby.",
+        "Open the desk drawer, then read the memo.",
+        "The memo says the keycard is in the ice machine in the Snack Bar. Open the ice machine, take the keycard, then open the staff door."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "moeRescued"
+        }
+      ],
+      "lines": [
+        "The terminal in the Back Office is stuck on an error screen.",
+        "It wants a disk. The memo says where reboot disks are kept: a cabinet at the Prize Counter.",
+        "The cabinet is too high. Take the step stool from the Snack Bar, drop it at the Prize Counter, climb it, open the cabinet, take the disk, then use the disk on the terminal."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "mixerFixed"
+        }
+      ],
+      "lines": [
+        "The disco is silent. Moe is good with machines.",
+        "Bring Moe to the Disco and fix the mixer."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "complete"
+        }
+      ],
+      "lines": [
+        "Mira wants her lucky record. The memo says where it is.",
+        "Take the token from the tip jar, play the claw machine on the Arcade Floor, then give the record to Mira."
+      ]
+    }
+  ],
+  "glitch": [
+    "The Glitch eats that command. (Try HELP.)",
+    "Nothing happens. Somewhere, a machine hums disapprovingly.",
+    "You try. The arcade does not care.",
+    "That does not seem to do anything useful."
+  ],
+  "cards": {
+    "mirror-ball": {
+      "title": "Mirror Ball",
+      "who": "Mira Bell"
+    }
+  }
+}

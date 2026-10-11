@@ -79,6 +79,8 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	ok(/./.test(await logText()), 'noun tap looks');
 	await type('xyzzy'); ok(/./.test(await logText()), 'unknown word handled');
 
+	await type('hint'); ok(/./.test(await logText()) && errors.length === 0, 'typed hint works (no page error)');
+
 	// settings tabs + spice
 	await page.click('#open-settings');
 	ok(await page.$eval('#settings', d => d.open), 'settings opens');

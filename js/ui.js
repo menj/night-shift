@@ -230,8 +230,8 @@
 		res.events.forEach(function (e) {
 			if (e.type === 'score') { updateStats(false); }
 			if (e.type === 'card' && settings.spice === 'hot') {
-				var meta = cardMeta(e.id);
-				addLine({ k: 'card', t: 'Gallery card unlocked: ' + meta.title + '. (Settings, Spice)' });
+				var cm = cardMeta(e.id);
+				addLine({ k: 'card', t: 'Gallery card unlocked: ' + cm.title + '. (Settings, Spice)' });
 			}
 			if (e.type === 'end') { finished = true; }
 		});

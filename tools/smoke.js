@@ -95,6 +95,9 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	await page.screenshot({ path: out + '/finale.png' });
 	await page.click('button:has-text("Play again")'); await skipScenes();
 	ok(/Ch 1 · 0\//.test(await page.$eval('#score', e => e.textContent)), 'new game resets to chapter 1');
+	// tapping USE then a thing that only ever takes "use X" runs it at once (no dangling "use door on ")
+	await page.click('.verb[data-verb="use"]'); await page.click('#log .noun[data-say="door"]');
+	ok(/card reader/.test(await logText()) && !/use door on/.test(await page.inputValue('#input')), 'Use then a one-object thing acts immediately');
 	await type('e'); const before = await page.evaluate(() => window.NightShift.state.room);
 	await type('undo');
 	ok(await page.evaluate(() => window.NightShift.state.room) !== before, 'undo moves back');

@@ -330,10 +330,26 @@
 		els.input.value = verb + ' ';
 		if (!coarse) { els.input.focus(); }
 	}
+	/** How the rules use this word with USE: 'unary' (use X), 'binary' (use X on Y), 'both' or 'none'. */
+	function useKind(say) {
+		var hit = eng.nouns(state).filter(function (n) { return n.say === say; })[0];
+		if (!hit) { return 'none'; }
+		var one = false, two = false;
+		eng.w.rules.forEach(function (r) {
+			r.on.forEach(function (e) {
+				if (e.verb.indexOf('use') === -1 || e.noun !== hit.id) { return; }
+				if (e.with) { two = true; } else { one = true; }
+			});
+		});
+		return one && two ? 'both' : one ? 'unary' : two ? 'binary' : 'none';
+	}
 	function pickNoun(say) {
 		if (!pending) { run('look ' + say); return; }
 		var v = pending.verb;
 		if (!TWO[v]) { run(v + ' ' + say); return; }
+		// "use X" is often a whole action on its own (use the megaphone, use the door). If X has a one-object rule
+		// and no two-object rule, do it now instead of waiting for a second tap that would never be needed.
+		if (v === 'use' && !pending.first && useKind(say) === 'unary') { run('use ' + say); return; }
 		if (!pending.first) {
 			pending.first = say;
 			els.input.value = v + ' ' + say + ' ' + TWO[v] + ' ';

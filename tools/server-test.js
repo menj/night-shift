@@ -86,7 +86,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 		await page.waitForFunction(() => !document.getElementById('tab-board').hidden);
 		ok(true, 'leaderboard tab appears when the server answers');
 		const type = async c => { await page.fill('#input', c); await page.press('#input', 'Enter'); };
-		const cmds = fs.readFileSync(src + '/tests/walkthrough.txt', 'utf8').split('\n').map(s => s.trim()).filter(s => s && s[0] !== '#');
+		const cmds = fs.readFileSync(src + '/tests/ch1.txt', 'utf8').split('\n').map(s => s.trim()).filter(s => s && s[0] !== '#');
 		await page.click('#open-settings'); await page.click('#sync-on'); await page.keyboard.press('Escape');
 		for (const c of cmds) await type(c);
 		await page.fill('.namebox input', 'Tester'); await page.click('text=Post score');

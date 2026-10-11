@@ -1,7 +1,7 @@
 /*
   Night Shift: the engine.
 
-  A small data-driven adventure engine. The world (data/world.json) holds rooms, items, NPCs, puzzle
+  A small data-driven adventure engine. The world (data/ch1.json) holds rooms, items, NPCs, puzzle
   rules and hints; the engine keeps no story of its own. exec(state, input) never mutates the state you
   pass in: it returns a new one, plus the lines to print, so undo, autosave and the automated tests
   (tools/test.js) are all simple.

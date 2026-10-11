@@ -1,0 +1,11 @@
+{
+  "chapters": [
+    {
+      "n": 1,
+      "title": "Dead Air",
+      "file": "data/ch1.json",
+      "maxScore": 4,
+      "minMoves": 28
+    }
+  ]
+}

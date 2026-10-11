@@ -39,7 +39,7 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	await type('open desk'); // typed override
 	// typed walkthrough
 	await page.evaluate(() => { document.querySelector('[data-act="i"]'); });
-	const cmds = fs.readFileSync(path.join(root, 'tests/walkthrough.txt'), 'utf8').split('\n').map(s => s.trim()).filter(s => s && s[0] !== '#');
+	const cmds = fs.readFileSync(path.join(root, 'tests/ch1.txt'), 'utf8').split('\n').map(s => s.trim()).filter(s => s && s[0] !== '#');
 	// restart clean for the walkthrough
 	await page.evaluate(() => localStorage.clear()); await page.reload(); await page.waitForFunction(() => window.NightShift);
 	for (const c of cmds) await type(c);

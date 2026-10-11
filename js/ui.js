@@ -23,7 +23,11 @@
 	};
 	var coarse = window.matchMedia && matchMedia('(pointer: coarse)').matches;
 
+	var chapters = [], worlds = {}, engines = {};   // every chapter's world and engine, loaded up front
 	var world, eng, state, settings;
+	var run_ = { chapter: 1, carry: [], scores: [], moves: [] };   // the whole playthrough: which chapter, what carries over, finished chapters' results
+	function total() { return run_.scores.reduce(function (a, b) { return a + b; }, 0); }
+	function useChapter(n) { run_.chapter = n; world = worlds[n]; eng = engines[n]; eng.setSpice(settings ? settings.spice : 'mild'); }
 	var undoStack = [], cmdHistory = [], histPos = 0, lastCmd = '', pending = null;
 	var meta = { hints: 0, t0: Date.now() };   // per-run extras for the leaderboard, saved with the game
 	var online = false, syncTimer = 0;       // online: the optional server (leaderboard, cloud save) answered
@@ -45,15 +49,17 @@
 		var root = document.documentElement;
 		root.style.setProperty('--text-scale', settings.large ? '1.15' : '1');
 		if (settings.motion) { root.setAttribute('data-reduce-motion', ''); } else { root.removeAttribute('data-reduce-motion'); }
-		eng.setSpice(settings.spice);
+		Object.keys(engines).forEach(function (k) { engines[k].setSpice(settings.spice); });
 	}
 
 	function updateStats(done) {
 		var all = {};
 		try { all = JSON.parse(read(KEY_STATS) || '{}') || {}; } catch (e) { all = {}; }
 		var mine = all[GAME_ID] || { best: 0, plays: 0, last: 0, lastPlayed: 0 };
-		mine.best = Math.max(mine.best || 0, state.score);
-		mine.last = state.score;
+		// a finished chapter is already in total(); an unfinished one is still in state.score
+		var shown = total() + (run_.scores[run_.chapter - 1] === undefined ? state.score : 0);
+		mine.best = Math.max(mine.best || 0, shown);
+		mine.last = shown;
 		mine.lastPlayed = Date.now();
 		if (done) { mine.plays = (mine.plays || 0) + 1; }
 		all[GAME_ID] = mine;
@@ -90,7 +96,8 @@
 	function addLines(lines) { lines.forEach(addLine); }
 
 	function refresh() {
-		els.score.textContent = state.score + '/' + world.maxScore;
+		els.score.textContent = chapters.length > 1 ? 'Ch ' + run_.chapter + ' \u00b7 ' + state.score + '/' + world.maxScore : state.score + '/' + world.maxScore;
+		els.score.setAttribute('aria-label', 'Chapter ' + run_.chapter + ' of ' + chapters.length + ', score ' + state.score + ' of ' + world.maxScore);
 		// exits
 		els.exits.textContent = '';
 		eng.exitsOf(state).forEach(function (e) {
@@ -113,7 +120,7 @@
 
 	/* ---------- running commands ---------- */
 	function autosave() {
-		write(KEY_SAVE, JSON.stringify({ v: 1, state: state, meta: meta }));
+		write(KEY_SAVE, JSON.stringify({ v: 2, run: run_, state: state, meta: meta }));
 		pushCloud();
 	}
 
@@ -129,7 +136,7 @@
 		if (!online || !syncCode()) { return; }
 		window.clearTimeout(syncTimer);
 		syncTimer = window.setTimeout(function () {
-			api('save.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: syncCode(), state: state }) })
+			api('save.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: syncCode(), state: Object.assign({}, state, { chapter: run_.chapter, run: run_ }) }) })
 				.then(function (r) { setSyncState(r.status === 200 ? 'Cloud save is on.' : 'Cloud save failed. Your game is still saved here.'); })
 				.catch(function () { setSyncState('Cloud save is offline. Your game is still saved here.'); });
 		}, 800);
@@ -166,7 +173,7 @@
 		name = String(name || '').trim().slice(0, 20);
 		if (!name) { return; }
 		write(KEY_NAME, name);
-		var body = { name: name, score: state.score, moves: state.moves, hints: meta.hints, duration_ms: Math.min(Date.now() - meta.t0, 6 * 86400000) };
+		var body = { name: name, score: total(), moves: run_.moves.reduce(function (a, b) { return a + b; }, 0), hints: meta.hints, duration_ms: Math.min(Date.now() - meta.t0, 6 * 86400000) };
 		api('submit-score.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
 			.then(function (r) {
 				addLine({ k: 'note', t: r.status === 200 ? 'Leaderboard: you are number ' + r.body.rank + ' of ' + r.body.total + '.' : 'Could not post to the leaderboard (' + (r.body.error || r.status).toString().replace(/_/g, ' ') + ').' });
@@ -185,11 +192,21 @@
 
 	function endOfChapter() {
 		var p = addLine({ k: 'note', t: '' });
-		var b = document.createElement('button');
-		b.type = 'button'; b.className = 'btn'; b.textContent = 'Play again';
-		b.addEventListener('click', function () { newGame(false); });
+		var b = document.createElement('button'), last = run_.chapter >= chapters.length;
+		b.type = 'button'; b.className = 'btn';
+		b.textContent = last ? 'Play again' : 'Next chapter: ' + (chapters[run_.chapter].title || 'Chapter ' + (run_.chapter + 1));
+		b.addEventListener('click', function () { if (last) { newGame(false); } else { nextChapter(); } });
 		p.appendChild(b);
 		return p;
+	}
+	function nextChapter() {
+		var cards = state.cards.slice();
+		useChapter(run_.chapter + 1);
+		state = eng.newState(run_.carry); state.cards = cards; undoStack = []; lastCmd = '';
+		els.log.textContent = '';
+		intro();
+		addLines(eng.describeRoom(state));
+		autosave(); refresh(); finishInput();
 	}
 
 	function run(input) {
@@ -213,12 +230,20 @@
 		res.events.forEach(function (e) {
 			if (e.type === 'score') { updateStats(false); }
 			if (e.type === 'card' && settings.spice === 'hot') {
-				var meta = (world.cards || {})[e.id] || { title: e.id };
+				var meta = cardMeta(e.id);
 				addLine({ k: 'card', t: 'Gallery card unlocked: ' + meta.title + '. (Settings, Spice)' });
 			}
 			if (e.type === 'end') { finished = true; }
 		});
-		if (finished) { updateStats(true); offerSubmit(endOfChapter()); }
+		if (finished) {
+			var i = run_.chapter - 1;
+			run_.scores[i] = state.score; run_.moves[i] = state.moves;
+			Object.keys(state.flags).forEach(function (f) { if (f.indexOf('carry:') === 0 && run_.carry.indexOf(f) === -1) { run_.carry.push(f); } });
+			var lastChapter = run_.chapter >= chapters.length;
+			updateStats(lastChapter);
+			var p = endOfChapter();
+			if (lastChapter) { offerSubmit(p); }
+		}
 		autosave();
 		refresh();
 		finishInput();
@@ -274,7 +299,12 @@
 		try {
 			var raw = JSON.parse(read(KEY_SAVE) || 'null');
 			if (raw && raw.meta && typeof raw.meta.hints === 'number' && typeof raw.meta.t0 === 'number') { meta = { hints: raw.meta.hints, t0: raw.meta.t0 }; }
-			if (raw && raw.v === 1 && raw.state && raw.state.room && world.rooms[raw.state.room] && raw.state.loc) { return raw.state; }
+			var ch = raw && raw.v === 2 && raw.run ? raw.run.chapter : 1;
+			if (raw && (raw.v === 1 || raw.v === 2) && worlds[ch] && raw.state && raw.state.room && worlds[ch].rooms[raw.state.room] && raw.state.loc) {
+				if (raw.v === 2) { run_ = { chapter: ch, carry: raw.run.carry || [], scores: raw.run.scores || [], moves: raw.run.moves || [] }; }
+				useChapter(ch);
+				return raw.state;
+			}
 		} catch (e) { /* damaged save: ignore it */ }
 		return null;
 	}
@@ -287,6 +317,7 @@
 	function newGame(askFirst) {
 		if (askFirst && !window.confirm('Start a new game? Your saved progress will be erased.')) { return; }
 		remove(KEY_SAVE);
+		run_ = { chapter: 1, carry: [], scores: [], moves: [] }; useChapter(1);
 		state = eng.newState(); undoStack = []; lastCmd = ''; meta = { hints: 0, t0: Date.now() };
 		els.log.textContent = '';
 		intro();
@@ -302,6 +333,7 @@
 			addLines(eng.describeRoom(state));
 			if (state.ended) { endOfChapter(); }
 		} else {
+			useChapter(1);
 			state = eng.newState();
 			intro();
 			addLines(eng.describeRoom(state));
@@ -312,6 +344,10 @@
 	}
 
 	/* ---------- settings dialog ---------- */
+	function cardMeta(id) {
+		for (var n in worlds) { if (worlds[n].cards && worlds[n].cards[id]) { return worlds[n].cards[id]; } }
+		return { title: id, who: '' };
+	}
 	function renderGallery() {
 		var box = $('gallery');
 		if (!box) { return; }
@@ -319,8 +355,8 @@
 		if (box.hidden) { return; }
 		var ul = $('cards');
 		ul.textContent = '';
-		Object.keys(world.cards || {}).forEach(function (id) {
-			var meta = world.cards[id], got = state.cards.indexOf(id) !== -1;
+		Object.keys(worlds).forEach(function (n) { Object.keys(worlds[n].cards || {}).forEach(function (id) {
+			var meta = worlds[n].cards[id], got = state.cards.indexOf(id) !== -1;
 			var li = document.createElement('li');
 			if (got) {
 				var img = new Image();
@@ -336,7 +372,7 @@
 				li.textContent = '? ? ?';
 			}
 			ul.appendChild(li);
-		});
+		}); });
 	}
 
 	function setupSettings() {
@@ -385,9 +421,11 @@
 			var code = $('sync-code').value.trim();
 			if (!code) { return; }
 			api('save.php?code=' + encodeURIComponent(code)).then(function (r) {
-				if (r.status !== 200 || !r.body.state || !world.rooms[r.body.state.room] || !r.body.state.loc || !Array.isArray(r.body.state.cards)) { setSyncState(r.status === 404 ? 'No save found for that code.' : 'Could not load that save.'); return; }
+				var rs = r.body && r.body.state, ch = rs && rs.run && rs.chapter;
+				if (r.status !== 200 || !rs || !ch || !worlds[ch] || !worlds[ch].rooms[rs.room] || !rs.loc || !Array.isArray(rs.cards)) { setSyncState(r.status === 404 ? 'No save found for that code.' : 'Could not load that save.'); return; }
 				if (!window.confirm('Replace the game on this device with the cloud save?')) { return; }
-				state = r.body.state; undoStack = []; write(KEY_SYNC, code); $('sync-on').hidden = true;
+				run_ = { chapter: ch, carry: rs.run.carry || [], scores: rs.run.scores || [], moves: rs.run.moves || [] }; delete rs.run; delete rs.chapter;
+				useChapter(ch); state = rs; undoStack = []; write(KEY_SYNC, code); $('sync-on').hidden = true;
 				els.log.textContent = ''; addLine({ k: 'note', t: 'Loaded your cloud save.' }); addLines(eng.describeRoom(state));
 				autosave(); refresh(); setSyncState('Cloud save is on. Your code: ' + code); els.dlg.close();
 			}).catch(function () { setSyncState('Could not reach the server.'); });
@@ -445,18 +483,22 @@
 		p.textContent = msg;
 		els.log.appendChild(p);
 	}
-	fetch('data/world.json', { cache: 'no-cache' })
-		.then(function (r) { if (!r.ok) { throw new Error('world ' + r.status); } return r.json(); })
-		.then(function (w) {
-			world = w;
-			eng = new Engine(world);
+	function getJson(url) { return fetch(url, { cache: 'no-cache' }).then(function (r) { if (!r.ok) { throw new Error(url + ' ' + r.status); } return r.json(); }); }
+	getJson('data/chapters.json')
+		.then(function (idx) {
+			chapters = idx.chapters;
+			return Promise.all(chapters.map(function (c) { return getJson(c.file); }));
+		})
+		.then(function (ws) {
+			ws.forEach(function (w, i) { worlds[i + 1] = w; engines[i + 1] = new Engine(w); });
 			settings = loadSettings();
+			world = worlds[1]; eng = engines[1];
 			applySettings();
 			setupSettings();
 			wire();
 			start();
 			probeServer();
-			window.NightShift = { engine: eng, get state() { return state; }, run: run };
+			window.NightShift = { get engine() { return eng; }, get state() { return state; }, get run() { return run_; }, exec: run, chapters: chapters };
 		})
 		.catch(function () { failed('Night Shift could not load its story file. If you opened this page straight from disk, serve the folder from a web server instead (see the README).'); });
 })();

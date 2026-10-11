@@ -6,7 +6,7 @@ Lives at `/arcade/night-shift/` on menj.buzz. This repo is separate from the Arc
 
 ## Play and run
 
-Static files only, no build step. Serve the folder (the page fetches `data/world.json`, so `file://` will not work):
+Static files only, no build step. Serve the folder (the page fetches `data/ch1.json`, so `file://` will not work):
 
     python3 -m http.server 8000
 
@@ -19,7 +19,7 @@ Tap the buttons and highlighted words, or type commands (`look`, `take token`, `
     js/parser.js      typed-command parser
     js/engine.js      pure engine: exec(state, input) -> new state + text
     js/ui.js          DOM, autosave, undo, settings tabs, arcade.stats
-    data/world.json   rooms, items, people, rules, hints
+    data/ch1.json   rooms, items, people, rules, hints
     tools/test.js     engine tests incl. exhaustive dead-end search
     tools/smoke.js    headless-browser test of the real page (static mode)
     tools/server-test.js  php -S + SQLite: installer, API, admin, leaderboard and sync in the browser

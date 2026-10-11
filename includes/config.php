@@ -30,9 +30,9 @@ $config = [
     // (tests/walkthrough.txt); a "perfect" run cannot honestly be faster.
     'name_min_len'  => 1,
     'name_max_len'  => 20,
-    'max_score'     => 4,
-    'min_moves'     => 27,
-    'max_moves'     => 5000,
+    'max_score'     => 4,    // overridden by data/chapters.json (sum of all chapters)
+    'min_moves'     => 27,   // overridden by data/chapters.json (sum of the shortest playthroughs)
+    'max_moves'     => 20000,
     'max_hints'     => 1000,
     'rate_limit_seconds' => 5,
     'save_max_bytes'     => 16384,
@@ -43,6 +43,14 @@ $config = [
     'default_limit' => 10,
     'max_limit'     => 50,
 ];
+
+// The leaderboard bounds follow the story: data/chapters.json (built by tools/build-index.js) lists every
+// chapter's top score and shortest playthrough, so adding a chapter needs no edit here.
+$index = @json_decode((string)@file_get_contents(dirname(__DIR__) . '/data/chapters.json'), true);
+if (!empty($index['chapters']) && is_array($index['chapters'])) {
+    $config['max_score'] = array_sum(array_map('intval', array_column($index['chapters'], 'maxScore')));
+    $config['min_moves'] = array_sum(array_map('intval', array_column($index['chapters'], 'minMoves')));
+}
 
 $local = __DIR__ . '/config.local.php';
 if (is_file($local)) {

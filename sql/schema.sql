@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS completions (
   ip_hash     CHAR(64)     NOT NULL,
   user_agent  VARCHAR(255) NULL,
   created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  KEY idx_ns_rank (score, moves, hints),
+  KEY idx_ns_rank (score DESC, moves, hints),
   KEY idx_ns_ip (ip_hash, created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

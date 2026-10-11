@@ -91,10 +91,17 @@ function client_ip(array $trusted): string
     $remote = (string)($_SERVER['REMOTE_ADDR'] ?? '');
     if (!filter_var($remote, FILTER_VALIDATE_IP)) { return '0.0.0.0'; }
     if (!in_array($remote, $trusted, true)) { return $remote; }
-    foreach ([$_SERVER['HTTP_CF_CONNECTING_IP'] ?? null, $_SERVER['HTTP_X_REAL_IP'] ?? null, $_SERVER['HTTP_X_FORWARDED_FOR'] ?? null] as $v) {
-        if (!$v) { continue; }
-        $ip = trim(explode(',', (string)$v)[0]);
-        if (filter_var($ip, FILTER_VALIDATE_IP)) { return $ip; }
+    // Single-address headers set by the proxy itself.
+    foreach ([$_SERVER['HTTP_CF_CONNECTING_IP'] ?? null, $_SERVER['HTTP_X_REAL_IP'] ?? null] as $v) {
+        $ip = trim((string)$v);
+        if ($ip !== '' && filter_var($ip, FILTER_VALIDATE_IP)) { return $ip; }
+    }
+    // X-Forwarded-For is a chain a client can pre-fill, so its first entry cannot be trusted. Each proxy
+    // appends the address it saw, so read from the right and stop at the first address that is not a trusted proxy.
+    $chain = array_reverse(array_map('trim', explode(',', (string)($_SERVER['HTTP_X_FORWARDED_FOR'] ?? ''))));
+    foreach ($chain as $ip) {
+        if (!filter_var($ip, FILTER_VALIDATE_IP)) { break; }
+        if (!in_array($ip, $trusted, true)) { return $ip; }
     }
     return $remote;
 }

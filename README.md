@@ -30,10 +30,10 @@ Tap the buttons and highlighted words, or type commands (`look`, `take token`, `
 
 ## Database (optional, like Beberd and Pixel Run)
 
-Without PHP or a database the game is static and saves in the browser. Open `install.php` on a PHP host to add a leaderboard and cloud saves: it supports SQLite (default), MySQL/MariaDB and PostgreSQL, writes `includes/config.local.php` (git-ignored) and locks itself afterwards. Delete `install.php` once done. The page probes `api/get-scores.php` and only shows the Leaderboard tab and cloud-save controls when the server answers.
+Without PHP or a database the game is static and saves in the browser. Open `install.php` on a PHP host to add a leaderboard and cloud saves: it supports SQLite (default), MySQL/MariaDB and PostgreSQL, writes `includes/config.local.php` (git-ignored) and locks itself afterwards. To stop a stranger installing first, the installer asks for a setup key: create `db/install-key.txt` on the server (any secret, 8+ characters) and type its contents; the file is deleted after install. Delete `install.php` once done. The page probes `api/get-scores.php` and only shows the Leaderboard tab and cloud-save controls when the server answers.
 
 - `api/submit-score.php`, `api/get-scores.php`: finish board (fewest moves, then fewest hints). The story engine runs in the browser, so entries are bounds-checked and rate-limited but **not replay-verified** (Beberd's are).
-- `api/save.php`: cloud save by a random sync code; only a salted hash of the code is stored.
+- `api/save.php`: cloud save by a random sync code (POST only, so the code never appears in a URL or log); only a salted hash of the code is stored.
 - `admin.php`: password sign-in, Overview and Leaderboard tabs, delete entries.
 - `includes/`, `sql/` and `db/` carry `.htaccess` deny rules (Apache). On nginx add an equivalent deny.
 

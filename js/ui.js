@@ -178,6 +178,7 @@
 		var body = { name: name, score: total(), moves: run_.moves.reduce(function (a, b) { return a + b; }, 0), hints: meta.hints, duration_ms: Math.min(Date.now() - meta.t0, 6 * 86400000) };
 		api('submit-score.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
 			.then(function (r) {
+				if (r.status === 200) { meta.posted = true; autosave(); }
 				addLine({ k: 'note', t: r.status === 200 ? 'Leaderboard: you are number ' + r.body.rank + ' of ' + r.body.total + '.' : 'Could not post to the leaderboard (' + (r.body.error || r.status).toString().replace(/_/g, ' ') + ').' });
 			}).catch(function () { addLine({ k: 'note', t: 'The leaderboard is offline. Your finish is saved here.' }); });
 	}
@@ -298,7 +299,8 @@
 
 	function handleUi(verb) {
 		if (verb === 'undo') {
-			if (undoStack.length) { state = undoStack.pop(); addLine({ k: 'note', t: 'Undone.' }); autosave(); refresh(); }
+			if (state.ended) { addLine({ k: 'note', t: 'The chapter is finished, so there is nothing to undo. Carry on or play again.' }); }
+			else if (undoStack.length) { state = undoStack.pop(); addLine({ k: 'note', t: 'Undone.' }); autosave(); refresh(); }
 			else { addLine({ k: 'note', t: 'Nothing to undo.' }); }
 		} else if (verb === 'save') {
 			addLine({ k: 'note', t: 'Your progress is saved automatically in this browser.' });
@@ -345,7 +347,7 @@
 	function readSave() {
 		try {
 			var raw = JSON.parse(read(KEY_SAVE) || 'null');
-			if (raw && raw.meta && typeof raw.meta.hints === 'number' && typeof raw.meta.t0 === 'number') { meta = { hints: raw.meta.hints, t0: raw.meta.t0, scene: Array.isArray(raw.meta.scene) ? raw.meta.scene.filter(function (t) { return typeof t === 'string'; }) : null, still: raw.meta.still && typeof raw.meta.still.src === 'string' ? { src: raw.meta.still.src, t: String(raw.meta.still.t || '') } : null }; }
+			if (raw && raw.meta && typeof raw.meta.hints === 'number' && typeof raw.meta.t0 === 'number') { meta = { hints: raw.meta.hints, t0: raw.meta.t0, posted: !!raw.meta.posted, scene: Array.isArray(raw.meta.scene) ? raw.meta.scene.filter(function (t) { return typeof t === 'string'; }) : null, still: raw.meta.still && typeof raw.meta.still.src === 'string' ? { src: raw.meta.still.src, t: String(raw.meta.still.t || '') } : null }; }
 			var ch = raw && raw.v === 2 && raw.run ? raw.run.chapter : 1;
 			if (raw && (raw.v === 1 || raw.v === 2) && worlds[ch] && raw.state && raw.state.room && worlds[ch].rooms[raw.state.room] && raw.state.loc) {
 				if (raw.v === 2) { run_ = { chapter: ch, carry: raw.run.carry || [], scores: raw.run.scores || [], moves: raw.run.moves || [] }; }
@@ -378,7 +380,10 @@
 			if (state.ended && meta.still && /^img\/scenes\/[\w.-]+\.png$/.test(meta.still.src)) { addLine({ k: 'still', src: meta.still.src, t: meta.still.t || '' }); }
 			if (state.ended && meta.scene) { meta.scene.forEach(function (t) { addLine({ k: 'story', t: t }).className += ' beat'; }); }
 			addLines(eng.describeRoom(state));
-			if (state.ended) { endOfChapter(); }
+			if (state.ended) {
+				var ep = endOfChapter();
+				if (run_.chapter >= chapters.length && !meta.posted) { offerSubmit(ep); }   // a finish that never reached the board can still be posted
+			}
 		} else {
 			useChapter(1);
 			state = eng.newState();
@@ -468,7 +473,7 @@
 		$('sync-load').addEventListener('click', function () {
 			var code = $('sync-code').value.trim();
 			if (!code) { return; }
-			api('save.php?code=' + encodeURIComponent(code)).then(function (r) {
+			api('save.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ code: code, load: true }) }).then(function (r) {
 				var rs = r.body && r.body.state, ch = rs && rs.run && rs.chapter;
 				if (r.status !== 200 || !rs || !ch || !worlds[ch] || !worlds[ch].rooms[rs.room] || !rs.loc || !Array.isArray(rs.cards)) { setSyncState(r.status === 404 ? 'No save found for that code.' : 'Could not load that save.'); return; }
 				if (!window.confirm('Replace the game on this device with the cloud save?')) { return; }

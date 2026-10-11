@@ -1,0 +1,1622 @@
+{
+  "title": "Night Shift",
+  "chapter": "Chapter 5: Last Credit",
+  "start": "door",
+  "maxScore": 6,
+  "carry": [
+    "carry:ch1",
+    "carry:ch2",
+    "carry:ch3",
+    "carry:ch4"
+  ],
+  "intro": [
+    "NIGHT SHIFT: LAST CREDIT",
+    "The Power Room. Every cable in the Pixel Palace ends up here, and so, tonight, does everyone you have met. Hamilton, Eeny, Meeny, Miny, Moe and Mira Bell are lined up behind you, and every one of them is looking at the person wearing the TRAINEE badge.",
+    "Somewhere beyond the big steel door, the Glitch is waiting. Type commands (LOOK, TAKE, ASK, USE), or tap the buttons and the highlighted words."
+  ],
+  "help": [
+    "Type short commands: LOOK, TAKE cable, READ screen, USE megaphone, ASK hamilton ABOUT pipes, USE hamilton ON pipes, PLAY glitch.",
+    "Move with N, S, E, W (or tap an exit). I = what you carry. HINT = a nudge. UNDO takes back your last move. SCORE shows progress.",
+    "Tap a highlighted word to examine it. Tap a verb first, then a word, to do something with it."
+  ],
+  "rooms": {
+    "door": {
+      "name": "Power Room Door",
+      "desc": [
+        "A wide, humming steel corridor at the bottom of the arcade. A fat [[screen|monitor]] glows beside the heavy blast [[bay|door]] marked POWER ROOM. A [[megaphone|megaphone]] hangs from a hook, and a lonely [[credit|coin]] glints on the floor under it.",
+        {
+          "when": [
+            {
+              "flag": "rallied"
+            }
+          ],
+          "t": "Your whole team is crowded around you, which makes the corridor smell of feathers, robot and perfume."
+        },
+        "The blast door stands open to the north."
+      ],
+      "exits": {
+        "n": "hall"
+      }
+    },
+    "hall": {
+      "name": "Fuse Hall",
+      "desc": [
+        "A long hall of fuse boxes and fat grey [[pipes|pipes]] that snake along the ceiling and twist right across the passage. There is one gap between them, about the size of a tragic jacket. East, a [[shutter|shutter]] is held shut by a latch on the far side of the gap.",
+        {
+          "when": [
+            {
+              "flag": "doneH"
+            }
+          ],
+          "t": "The shutter to the east is up. Hamilton will not discuss how."
+        }
+      ],
+      "exits": {
+        "s": "door",
+        "e": {
+          "to": "row",
+          "needs": [
+            {
+              "flag": "doneH"
+            }
+          ],
+          "blocked": "The shutter is down. Its latch is on the far side of the pipe gap, which nobody here can reach on foot."
+        }
+      }
+    },
+    "row": {
+      "name": "Cactus Row",
+      "desc": [
+        "The Glitch has been busy. A whole line of pixel [[cacti|cacti]] has sprouted across the corridor from wall to wall, in terracotta pots, with what look like little angry faces.",
+        {
+          "when": [
+            {
+              "flag": "doneE"
+            }
+          ],
+          "t": "A clean stripe of squashed cactus runs down the middle of the row, with a dinosaur-shaped hole at the end."
+        }
+      ],
+      "exits": {
+        "w": "hall",
+        "e": {
+          "to": "vault",
+          "needs": [
+            {
+              "flag": "doneE"
+            }
+          ],
+          "blocked": "The cacti are packed from wall to wall, and spiky."
+        }
+      }
+    },
+    "vault": {
+      "name": "Coin Vault",
+      "desc": [
+        "A circular vault with a mountain of coins in the middle, which the Glitch has been hoarding. A criss-cross grid of red [[lasers|lasers]] sweeps the floor, back and forth, in a pattern that feels personal. A tiny [[needle|needle]] lies in a coin dish by the wall.",
+        {
+          "when": [
+            {
+              "flag": "doneMe"
+            }
+          ],
+          "t": "The lasers are off. Meeny is polishing a claw and looks smug."
+        }
+      ],
+      "exits": {
+        "w": "row",
+        "n": {
+          "to": "loft",
+          "needs": [
+            {
+              "flag": "doneMe"
+            }
+          ],
+          "blocked": "The lasers sweep the floor, and the stairs north are on the other side. You would need something quick."
+        }
+      }
+    },
+    "loft": {
+      "name": "Pigeon Loft",
+      "desc": [
+        "A narrow loft above the vault, full of cages that are all empty, because the pixel [[birds|birds]] are out. They swoop low along the passage in a steady rhythm, squawking, trying to look like a threat.",
+        {
+          "when": [
+            {
+              "flag": "doneMi"
+            }
+          ],
+          "t": "The birds have settled on the rafters, calm and unreasonably impressed with Miny."
+        }
+      ],
+      "exits": {
+        "s": "vault",
+        "n": {
+          "to": "core",
+          "needs": [
+            {
+              "flag": "doneMi"
+            }
+          ],
+          "blocked": "Birds. Dozens of them, swooping at head height. Maybe someone calm should go first."
+        }
+      }
+    },
+    "core": {
+      "name": "The Glitch's Core",
+      "desc": [
+        "A round, dim chamber where all the cables end. In the middle, stitched together from a hundred dead cabinets, sits a huge [[console|console]] with a flickering screen, a bare [[turntable|sound deck]] and a [[slot|coin slot]]. The [[glitch|Glitch]] is here: a drifting cloud of static in the shape of someone who was hoping you would visit.",
+        {
+          "when": [
+            {
+              "flag": "moePlug"
+            }
+          ],
+          "t": "Moe is plugged into the console and the screen shows a lobby of tiny sprites, all labelled PLAYER 1."
+        },
+        {
+          "when": [
+            {
+              "flag": "miraPlay"
+            }
+          ],
+          "t": "A slow bassline hums through the room. The Glitch is swaying, if static can sway."
+        }
+      ],
+      "exits": {
+        "s": "loft"
+      }
+    }
+  },
+  "items": {
+    "screen": {
+      "name": "monitor",
+      "aliases": [
+        "monitor",
+        "screen",
+        "crt",
+        "glitch screen"
+      ],
+      "fixed": true,
+      "loc": "door",
+      "desc": "The Glitch's own screen, an old CRT, flickering. The text scrolls slowly. It looks like you could READ it."
+    },
+    "bay": {
+      "name": "blast door",
+      "aliases": [
+        "door",
+        "blast door",
+        "steel door"
+      ],
+      "fixed": true,
+      "loc": "door",
+      "desc": "A blast door the size of a barn. It stands open, as if the arcade is saying please."
+    },
+    "megaphone": {
+      "name": "megaphone",
+      "aliases": [
+        "megaphone",
+        "bullhorn"
+      ],
+      "takeable": true,
+      "loc": "door",
+      "desc": "A red megaphone. A label says: FOR EMERGENCIES ONLY. A second label, in marker, says: AND DRAMA."
+    },
+    "credit": {
+      "name": "last credit",
+      "aliases": [
+        "credit",
+        "last credit",
+        "coin",
+        "token"
+      ],
+      "takeable": true,
+      "loc": "door",
+      "desc": "A single brass credit, worn smooth. It is, you realise, your very last one. Your whole wage this month.",
+      "points": 0
+    },
+    "pipes": {
+      "name": "pipes",
+      "aliases": [
+        "pipes",
+        "pipe",
+        "gap",
+        "pipe gap"
+      ],
+      "fixed": true,
+      "loc": "hall",
+      "desc": "Fat grey pipes with a single gap between them. A bird could fit through, just, with a clean line and a bit of nerve."
+    },
+    "shutter": {
+      "name": "shutter",
+      "aliases": [
+        "shutter",
+        "latch"
+      ],
+      "fixed": true,
+      "loc": "hall",
+      "desc": "A steel shutter, locked from the other side by a latch. You can see the latch through the gap, taunting you."
+    },
+    "cable": {
+      "name": "power cable",
+      "aliases": [
+        "cable",
+        "power cable",
+        "lead"
+      ],
+      "takeable": true,
+      "loc": "hall",
+      "desc": "A thick power cable with a plug on each end. It has MOE written on the label, in a very confident font."
+    },
+    "cacti": {
+      "name": "cacti",
+      "aliases": [
+        "cacti",
+        "cactus",
+        "cactuses",
+        "pots"
+      ],
+      "fixed": true,
+      "loc": "row",
+      "desc": "A line of pixel cacti, thick as a wall. Pretty, in a stabby way. You would need someone brave and not very thoughtful to get through that."
+    },
+    "lasers": {
+      "name": "lasers",
+      "aliases": [
+        "lasers",
+        "laser",
+        "grid",
+        "laser grid"
+      ],
+      "fixed": true,
+      "loc": "vault",
+      "desc": "A criss-cross of red beams, sweeping. There is a rhythm in them. Someone fast, and a little vain, could slip through."
+    },
+    "needle": {
+      "name": "spare needle",
+      "aliases": [
+        "needle",
+        "spare needle",
+        "stylus"
+      ],
+      "takeable": true,
+      "loc": "vault",
+      "desc": "A diamond turntable needle in a tiny dish. Somebody left it for a very particular DJ."
+    },
+    "birds": {
+      "name": "birds",
+      "aliases": [
+        "birds",
+        "bird flock",
+        "flock",
+        "pigeons"
+      ],
+      "fixed": true,
+      "loc": "loft",
+      "desc": "A flock of pixel birds in a tight pattern: low, low, high, low. They do not like loud noises or panic. They like a steady pace."
+    },
+    "console": {
+      "name": "console",
+      "aliases": [
+        "console",
+        "cabinet",
+        "machine"
+      ],
+      "fixed": true,
+      "loc": "core",
+      "desc": [
+        {
+          "when": [
+            {
+              "flag": "moePlug"
+            }
+          ],
+          "t": "The Glitch's home, glowing: a lobby screen, a roster of empty player slots, and a note reading WANTED: PLAYERS."
+        },
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "moePlug"
+              }
+            }
+          ],
+          "t": "A giant patchwork console, stitched from a hundred unplugged cabinets. Its screen shows only STANDBY. A thick socket at the bottom has been left empty."
+        }
+      ]
+    },
+    "turntable": {
+      "name": "sound deck",
+      "aliases": [
+        "turntable",
+        "sound deck",
+        "deck",
+        "decks"
+      ],
+      "fixed": true,
+      "loc": "core",
+      "desc": "A bare turntable bolted to the console, where the Glitch once heard music, a long time ago. It has no needle."
+    },
+    "slot": {
+      "name": "coin slot",
+      "aliases": [
+        "slot",
+        "coin slot"
+      ],
+      "fixed": true,
+      "loc": "core",
+      "desc": [
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "credited"
+              }
+            }
+          ],
+          "t": "A brass coin slot with a sign: INSERT CREDIT FOR 2 PLAYERS. It has clearly never been used. The sign is brand new."
+        },
+        {
+          "when": [
+            {
+              "flag": "credited"
+            }
+          ],
+          "t": "A coin slot with a single credit in it, glowing: 2 PLAYERS."
+        }
+      ]
+    }
+  },
+  "npcs": {
+    "hamilton": {
+      "name": "Hamilton",
+      "aliases": [
+        "hamilton",
+        "bird"
+      ],
+      "loc": "door",
+      "here": "[[hamilton|Hamilton]] is perched on a pipe he does not trust.",
+      "hereFollow": "[[hamilton|Hamilton]] flutters at your shoulder, glaring at nearby pipes.",
+      "desc": "Hamilton: small, round, very serious, and now a hero of flight.",
+      "talk": [
+        {
+          "t": "\"I will fly through the gap,\" says Hamilton. \"I will not enjoy it. Do not make eye contact.\""
+        },
+        {
+          "t": "\"Pipes,\" says Hamilton darkly. \"Always pipes.\""
+        }
+      ],
+      "topics": {
+        "pipes": "\"Do not say that word,\" says Hamilton. Then, quieter: \"Left, then right, then a very small flap.\"",
+        "glitch": "\"It unplugs things,\" says Hamilton. \"I understand that. I do not forgive it.\""
+      }
+    },
+    "eeny": {
+      "name": "Eeny",
+      "aliases": [
+        "eeny",
+        "dino",
+        "dinosaur"
+      ],
+      "loc": "door",
+      "here": "[[eeny|Eeny]] the dinosaur is jogging on the spot.",
+      "hereFollow": "[[eeny|Eeny]] jogs beside you, gnawing on nothing.",
+      "desc": "Eeny the dinosaur: brave, dim, and delighted about both.",
+      "talk": [
+        {
+          "t": "\"WE ARE DOING A THING,\" says Eeny. \"I LOVE IT.\""
+        },
+        {
+          "t": "\"IS THE THING A CACTUS,\" asks Eeny. \"I AM GOOD AT CACTI.\""
+        }
+      ],
+      "topics": {
+        "cacti": "\"I REMEMBER CACTI,\" says Eeny. \"I WENT THROUGH ALL OF THEM. IT WAS FINE. I THINK.\""
+      }
+    },
+    "meeny": {
+      "name": "Meeny",
+      "aliases": [
+        "meeny",
+        "cat"
+      ],
+      "loc": "door",
+      "here": "[[meeny|Meeny]] the cat is checking her reflection in the megaphone.",
+      "hereFollow": "[[meeny|Meeny]] the cat trots along, checking her whiskers in every shiny thing.",
+      "desc": "Meeny the cat: quick, vain, and aware of both.",
+      "talk": [
+        {
+          "t": "\"If we are doing a dramatic rescue,\" says Meeny, \"I would like it noted that I look amazing.\""
+        },
+        {
+          "t": "\"Lasers,\" says Meeny, yawning. \"How rude. They are in my way, and I am in my best fur.\""
+        }
+      ],
+      "topics": {
+        "lasers": "\"Easy,\" says Meeny. \"Left, hold, hold, go. I invented that.\""
+      }
+    },
+    "miny": {
+      "name": "Miny",
+      "aliases": [
+        "miny",
+        "penguin"
+      ],
+      "loc": "door",
+      "here": "[[miny|Miny]] the penguin stands in a small, calm pool of dignity.",
+      "hereFollow": "[[miny|Miny]] waddles beside you, unbothered.",
+      "desc": "Miny the penguin: calm, deadpan, in a tiny tuxedo that survived all the way down here.",
+      "talk": [
+        {
+          "t": "\"NOOT,\" says Miny, in a tone that means everything will be fine."
+        },
+        {
+          "t": "Miny closes his eyes and breathes in. The air around him gets quieter."
+        }
+      ],
+      "topics": {
+        "birds": "\"NOOT,\" says Miny. He looks at the ceiling, takes a slow breath, and ducks, as if rehearsing."
+      }
+    },
+    "moe": {
+      "name": "Moe",
+      "aliases": [
+        "moe",
+        "robot",
+        "bot"
+      ],
+      "loc": "door",
+      "here": "[[moe|Moe]], a small blue robot, is checking his own battery with great seriousness.",
+      "hereFollow": "[[moe|Moe]] rolls along on little wheels, humming.",
+      "desc": "Moe: small, blue, and loud. He knows machines the way you know your own hands.",
+      "talk": [
+        {
+          "t": "\"I AM A VERY GOOD ROBOT,\" says Moe. \"PLEASE DO NOT TELL THE GLITCH I SAID SO.\""
+        },
+        {
+          "s": "medium",
+          "t": "\"I HAVE DETECTED A WARM FRONT BETWEEN YOU AND MIRA,\" says Moe. \"I HAVE FILED IT UNDER WEATHER.\""
+        }
+      ],
+      "topics": {
+        "console": "\"THAT IS A BIG, SAD MACHINE,\" says Moe. \"IT NEEDS A FRIEND. I CAN BE A FRIEND IF YOU GIVE ME A CABLE.\"",
+        "hint": "HINT",
+        "help": "HINT"
+      }
+    },
+    "mira": {
+      "name": "Mira",
+      "aliases": [
+        "mira",
+        "dj",
+        "mira bell"
+      ],
+      "loc": "door",
+      "here": "[[mira|Mira Bell]] leans on the wall, arms folded, entirely unimpressed with a dramatic situation.",
+      "hereFollow": "[[mira|Mira Bell]] strolls along, headphones round her neck, entirely unimpressed.",
+      "desc": [
+        "Mira Bell, DJ, 29. Wrench in her back pocket, lucky record under her arm.",
+        {
+          "s": "mild",
+          "t": "She notices you looking. \"Eyes front, Attendant. You have a monster to impress.\""
+        }
+      ],
+      "talk": [
+        {
+          "t": "\"Go on, then,\" says Mira. \"Save the arcade. I will be here, not being impressed.\""
+        },
+        {
+          "s": "mild",
+          "t": "\"If you do this right,\" Mira says, not looking at you, \"I might clap. Once.\""
+        },
+        {
+          "t": "\"A record is a way of saying hello,\" says Mira. \"Sometimes it is the only way.\""
+        }
+      ],
+      "topics": {
+        "record": "\"My lucky record,\" says Mira. \"It has been through a lot. So have I. The Glitch can have a listen.\"",
+        "turntable": "\"It has no needle,\" Mira says, wincing. \"That hurts to look at.\""
+      }
+    },
+    "glitch": {
+      "name": "the Glitch",
+      "aliases": [
+        "glitch",
+        "the glitch",
+        "static",
+        "corruption"
+      ],
+      "loc": "core",
+      "here": "The [[glitch|Glitch]] hovers over the console, a cloud of static trying very hard to look scary.",
+      "desc": "A drifting cloud of static, shaped like someone sitting alone on a very big sofa. Up close it is sort of... sad. A tiny sprite in the middle of it holds an unplugged controller.",
+      "talk": [
+        {
+          "t": "\"...,\" says the Glitch, in the voice of a screen with nothing on it. \"NOBODY. PLAYS. ANY MORE.\""
+        },
+        {
+          "t": "\"I only unplug them,\" the Glitch whispers, \"so they do not have to be alone when it goes quiet.\""
+        }
+      ],
+      "topics": {
+        "play": "The Glitch flickers. \"...PLAY?\" it says, as if the word is a new thing.",
+        "lonely": "The Glitch dims. \"EVERYONE LEAVES. THEN THE LIGHTS GO OUT. I JUST WANTED TO BE ON.\""
+      }
+    }
+  },
+  "rules": [
+    {
+      "id": "read-screen",
+      "on": [
+        {
+          "verb": [
+            "read",
+            "look"
+          ],
+          "noun": "screen"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "seen"
+        }
+      ],
+      "skipText": [
+        "The screen still scrolls its wish list: FLAP. RUN. DODGE. DUCK. PLUG IN. MUSIC. 2 PLAYERS.",
+        {
+          "s": "mild",
+          "t": "Under it, in tiny letters: MUST BE ASKED NICELY."
+        }
+      ],
+      "effects": [
+        {
+          "flag": "seen"
+        },
+        {
+          "say": [
+            "You step up to the Glitch's own screen. It scrolls, slowly, in the font of someone typing alone at 3am:",
+            "PLAYER 1 WANTED. PLAYER 1 MUST: FLAP THROUGH THE GAP. RUN THROUGH THE CACTI. DODGE THE LASERS. DUCK THE BIRDS. PLUG IN. BRING MUSIC. THEN INSERT 1 CREDIT FOR 2 PLAYERS.",
+            "It is not a threat. It is a wish list. At the bottom: PLEASE. Your heart does something it did not expect. Behind you, six people wait for instructions.",
+            {
+              "s": "mild",
+              "t": "Mira, quietly: \"That is the saddest thing I have ever read, and I once read your CV.\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rally",
+      "on": [
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "megaphone"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "rallied"
+        }
+      ],
+      "skipText": "Everyone is already with you. The megaphone returns to being a hat for the bird.",
+      "requires": [
+        {
+          "has": "megaphone"
+        }
+      ],
+      "else": "You need to be holding the megaphone to use it, which is a good rule for megaphones.",
+      "effects": [
+        {
+          "flag": "rallied"
+        },
+        {
+          "follow": "hamilton"
+        },
+        {
+          "follow": "eeny"
+        },
+        {
+          "follow": "meeny"
+        },
+        {
+          "follow": "miny"
+        },
+        {
+          "follow": "moe"
+        },
+        {
+          "follow": "mira"
+        },
+        {
+          "say": [
+            "You raise the megaphone and breathe in. \"ATTENTION, TEAM,\" you announce, and the megaphone does a squeal. \"THIS IS NOT A DRILL. WELL, IT IS A BIT OF A DRILL. WE ARE GOING TO SAVE THE ARCADE.\"",
+            "\"Great speech,\" says Mira, flatly. \"Say the second line.\" \"I do not have a second line.\" \"I know.\"",
+            "\"I AM READY,\" shouts Moe. \"I AM ALWAYS READY,\" shouts Eeny. Hamilton gives a small, serious nod. Miny says NOOT. Meeny re-applies something to her whiskers. Everyone follows you."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coach-ham",
+      "on": [
+        {
+          "verb": [
+            "ask"
+          ],
+          "noun": "hamilton",
+          "with": "pipes"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "coachH"
+        }
+      ],
+      "skipText": "Hamilton is already stretching. Give him a moment, or USE HAMILTON ON PIPES.",
+      "requires": [
+        {
+          "flag": "rallied"
+        }
+      ],
+      "else": "Nobody is following you yet. Use the megaphone.",
+      "effects": [
+        {
+          "flag": "coachH"
+        },
+        {
+          "say": "You crouch next to Hamilton. \"Hamilton. Buddy. There is a gap. You are the only one who can fit. I believe in you.\" \"You believe in my aerodynamics,\" says Hamilton. \"That is a bold choice.\" He glares at the pipes and begins to stretch his wings."
+        }
+      ]
+    },
+    {
+      "id": "do-ham",
+      "on": [
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "hamilton",
+          "with": "pipes"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "doneH"
+        }
+      ],
+      "skipText": "The pipe gap is already conquered. Hamilton is not talking about it.",
+      "requires": [
+        {
+          "flag": "rallied"
+        },
+        {
+          "flag": "seen"
+        },
+        {
+          "flag": "coachH"
+        }
+      ],
+      "else": "Hamilton eyes the gap and does not move. He wants a pep talk first. (ASK HAMILTON ABOUT PIPES.) He also wants you to have read the screen, so he knows why.",
+      "effects": [
+        {
+          "flag": "doneH"
+        },
+        {
+          "score": 1
+        },
+        {
+          "say": "Hamilton takes a deep breath, a very short run-up and goes. Flap, flap, tilt, flap. He threads the gap like a feather through a keyhole and lands on the far side with a thump. The latch clicks. The shutter rolls up. \"I did not like that,\" says Hamilton, \"and I would like it known that I was brilliant.\""
+        }
+      ]
+    },
+    {
+      "id": "coach-eeny",
+      "on": [
+        {
+          "verb": [
+            "ask"
+          ],
+          "noun": "eeny",
+          "with": "cacti"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "coachE"
+        }
+      ],
+      "skipText": "Eeny is already revving, a jogging heap of enthusiasm. USE EENY ON CACTI.",
+      "requires": [
+        {
+          "flag": "rallied"
+        }
+      ],
+      "else": "Nobody is following you yet. Use the megaphone.",
+      "effects": [
+        {
+          "flag": "coachE"
+        },
+        {
+          "say": "\"Eeny,\" you say. \"There is a line of cacti. They are sharp. They are in our way.\" Eeny nods hard. \"I RUN INTO THEM,\" he says. \"AND THEN I KEEP RUNNING.\" \"That is the plan.\" \"IT IS A VERY GOOD PLAN. DID YOU THINK OF IT?\" \"...Yes,\" you say."
+        }
+      ]
+    },
+    {
+      "id": "do-eeny",
+      "on": [
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "eeny",
+          "with": "cacti"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "doneE"
+        }
+      ],
+      "skipText": "The cactus line is already a pile of terracotta.",
+      "requires": [
+        {
+          "flag": "rallied"
+        },
+        {
+          "flag": "seen"
+        },
+        {
+          "flag": "coachE"
+        }
+      ],
+      "else": "Eeny looks at the cacti, then at you, hopefully. Perhaps he needs a bit of coaching first. (ASK EENY ABOUT CACTI.) Also, someone should read the screen so you know why you are doing this.",
+      "effects": [
+        {
+          "flag": "doneE"
+        },
+        {
+          "score": 1
+        },
+        {
+          "say": "Eeny backs up. \"CHARGE,\" he shouts, and does. He goes through the whole cactus line like a bowling ball through a lawn, leaving a trail of squashed pots and delighted yelling. \"I DID NOT FEEL ANYTHING,\" he announces from the far side. \"I THINK I FELT SOMETHING. IT WAS FINE.\""
+        }
+      ]
+    },
+    {
+      "id": "coach-meeny",
+      "on": [
+        {
+          "verb": [
+            "ask"
+          ],
+          "noun": "meeny",
+          "with": "lasers"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "coachMe"
+        }
+      ],
+      "skipText": "Meeny is already counting the beats out loud. USE MEENY ON LASERS.",
+      "requires": [
+        {
+          "flag": "rallied"
+        }
+      ],
+      "else": "Nobody is following you yet. Use the megaphone.",
+      "effects": [
+        {
+          "flag": "coachMe"
+        },
+        {
+          "say": "\"Meeny,\" you say, \"the lasers. You are the fastest of us.\" \"The fastest and the prettiest,\" says Meeny. \"Obviously.\" She tests the beam rhythm with a whisker. \"Left, hold, hold, go. I have been doing this since before you were an attendant.\" \"That was this morning.\" \"My point stands.\""
+        }
+      ]
+    },
+    {
+      "id": "do-meeny",
+      "on": [
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "meeny",
+          "with": "lasers"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "doneMe"
+        }
+      ],
+      "skipText": "The lasers are off. Meeny is admiring her own reflection in the switch.",
+      "requires": [
+        {
+          "flag": "rallied"
+        },
+        {
+          "flag": "seen"
+        },
+        {
+          "flag": "coachMe"
+        }
+      ],
+      "else": "Meeny looks at the lasers and then at her nails. She wants a pep talk first, and for you to know why you are doing this (read the screen). ASK MEENY ABOUT LASERS.",
+      "effects": [
+        {
+          "flag": "doneMe"
+        },
+        {
+          "score": 1
+        },
+        {
+          "say": "Meeny steps in, rolls under the first beam, hops the second, spins between two others and lands on top of the off switch on the far wall with a flourish. The lasers wink out. \"Obviously,\" she says. \"Nobody clap. Fine. You can clap.\""
+        }
+      ]
+    },
+    {
+      "id": "coach-miny",
+      "on": [
+        {
+          "verb": [
+            "ask"
+          ],
+          "noun": "miny",
+          "with": "birds"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "coachMi"
+        }
+      ],
+      "skipText": "Miny is already counting, completely calm. USE MINY ON BIRDS.",
+      "requires": [
+        {
+          "flag": "rallied"
+        }
+      ],
+      "else": "Nobody is following you yet. Use the megaphone.",
+      "effects": [
+        {
+          "flag": "coachMi"
+        },
+        {
+          "say": "You crouch beside Miny. \"The birds, Miny.\" \"NOOT,\" says Miny, in the calmest voice a penguin has ever used. He taps the floor: low, low, high, low. Then he does a slow, perfect, tiny bow. You have no idea what happened, but it feels like you coached it."
+        }
+      ]
+    },
+    {
+      "id": "do-miny",
+      "on": [
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "miny",
+          "with": "birds"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "doneMi"
+        }
+      ],
+      "skipText": "The birds are calm now. Miny is not even breathing hard.",
+      "requires": [
+        {
+          "flag": "rallied"
+        },
+        {
+          "flag": "seen"
+        },
+        {
+          "flag": "coachMi"
+        }
+      ],
+      "else": "Miny watches the birds with his eyes half closed. He wants a pep talk first, and to know why you are doing this (read the screen). ASK MINY ABOUT BIRDS.",
+      "effects": [
+        {
+          "flag": "doneMi"
+        },
+        {
+          "score": 1
+        },
+        {
+          "say": "Miny walks into the loft like a tiny waiter in a very quiet restaurant. The birds swoop. Miny ducks. The birds swoop again. Miny ducks, perfectly timed, never speeding up, never slowing down. Eventually the birds get embarrassed and land on the rafters. \"NOOT,\" says Miny, and straightens his bow tie."
+        }
+      ]
+    },
+    {
+      "id": "coach-moe",
+      "on": [
+        {
+          "verb": [
+            "ask"
+          ],
+          "noun": "moe",
+          "with": "console"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "coachMoe"
+        }
+      ],
+      "skipText": "\"I HAVE THE PLAN,\" says Moe. \"THE PLAN IS: PLUG IN.\"",
+      "requires": [
+        {
+          "flag": "rallied"
+        }
+      ],
+      "else": "Nobody is following you yet. Use the megaphone.",
+      "effects": [
+        {
+          "flag": "coachMoe"
+        },
+        {
+          "say": "\"THIS MACHINE IS NOT BROKEN,\" says Moe, squinting at the console. \"IT IS LONELY. THE SOCKET IS EMPTY BECAUSE NOBODY HAS PLUGGED IN. I CAN PLUG IN. I NEED A CABLE.\" Moe waves a little robot arm. \"YOU ARE WELCOME TO CALL THIS COACHING.\""
+        }
+      ]
+    },
+    {
+      "id": "do-moe",
+      "on": [
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "moe",
+          "with": "console"
+        },
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "cable",
+          "with": "console"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "moePlug"
+        }
+      ],
+      "skipText": "Moe is already plugged in, and humming happily.",
+      "requires": [
+        {
+          "flag": "rallied"
+        },
+        {
+          "flag": "coachMoe"
+        },
+        {
+          "has": "cable"
+        }
+      ],
+      "else": [
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "coachMoe"
+              }
+            }
+          ],
+          "t": "Moe looks at the console, then at you. \"SHOULD WE TALK ABOUT IT FIRST?\" (ASK MOE ABOUT CONSOLE.)"
+        },
+        {
+          "t": "\"I NEED A CABLE,\" says Moe, politely. \"THERE WAS ONE BY THE PIPES.\""
+        }
+      ],
+      "effects": [
+        {
+          "move": [
+            "cable",
+            "gone"
+          ]
+        },
+        {
+          "flag": "moePlug"
+        },
+        {
+          "score": 1
+        },
+        {
+          "say": [
+            "Moe rolls up to the console, takes one end of the cable, plugs the other end into his own chest, and says \"HELLO, BIG MACHINE. I AM MOE.\" Every screen in the room blinks at once.",
+            "The console wakes up. STANDBY becomes a lobby: dozens of tiny player slots, all empty, all labelled PLAYER 1. \"IT HAS A GAME,\" Moe reports, glowing. \"IT HAS HAD ONE ALL ALONG. NOBODY ASKED.\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "coach-mira",
+      "on": [
+        {
+          "verb": [
+            "ask"
+          ],
+          "noun": "mira",
+          "with": "turntable"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "coachMira"
+        }
+      ],
+      "skipText": "\"I know what I am doing,\" says Mira. \"Do not hover.\"",
+      "requires": [
+        {
+          "flag": "rallied"
+        }
+      ],
+      "else": "Nobody is following you yet. Use the megaphone.",
+      "effects": [
+        {
+          "flag": "coachMira"
+        },
+        {
+          "say": [
+            "\"Mira,\" you say. \"The Glitch needs music.\" \"I heard.\" She looks at the bare turntable the way a surgeon looks at a patient. \"It has no needle. There is one in the Coin Vault. I saw it on the way down. Bring it, and I will do the rest.\"",
+            {
+              "s": "mild",
+              "t": "\"And Attendant? Try not to stand so close. You are breathing on my record.\""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "do-mira",
+      "on": [
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "mira",
+          "with": "turntable"
+        },
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "needle",
+          "with": "turntable"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "miraPlay"
+        }
+      ],
+      "skipText": "The record is already turning. Mira is pretending she is not smiling.",
+      "requires": [
+        {
+          "flag": "rallied"
+        },
+        {
+          "flag": "coachMira"
+        },
+        {
+          "has": "needle"
+        }
+      ],
+      "else": [
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "coachMira"
+              }
+            }
+          ],
+          "t": "Mira raises an eyebrow. \"Ask me properly. And look at the turntable while you do it.\" (ASK MIRA ABOUT TURNTABLE.)"
+        },
+        {
+          "t": "\"I need a needle,\" says Mira. \"Not a hairpin, not a pencil. A needle. There was one in the Coin Vault.\""
+        }
+      ],
+      "effects": [
+        {
+          "move": [
+            "needle",
+            "gone"
+          ]
+        },
+        {
+          "flag": "miraPlay"
+        },
+        {
+          "say": [
+            "Mira slips the needle into the headshell, slides her lucky record from its sleeve and sets it down on the Glitch's own deck. She does not hurry. She never hurries. The needle drops.",
+            "A slow, warm bassline rolls out of the console, out of the walls, out of every cable in the building. The Glitch goes completely still, and then, very slowly, begins to sway. \"...MUSIC,\" it whispers. \"...I REMEMBER MUSIC.\"",
+            {
+              "s": "mild",
+              "t": "Mira catches your eye across the static. \"Do not make it weird,\" she says. She is smiling anyway."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "credit-slot",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "credit",
+          "with": "slot"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "credited"
+        }
+      ],
+      "skipText": "The credit is already in the slot, glowing.",
+      "requires": [
+        {
+          "has": "credit"
+        },
+        {
+          "flag": "moePlug"
+        },
+        {
+          "flag": "miraPlay"
+        },
+        {
+          "flag": "doneH"
+        },
+        {
+          "flag": "doneE"
+        },
+        {
+          "flag": "doneMe"
+        },
+        {
+          "flag": "doneMi"
+        }
+      ],
+      "else": [
+        {
+          "when": [
+            {
+              "not": {
+                "has": "credit"
+              }
+            }
+          ],
+          "t": "You pat your pockets. You had one credit tonight. It is not in your pockets. It is back at the door, being shiny."
+        },
+        {
+          "t": "The Glitch flickers, nervous. It is not ready yet, and neither is the room. The slot says: PLEASE WAIT FOR EVERYONE. (Hamilton, Eeny, Meeny, Miny, Moe, Mira.)"
+        }
+      ],
+      "effects": [
+        {
+          "move": [
+            "credit",
+            "gone"
+          ]
+        },
+        {
+          "flag": "credited"
+        },
+        {
+          "say": [
+            "You hold up your very last credit. \"This is for you,\" you say, and your voice cracks, and you are very proud of it. \"Not to defeat you. To play with you. Two players. If that is all right.\"",
+            "The Glitch does not move. Then the coin goes in, with a small, round clink. The screen lights up. 2 PLAYERS. PRESS START."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "play-glitch",
+      "on": [
+        {
+          "verb": [
+            "play",
+            "use"
+          ],
+          "noun": "glitch"
+        },
+        {
+          "verb": [
+            "play",
+            "use"
+          ],
+          "noun": "console"
+        }
+      ],
+      "requires": [
+        {
+          "flag": "carry:ch1"
+        },
+        {
+          "flag": "carry:ch2"
+        },
+        {
+          "flag": "carry:ch3"
+        },
+        {
+          "flag": "carry:ch4"
+        },
+        {
+          "flag": "credited"
+        },
+        {
+          "flag": "moePlug"
+        },
+        {
+          "flag": "miraPlay"
+        },
+        {
+          "flag": "doneH"
+        },
+        {
+          "flag": "doneE"
+        },
+        {
+          "flag": "doneMe"
+        },
+        {
+          "flag": "doneMi"
+        }
+      ],
+      "else": "You reach for START, but the console wants a credit first. (USE the coin ON the slot.) The Glitch is hovering, waiting for you to do something brave.",
+      "effects": [
+        {
+          "score": 1
+        },
+        {
+          "flag": "complete"
+        },
+        {
+          "card": "neon-cherry"
+        },
+        {
+          "say": [
+            "You press START. The Glitch lets go of its unplugged controller, takes the second one and, for the first time in a very long time, someone plays with it.",
+            "The game is silly and fast and a little bit broken. You lose. You lose a lot. The Glitch laughs, a rising sound like a modem trying to sing. Behind you, Hamilton flaps the gap in the pipes, Eeny charges a cactus, Meeny dodges a beam, Miny ducks a bird, Moe plugs in a cable and Mira lets a record play. It is not the plan, exactly. It is just the whole team, being what it is.",
+            "\"2 PLAYERS,\" says the screen. \"THANK YOU FOR PLAYING.\" Every dead cabinet in the Pixel Palace blinks, then shines. Upstairs the shutters roll up, the neon sign finds its colour, and the mirror ball starts to turn.",
+            "CHAPTER 5 COMPLETE: LAST CREDIT.",
+            "By sunrise the Pixel Palace is the loudest place in the city. Customers line up. The Glitch has become the official Arcade Spirit, a very small cloud that swaps in a free game when you are down to your last credit. It is, everyone agrees, really good for business.",
+            "The owner turns up at six, looks at the lines, the lights, the Glitch asleep inside a claw machine and the TRAINEE badge on your jacket. \"You are promoted,\" she says. \"Assistant Night Attendant.\" \"Assistant?\" \"Night Attendant is a different job. It is taken. By the Glitch.\" You decide this counts as a win.",
+            {
+              "s": "mild",
+              "t": "Mira finds you on the disco floor at closing, headphones round her neck, hands in her back pockets. \"So,\" she says. \"Assistant.\" \"Assistant,\" you agree. \"I might be impressed,\" she says. \"A bit. Do not push it.\" She straightens your badge, and it is the best thing that has happened to you since you were born."
+            },
+            {
+              "s": "medium",
+              "t": "\"Come on,\" she says, taking your hand. \"The booth. I have a record I want you to hear.\" The door of the DJ booth closes with a soft, final click, and a single bar of bass slides under it. Out on the floor, six friends who have never been more tactful look in six different directions and agree that none of this is their business. The mirror ball keeps turning. The night keeps going. Fade to black."
+            },
+            "THE END. Insert coin to play again."
+          ]
+        },
+        {
+          "end": true
+        }
+      ]
+    },
+    {
+      "id": "w-ham-cacti",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "ask"
+          ],
+          "noun": "hamilton",
+          "with": "cacti"
+        }
+      ],
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
+      "else": "Hamilton looks at the cacti. \"No,\" he says. \"I am a bird, not a salad.\"",
+      "effects": []
+    },
+    {
+      "id": "w-eeny-pipes",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "ask"
+          ],
+          "noun": "eeny",
+          "with": "pipes"
+        }
+      ],
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
+      "else": "Eeny sticks his head in the pipe gap and gets stuck for a bit. \"IT IS TIGHT IN HERE,\" he says. \"I LIKE IT.\" You pull him out. It takes everyone.",
+      "effects": []
+    },
+    {
+      "id": "w-meeny-birds",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "ask"
+          ],
+          "noun": "meeny",
+          "with": "birds"
+        }
+      ],
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
+      "else": "Meeny looks at the birds. The birds look at Meeny. Nobody blinks. \"I am not touching those,\" she says. \"They are not groomed.\"",
+      "effects": []
+    },
+    {
+      "id": "w-miny-lasers",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "ask"
+          ],
+          "noun": "miny",
+          "with": "lasers"
+        }
+      ],
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
+      "else": "Miny stares at the lasers for a long time. \"NOOT,\" he says, the way you say it when you do not want to find out.",
+      "effects": []
+    },
+    {
+      "id": "w-moe-glitch",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "ask"
+          ],
+          "noun": "moe",
+          "with": "glitch"
+        }
+      ],
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
+      "else": "\"HELLO, GLITCH,\" says Moe. The Glitch flinches. \"I DID NOT MEAN TO SHOUT. I AM SHOUTING AGAIN. SORRY.\"",
+      "effects": []
+    },
+    {
+      "id": "w-credit-glitch",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "ask"
+          ],
+          "noun": "credit",
+          "with": "glitch"
+        }
+      ],
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
+      "else": "You wave the coin at the Glitch. It follows it with its whole body, like a cat watching a laser. \"...SLOT,\" it whispers hopefully, and points.",
+      "effects": []
+    },
+    {
+      "id": "w-mira-console",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "ask"
+          ],
+          "noun": "mira",
+          "with": "console"
+        }
+      ],
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
+      "else": "\"I do not do consoles,\" says Mira. \"I do turntables.\" She looks at the bare deck. \"That one in particular.\"",
+      "effects": []
+    },
+    {
+      "id": "w-mega-glitch",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "ask"
+          ],
+          "noun": "megaphone",
+          "with": "glitch"
+        }
+      ],
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
+      "else": "You aim the megaphone at the Glitch and open your mouth. Mira puts her whole hand over it. \"No,\" she says. \"It has had enough shouting.\"",
+      "effects": []
+    },
+    {
+      "id": "w-cable-pipes",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "ask"
+          ],
+          "noun": "cable",
+          "with": "pipes"
+        }
+      ],
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
+      "else": "You hold the cable up to the pipes, thinking of a plan. The pipes do not care. Hamilton sighs. \"Do not use that near me.\"",
+      "effects": []
+    }
+  ],
+  "hints": [
+    {
+      "done": [
+        {
+          "flag": "seen"
+        }
+      ],
+      "lines": [
+        "The Glitch has a screen of its own by the door. It looks like it is trying to say something.",
+        "READ the monitor by the blast door. It tells you what the Glitch wants.",
+        "Read the monitor, then take the megaphone and gather the team."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "rallied"
+        }
+      ],
+      "lines": [
+        "You have a whole team, but they are just standing there. Take the megaphone from beside the door.",
+        "The megaphone is by the door. TAKE it, then USE it.",
+        "TAKE MEGAPHONE, then USE MEGAPHONE. The team follows you from then on."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "doneH"
+        }
+      ],
+      "lines": [
+        "The Fuse Hall has a gap in the pipes, and a latch on the other side. Who in the team can fly?",
+        "Hamilton hates pipes, but he can fly through the gap. Pick up the power cable in the Fuse Hall while you are there, for Moe.",
+        "ASK HAMILTON ABOUT PIPES for a pep talk, then USE HAMILTON ON PIPES."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "doneE"
+        }
+      ],
+      "lines": [
+        "Cactus Row is blocked by prickly cacti. You need someone brave, and not very thoughtful.",
+        "Eeny is made for this. Pep talk first.",
+        "ASK EENY ABOUT CACTI, then USE EENY ON CACTI."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "doneMe"
+        }
+      ],
+      "lines": [
+        "The lasers sweep a pattern in the Coin Vault. You need someone quick and vain. Take the needle from the dish while you are there, for Mira.",
+        "Meeny can dodge a laser in her sleep. Pep talk first.",
+        "ASK MEENY ABOUT LASERS, then USE MEENY ON LASERS."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "doneMi"
+        }
+      ],
+      "lines": [
+        "Birds swoop through the Pigeon Loft in a steady rhythm. Panic makes it worse.",
+        "Miny is the calmest of the team. Pep talk first.",
+        "ASK MINY ABOUT BIRDS, then USE MINY ON BIRDS."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "moePlug"
+        }
+      ],
+      "lines": [
+        "The Glitch's console has an empty socket. Who knows about machines?",
+        "Moe can plug in, but needs the power cable from the Fuse Hall.",
+        "Take the cable from the Fuse Hall, then ASK MOE ABOUT CONSOLE and USE MOE ON CONSOLE."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "miraPlay"
+        }
+      ],
+      "lines": [
+        "The Glitch's bare turntable needs a needle. Who does music?",
+        "Mira can play her record on it, if she has a needle from the Coin Vault.",
+        "Take the needle from the Coin Vault, then ASK MIRA ABOUT TURNTABLE and USE MIRA ON TURNTABLE."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "credited"
+        }
+      ],
+      "lines": [
+        "The screen asked for one credit for 2 players. You have one, left on the floor by the door.",
+        "Take the last credit from the Power Room Door, and bring it to the Glitch.",
+        "USE the coin ON the slot, in the Glitch's Core."
+      ]
+    },
+    {
+      "done": [
+        {
+          "flag": "complete"
+        }
+      ],
+      "lines": [
+        "Everything is ready. The Glitch wants to play.",
+        "PLAY the Glitch. Press START.",
+        "PLAY GLITCH."
+      ]
+    }
+  ],
+  "glitch": [
+    "The Glitch eats that command. (Try HELP.)",
+    "Nothing happens. Somewhere, a machine hums disapprovingly.",
+    "You try. The arcade does not care.",
+    "That does not seem to do anything useful."
+  ],
+  "cards": {
+    "neon-cherry": {
+      "title": "Neon Cherry",
+      "who": "Cherry Voltage"
+    }
+  }
+}

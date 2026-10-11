@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Night Shift: An Arcade Adventure</title>
+  <meta name="description" content="The arcade closed an hour ago and something is unplugging the machines. A free text adventure in your browser.">
+  <meta name="theme-color" content="#0a0820">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Night Shift: An Arcade Adventure">
+  <meta property="og:description" content="Something is unplugging the arcade. You are the only attendant left.">
+  <meta property="og:image" content="img/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preload" href="fonts/SpecialElite-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="icon" type="image/png" href="img/icon-192.png">
+  <link rel="stylesheet" href="css/game.css">
+</head>
+<body>
+  <a class="skip" href="#input">Skip to the command line</a>
+
+  <header class="bar">
+    <a class="back" href="../" aria-label="Back to the arcade">&lsaquo; Arcade</a>
+    <h1 class="brand">Night Shift</h1>
+    <span class="score" id="score" aria-live="polite" aria-label="Score">0/4</span>
+    <button id="open-settings" class="icon-btn" type="button" aria-haspopup="dialog" aria-label="Settings">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M19.4 13a7.7 7.7 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.6 7.6 0 0 0-1.7-1L15 3.3h-4l-.4 2.6a7.6 7.6 0 0 0-1.7 1l-2.5-1-2 3.5L6.6 11a7.7 7.7 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1c.5.4 1.1.7 1.7 1l.4 2.6h4l.4-2.6c.6-.3 1.2-.6 1.7-1l2.5 1 2-3.5L19.4 13zM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>
+    </button>
+  </header>
+
+  <main class="stage">
+    <section id="log" class="log" role="log" aria-live="polite" aria-relevant="additions" aria-label="The story" tabindex="-1">
+      <noscript><p class="story">Night Shift needs JavaScript to run.</p></noscript>
+    </section>
+
+    <div class="controls">
+      <nav id="exits" class="exits" aria-label="Exits"></nav>
+
+      <div class="verbs" role="toolbar" aria-label="Actions">
+        <button type="button" class="act" data-act="look">Look</button>
+        <button type="button" class="act" data-act="hint">Hint</button>
+        <button type="button" class="act" data-act="i">Items</button>
+        <button type="button" class="act" data-act="undo">Undo</button>
+        <span class="sep" aria-hidden="true"></span>
+        <button type="button" class="verb" data-verb="take">Take</button>
+        <button type="button" class="verb" data-verb="drop">Drop</button>
+        <button type="button" class="verb" data-verb="open">Open</button>
+        <button type="button" class="verb" data-verb="read">Read</button>
+        <button type="button" class="verb" data-verb="use">Use</button>
+        <button type="button" class="verb" data-verb="give">Give</button>
+        <button type="button" class="verb" data-verb="talk">Talk</button>
+        <button type="button" class="verb" data-verb="ask">Ask</button>
+        <button type="button" class="verb" data-verb="climb">Climb</button>
+        <button type="button" class="verb" data-verb="play">Play</button>
+        <button type="button" class="verb" data-verb="fix">Fix</button>
+      </div>
+
+      <form id="cmd" class="cmd" autocomplete="off">
+        <label for="input" class="sr">Type a command</label>
+        <span class="prompt" aria-hidden="true">&gt;</span>
+        <input id="input" type="text" enterkeyhint="go" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="type a command, e.g. take token">
+        <button type="submit" class="go">Go</button>
+      </form>
+
+      <div class="inv" aria-label="Carrying">
+        <span class="inv-label">Carrying</span>
+        <span id="invlist" class="invlist"></span>
+      </div>
+    </div>
+  </main>
+
+  <dialog id="settings" aria-labelledby="settings-title">
+    <form method="dialog" class="dlg">
+      <header class="dlg-head">
+        <h2 id="settings-title">Settings</h2>
+        <button class="icon-btn" value="close" aria-label="Close settings">&times;</button>
+      </header>
+      <div class="tabs" role="tablist" aria-label="Settings sections">
+        <button type="button" role="tab" id="tab-game" aria-controls="panel-game" aria-selected="true">Game</button>
+        <button type="button" role="tab" id="tab-access" aria-controls="panel-access" aria-selected="false" tabindex="-1">Accessibility</button>
+        <button type="button" role="tab" id="tab-spice" aria-controls="panel-spice" aria-selected="false" tabindex="-1">Spice</button>
+        <button type="button" role="tab" id="tab-board" aria-controls="panel-board" aria-selected="false" tabindex="-1" hidden>Leaderboard</button>
+      </div>
+      <div class="dlg-body">
+        <div role="tabpanel" id="panel-game" aria-labelledby="tab-game">
+          <p class="muted">Progress is saved automatically in this browser.</p>
+          <button type="button" class="btn ghost" id="new-game">Start a new game</button>
+          <section id="cloud" hidden>
+            <h3>Cloud save</h3>
+            <p class="muted small">Carry your game to another device with a sync code. Keep the code private: anyone who has it can load your save.</p>
+            <p id="sync-state" class="small" aria-live="polite"></p>
+            <p><button type="button" class="btn ghost" id="sync-on">Turn on cloud save</button></p>
+            <label class="field">Use a code from another device
+              <input id="sync-code" type="text" autocomplete="off" autocapitalize="off" spellcheck="false">
+            </label>
+            <button type="button" class="btn ghost" id="sync-load">Load that save</button>
+          </section>
+        </div>
+        <div role="tabpanel" id="panel-access" aria-labelledby="tab-access" hidden>
+          <label class="switch"><input type="checkbox" id="opt-large"><span>Larger text</span></label>
+          <label class="switch"><input type="checkbox" id="opt-motion"><span>Reduce motion</span></label>
+        </div>
+        <div role="tabpanel" id="panel-spice" aria-labelledby="tab-spice" hidden>
+          <fieldset class="spice">
+            <legend>How cheeky should it be?</legend>
+            <label class="choice"><input type="radio" name="spice" value="off"><span><b>Off</b> Clean humour only.</span></label>
+            <label class="choice"><input type="radio" name="spice" value="mild"><span><b>Mild</b> A few winks.</span></label>
+            <label class="choice"><input type="radio" name="spice" value="medium"><span><b>Medium</b> Flirty lines, with a fade to black.</span></label>
+            <label class="choice"><input type="radio" name="spice" value="hot"><span><b>Hot</b> Everything above, plus the gallery. 18+.</span></label>
+          </fieldset>
+          <p class="muted">The puzzles and the score are the same at every level.</p>
+          <section id="gallery" hidden>
+            <h3>Gallery</h3>
+            <ul id="cards" class="cards"></ul>
+            <p class="muted small">Gallery artwork is not included with the game's code. Cards unlock as you play.</p>
+          </section>
+        </div>
+        <div role="tabpanel" id="panel-board" aria-labelledby="tab-board" hidden>
+          <ol id="board" class="board"></ol>
+          <p id="board-note" class="muted small"></p>
+        </div>
+      </div>
+      <footer class="dlg-foot"><button class="btn" value="close">Done</button></footer>
+    </form>
+  </dialog>
+
+  <script src="js/parser.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+read signboard
+open crate
+take shield
+take bomb
+e
+use shield on eeny
+w
+read signboard
+w
+use bomb on birds
+e
+n
+read radio
+use mirror on moe
+s
+read signboard
+e
+n
+use moe on stars
+e
+use arch

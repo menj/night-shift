@@ -1,0 +1,5 @@
+art/
+node_modules/
+.DS_Store
+tools/.out/
+includes/config.local.php

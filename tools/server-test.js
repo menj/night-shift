@@ -24,9 +24,15 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 		ok((await fetch(base + 'admin.php')).status === 404, 'admin off before install');
 
 		// install (SQLite) with an admin password
-		const form = new URLSearchParams({ driver: 'sqlite', admin_password: 'correct-horse-battery' });
-		let ir = await fetch(base + 'install.php', { method: 'POST', body: form });
-		ok(/Installed/.test(await ir.text()), 'installer runs');
+		let ir = await fetch(base + 'install.php', { method: 'POST', body: new URLSearchParams({ driver: 'sqlite', admin_password: 'correct-horse-battery', setup_key: 'guess' }) });
+		ok(/setup key is missing or wrong/.test(await ir.text()) && !fs.existsSync(tmp + '/includes/config.local.php'), 'installer refuses without the server-side setup key');
+		fs.writeFileSync(tmp + '/db/install-key.txt', 'secretkey123\n');
+		ir = await fetch(base + 'install.php', { method: 'POST', body: new URLSearchParams({ driver: 'sqlite', admin_password: 'correct-horse-battery', setup_key: 'wrong-key-1' }) });
+		ok(/setup key is missing or wrong/.test(await ir.text()), 'installer refuses a wrong key');
+		const form = new URLSearchParams({ driver: 'sqlite', admin_password: 'correct-horse-battery', setup_key: 'secretkey123' });
+		ir = await fetch(base + 'install.php', { method: 'POST', body: form });
+		ok(/Installed/.test(await ir.text()), 'installer runs with the right key');
+		ok(!fs.existsSync(tmp + '/db/install-key.txt'), 'the setup key file is removed after install');
 		ok(fs.existsSync(tmp + '/includes/config.local.php') && fs.existsSync(tmp + '/db/night-shift.sqlite'), 'config + sqlite written');
 		ir = await fetch(base + 'install.php', { method: 'POST', body: form });
 		ok(/Setup is finished/.test(await ir.text()) && !/Installed\./.test(await (await fetch(base + 'install.php')).text()), 'installer locks after install');
@@ -43,18 +49,30 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 		r = await j('api/get-scores.php?limit=5'); ok(r.b.scores[0].name === 'Ben' && r.b.scores[1].name === 'Ada' && !('ip_hash' in r.b.scores[0]), 'board order, no ip hash leaked');
 		ok((await j('api/submit-score.php')).s === 405, 'GET submit 405');
 
+		// equal finishes: the later one ranks after the earlier one
+		execSync(`php -r '$p=new PDO("sqlite:${db}");$p->exec("UPDATE completions SET created_at=\\"2000-01-01 00:00:00\\"");'`);
+		r = await post('api/submit-score.php', { name: 'Cy', score: 24, moves: 135 }); ok(r.s === 200 && r.b.rank === 2, 'a tie ranks behind the earlier equal finish (got ' + (r.b && r.b.rank) + ')');
+		execSync(`php -r '$p=new PDO("sqlite:${db}");$p->exec("DELETE FROM completions WHERE player_name=\\"Cy\\"");'`);
+
 		// cloud save
 		const code = 'abcdefghijklmnop2345';
 		const st = { room: 'lobby', loc: {}, flags: {}, score: 1, moves: 3, cards: [] };
-		r = await j('api/save.php?code=' + code); ok(r.s === 404, 'no save yet');
+		const load = c => post('api/save.php', { code: c, load: true });
+		r = await load(code); ok(r.s === 404, 'no save yet');
+		ok((await j('api/save.php?code=' + code)).s === 405, 'a save cannot be read with GET (the code would end up in logs)');
 		r = await post('api/save.php', { code, state: st }); ok(r.s === 200, 'save stored');
-		r = await j('api/save.php?code=' + code); ok(r.s === 200 && r.b.state.score === 1, 'save round-trips');
+		r = await load(code); ok(r.s === 200 && r.b.state.score === 1, 'save round-trips');
 		r = await post('api/save.php', { code: 'short', state: st }); ok(r.s === 400, 'short code rejected');
 		r = await post('api/save.php', { code, state: { evil: 'x'.repeat(100) } }); ok(r.s === 400, 'non-state rejected');
 		r = await post('api/save.php', { code, state: { ...st, flags: { pad: 'x'.repeat(20000) } } }); ok(r.s === 413, 'oversize rejected');
-		r = await post('api/save.php', { code, state: { ...st, score: 2 } }); r = await j('api/save.php?code=' + code); ok(r.b.state.score === 2, 'save updates in place');
+		r = await post('api/save.php', { code, state: { ...st, score: 2 } }); r = await load(code); ok(r.b.state.score === 2, 'save updates in place');
 		const raw = execSync(`php -r '$p=new PDO("sqlite:${db}");echo $p->query("SELECT sync_hash FROM saves")->fetchColumn();'`).toString();
 		ok(raw.length === 64 && raw.indexOf(code) === -1, 'only a hash of the code is stored');
+
+		// client address behind a trusted proxy: a spoofed first X-Forwarded-For entry is ignored
+		const ipOf = (remote, xff) => execSync(`php -r 'require "${tmp}/includes/db.php"; $_SERVER["REMOTE_ADDR"]="${remote}"; $_SERVER["HTTP_X_FORWARDED_FOR"]="${xff}"; echo client_ip(["10.0.0.5"]);'`).toString();
+		ok(ipOf('10.0.0.5', '1.2.3.4, 9.9.9.9') === '9.9.9.9', 'X-Forwarded-For: the spoofed first entry is ignored, the address the proxy saw is used');
+		ok(ipOf('7.7.7.7', '1.2.3.4') === '7.7.7.7', 'headers are ignored when the peer is not a trusted proxy');
 
 		// protected folders
 		// (php -S ignores .htaccess; assert the files are present for Apache)
@@ -75,6 +93,12 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 		r = await j('api/get-scores.php'); ok(r.b.total === 2, 'delete without CSRF token refused');
 		d = await fetch(base + 'admin.php?tab=scores', { method: 'POST', redirect: 'manual', headers: { cookie: c2, 'content-type': 'application/x-www-form-urlencoded' }, body: `action=delete&id=${id}&csrf=${csrf}` });
 		r = await j('api/get-scores.php'); ok(r.b.total === 1, 'admin delete works with token');
+
+		// guessing the admin password is throttled per client, not per session
+		for (let i = 0; i < 5; i++) { await sleep(1100); await fetch(base + 'admin.php', { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: 'action=login&password=nope' + i }); }
+		await sleep(1100);
+		ar = await fetch(base + 'admin.php', { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: 'action=login&password=correct-horse-battery' });
+		ok(/Too many attempts/.test(await ar.text()), 'five wrong guesses lock sign-in, even with the right password and no session cookie');
 
 		// browser: finish the game, get on the board, sync
 		execSync(`php -r '$p=new PDO("sqlite:${db}");$p->exec("UPDATE completions SET created_at=\\"2000-01-01 00:00:00\\"");'`);
@@ -100,7 +124,7 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 		await page.screenshot({ path: process.argv[2] ? process.argv[2] + '/board.png' : os.tmpdir() + '/board.png' });
 		await sleep(1200);
 		const code2 = await page.evaluate(() => localStorage.getItem('night-shift.sync'));
-		r = await j('api/save.php?code=' + code2); ok(r.s === 200 && r.b.state.run && r.b.state.chapter === idx.length, 'cloud save followed the game');
+		r = await load(code2); ok(r.s === 200 && r.b.state.run && r.b.state.chapter === idx.length, 'cloud save followed the game');
 		// a fresh browser profile loads it with the code
 		const p2 = await (await br.newContext()).newPage(); p2.on('dialog', x => x.accept());
 		await p2.goto(base); await p2.waitForFunction(() => window.NightShift && !document.getElementById('cloud').hidden === true || window.NightShift);

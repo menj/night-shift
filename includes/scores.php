@@ -12,8 +12,8 @@ declare(strict_types=1);
 function validate_completion(array $in, array $cfg): array
 {
     $name = trim(preg_replace('/\s+/u', ' ', (string)($in['name'] ?? '')));
-    $len  = mb_strlen($name);
-    if ($len < $cfg['name_min_len'] || $len > $cfg['name_max_len']) { return ['ok' => false, 'error' => 'invalid_name_length']; }
+    $len  = preg_match_all('/./us', $name);   // characters, without needing the mbstring extension (false on invalid UTF-8)
+    if ($len === false || $len < $cfg['name_min_len'] || $len > $cfg['name_max_len']) { return ['ok' => false, 'error' => 'invalid_name_length']; }
     if (preg_match('/[\x00-\x1F\x7F<>&"\']/u', $name)) { return ['ok' => false, 'error' => 'invalid_name_chars']; }
     foreach (['score', 'moves'] as $k) {
         if (!isset($in[$k]) || !is_int($in[$k])) { return ['ok' => false, 'error' => 'invalid_' . $k]; }
@@ -41,9 +41,10 @@ function record_completion(PDO $pdo, array $cfg, array $c, string $ipHash, strin
     if (is_rate_limited($pdo, $ipHash, (int)$cfg['rate_limit_seconds'])) { return ['ok' => false, 'error' => 'rate_limited']; }
     $pdo->prepare('INSERT INTO completions (player_name, score, moves, hints, duration_ms, ip_hash, user_agent, created_at) VALUES (?,?,?,?,?,?,?,?)')
         ->execute([$c['name'], $c['score'], $c['moves'], $c['hints'], $c['duration_ms'], $ipHash, $ua, gmdate('Y-m-d H:i:s')]);
-    $st = $pdo->prepare('SELECT COUNT(*) FROM completions WHERE score > ? OR (score = ? AND (moves < ? OR (moves = ? AND hints < ?)))');
+    // Everyone ahead of this finish, ties included: the new row has the highest id, so earlier equal finishes rank first.
+    $st = $pdo->prepare('SELECT COUNT(*) FROM completions WHERE score > ? OR (score = ? AND (moves < ? OR (moves = ? AND hints <= ?)))');
     $st->execute([$c['score'], $c['score'], $c['moves'], $c['moves'], $c['hints']]);
-    $rank = (int)$st->fetchColumn() + 1;
+    $rank = (int)$st->fetchColumn();
     return ['ok' => true, 'rank' => $rank, 'total' => (int)$pdo->query('SELECT COUNT(*) FROM completions')->fetchColumn()];
 }
 

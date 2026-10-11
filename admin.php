@@ -24,14 +24,21 @@ $err = '';
 if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     $act = (string)($_POST['action'] ?? '');
     if ($act === 'login') {
-        // Slow down guessing: one attempt per second per session.
-        if (time() - (int)($_SESSION['last'] ?? 0) < 1) { $err = 'Wait a moment and try again.'; }
+        // Throttle guessing per client address (not per session, which a caller can drop): 5 misses lock sign-in for 15 minutes.
+        $tf = sys_get_temp_dir() . '/nightshift-admin-' . substr(ip_hash($cfg['ip_salt'], $cfg['trusted_proxies']), 0, 32);
+        $miss = is_file($tf) ? (json_decode((string)@file_get_contents($tf), true) ?: []) : [];
+        if ((int)($miss['n'] ?? 0) >= 5 && time() - (int)($miss['t'] ?? 0) < 900) { $err = 'Too many attempts. Try again in a few minutes.'; }
+        elseif (time() - (int)($miss['t'] ?? 0) < 1) { $err = 'Wait a moment and try again.'; }
         else {
-            $_SESSION['last'] = time();
             if (password_verify((string)($_POST['password'] ?? ''), $cfg['admin_password_hash'])) {
+                @unlink($tf);
                 session_regenerate_id(true);
                 $_SESSION['ok'] = $token; $_SESSION['csrf'] = bin2hex(random_bytes(16)); $in = true;
-            } else { $err = 'Wrong password.'; }
+            } else {
+                $n = ((time() - (int)($miss['t'] ?? 0)) < 900 ? (int)($miss['n'] ?? 0) : 0) + 1;
+                @file_put_contents($tf, json_encode(['n' => $n, 't' => time()]), LOCK_EX);
+                $err = 'Wrong password.';
+            }
         }
     } elseif ($in && hash_equals((string)($_SESSION['csrf'] ?? ''), (string)($_POST['csrf'] ?? ''))) {
         if ($act === 'logout') { $_SESSION = []; session_destroy(); header('Location: admin.php'); exit; }

@@ -14,7 +14,7 @@ const srv = http.createServer((q, r) => {
 let fails = 0, n = 0;
 const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 (async () => {
-	await new Promise(r => srv.listen(0, r));
+	await new Promise(r => srv.listen(0, '127.0.0.1', r));   // loopback only: the folder is never exposed to the network
 	const base = 'http://127.0.0.1:' + srv.address().port + '/';
 	const browser = await chromium.launch({ executablePath: '/opt/pw-browsers/chromium', args: ['--no-sandbox'] });
 	const errors = [];
@@ -49,6 +49,7 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	for (let n = 1; n <= N; n++) {
 		for (const c of chap(n)) await type(c);
 		ok(await page.evaluate(() => window.NightShift.state.ended), 'chapter ' + n + ' ended');
+		if (n === 1) { await type('undo'); ok(/nothing to undo/.test(await logText()) && await page.evaluate(() => window.NightShift.state.ended), 'undo is refused once the chapter has ended'); }
 		ok((await page.$eval('#score', e => e.textContent)).endsWith(maxes[n - 1] + '/' + maxes[n - 1]), 'chapter ' + n + ' full score');
 		if (n < N) {
 			await page.click('text=Next chapter');

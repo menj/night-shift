@@ -3,8 +3,8 @@
   Night Shift: automated tests. Run with: node tools/test.js
 
   1. parser      typed commands become the right { verb, noun, with, dir }
-  2. lint        every id, exit and rule in data/world.json points at something real
-  3. walkthrough tests/walkthrough.txt finishes the chapter with full score and no wasted commands
+  2. lint        every id, exit and rule in data/ch1.json points at something real
+  3. walkthrough tests/ch1.txt finishes the chapter with full score and no wasted commands
   4. spice       Off / Mild / Medium / Hot show exactly the lines they should
   5. hints       every stage has a hint, and they escalate
   6. purity      exec() never changes the state it is given (undo and autosave depend on it)
@@ -16,7 +16,7 @@ var fs = require('fs');
 var path = require('path');
 var Parser = require('../js/parser.js');
 var Engine = require('../js/engine.js');
-var world = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/world.json'), 'utf8'));
+var world = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/ch1.json'), 'utf8'));
 
 var failures = 0, checks = 0;
 function ok(cond, msg) { checks++; if (!cond) { failures++; console.log('  FAIL: ' + msg); } }
@@ -24,7 +24,7 @@ function section(name) { console.log('\n' + name); }
 function eq(a, b, msg) { ok(JSON.stringify(a) === JSON.stringify(b), msg + ' (got ' + JSON.stringify(a) + ', want ' + JSON.stringify(b) + ')'); }
 function plainLines(res) { return res.lines.map(function (l) { return Engine.plain(l.t); }); }
 function walk() {
-	return fs.readFileSync(path.join(__dirname, '../tests/walkthrough.txt'), 'utf8').split('\n').map(function (l) { return l.trim(); }).filter(function (l) { return l && l[0] !== '#'; });
+	return fs.readFileSync(path.join(__dirname, '../tests/ch1.txt'), 'utf8').split('\n').map(function (l) { return l.trim(); }).filter(function (l) { return l && l[0] !== '#'; });
 }
 
 /* ---------- 1. parser ---------- */

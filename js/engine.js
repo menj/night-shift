@@ -34,7 +34,8 @@
 
 	Engine.prototype.setSpice = function (level) { this.spice = RANK[level] !== undefined ? level : 'mild'; };
 
-	Engine.prototype.newState = function () {
+	/** carry: flag names ("carry:...") earned in earlier chapters, copied into the new chapter's flags. */
+	Engine.prototype.newState = function (carry) {
 		var st = { room: this.w.start, loc: {}, flags: {}, score: 0, moves: 0, last: '', talk: {}, hint: {}, cards: [], ended: false };
 		var self = this;
 		Object.keys(this.defs).forEach(function (id) {
@@ -42,6 +43,7 @@
 			st.loc[id] = d.loc || 'gone';
 			if (d.open) { st.flags['open:' + id] = true; }
 		});
+		(carry || []).forEach(function (f) { st.flags[f] = true; });
 		return st;
 	};
 

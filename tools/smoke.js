@@ -93,6 +93,9 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	// reload restores autosave
 	await page.reload(); await page.waitForFunction(() => window.NightShift);
 	ok(/Welcome back/.test(await logText()), 'autosave restored');
+	// cards from a save made before the gallery was remembered are carried over when the save is restored
+	await page.evaluate(() => localStorage.removeItem('night-shift.gallery')); await page.reload(); await page.waitForFunction(() => window.NightShift);
+	ok(await page.evaluate(() => JSON.parse(localStorage.getItem('night-shift.gallery')).unlocked.length) === 5, 'restoring a save migrates its unlocked cards into the gallery');
 	ok(/Ch 5/.test(await page.$eval('#score', e => e.textContent)), 'restored on the last chapter');
 
 	// play again, undo, tap noun

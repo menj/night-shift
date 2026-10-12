@@ -408,6 +408,7 @@
 		var saved = readSave();
 		if (saved) {
 			state = saved;
+			state.cards.forEach(function (id) { galleryAdd('unlocked', id); });   // cards earned before the gallery was remembered survive a new game
 			addLine({ k: 'note', t: 'Welcome back. Your game was restored.' });
 			if (state.ended && meta.still && /^img\/scenes\/[\w.-]+\.png$/.test(meta.still.src)) { addLine({ k: 'still', src: meta.still.src, t: meta.still.t || '' }); }
 			if (state.ended && meta.scene) { meta.scene.forEach(function (t) { addLine({ k: 'story', t: t }).className += ' beat'; }); }

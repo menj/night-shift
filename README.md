@@ -16,12 +16,19 @@ Tap the buttons and highlighted words, or type commands (`look`, `take token`, `
 
     index.html        page
     css/game.css      all styling, colours are CSS variables
+    css/admin.css     styling for the admin page
+    img/              icons, the share image and cutscene stills (img/scenes/)
+    fonts/            Special Elite (WOFF2)
+    art/              gallery pictures (git-ignored, served from the server)
+    api/, includes/, sql/, db/   optional database layer (see below)
+    install.php, admin.php       web installer and admin page (optional)
+    js/install.js     installer page script
     js/parser.js      typed-command parser
     js/engine.js      pure engine: exec(state, input) -> new state + text
     js/ui.js          DOM, autosave, undo, settings tabs, arcade.stats
     data/ch1.json .. ch5.json   one world per chapter: rooms, items, people, rules, hints
     data/chapters.json   the chapter list (built by tools/build-index.js)
-    tools/test.js     parser and chapter-1 spot tests
+    tools/test.js     engine checks: parser, every chapter's playthrough, cutscenes, secrets, carry-over
     tools/check-chapter.js <N>   the per-chapter checker: lint, walkthrough, Spice, hints, purity, exhaustive dead-end search
     tools/build-index.js         regenerates data/chapters.json
     tools/smoke.js    headless-browser test of the real page (static mode)
@@ -40,7 +47,7 @@ Without PHP or a database the game is static and saves in the browser. Open `ins
 ## Tests
 
     for n in 1 2 3 4 5; do node tools/check-chapter.js $n; done   # every chapter: 0 dead ends
-    node tools/test.js                                   # parser + chapter 1 spot tests
+    node tools/test.js                                   # engine checks (parser, playthroughs, cutscenes, secrets)
     NODE_PATH=$(npm root -g) node tools/smoke.js         # needs Playwright + Chromium
     NODE_PATH=$(npm root -g) node tools/server-test.js   # also needs php with pdo_sqlite
 
@@ -55,6 +62,10 @@ Settings, Spice tab: Off, Mild (default), Medium, Hot. Hot needs an 18+ confirma
 ## Licences
 
 Code: see LICENSE. Special Elite font: Apache-2.0.
+
+## Cutscenes
+
+Chapter intros and endings can be paced scenes: the text arrives one beat at a time with **Continue** and **Skip** buttons, sometimes with a pixel-art still from `img/scenes/`. While a scene is paused the other controls are inert. A scene is authored as a `scene` effect (see DESIGN.md) and never changes the score or the rules.
 
 ## Secrets and the gallery
 

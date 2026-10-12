@@ -1227,6 +1227,9 @@
           "card": "live-wire"
         },
         {
+          "card": "double-circuit"
+        },
+        {
           "scene": [
             "You put your hand on the cold steel. Before you can think of a line, the door slides open on its own.",
             {
@@ -1355,6 +1358,11 @@
       "title": "Live Wire",
       "who": "Lola Voltage",
       "secretHint": "Some tags forbid everyone. Not everyone is a someone."
+    },
+    "double-circuit": {
+      "title": "Double Circuit",
+      "who": "Ada and Ida Circuit",
+      "with": "live-wire"
     }
   }
 }

@@ -442,10 +442,11 @@
 		var gal = galleryRead();
 		Object.keys(worlds).forEach(function (n) { Object.keys(worlds[n].cards || {}).forEach(function (id) {
 			var meta = worlds[n].cards[id], got = state.cards.indexOf(id) !== -1 || gal.unlocked.indexOf(id) !== -1;
-			var revealed = gal.revealed.indexOf(id) !== -1;
+			var revealed = gal.revealed.indexOf(id) !== -1 || (!!meta.with && gal.revealed.indexOf(meta.with) !== -1);   // a bonus card opens with its chapter's secret
 			var li = document.createElement('li');
 			if (got) {
 				var alt = meta.title + (meta.who ? ' (' + meta.who + ')' : '');
+				var hint = meta.secretHint || (meta.with ? cardMeta(meta.with).secretHint : '');   // a bonus card shares its chapter's clue
 				var holder = document.createElement('span');
 				holder.className = 'thumb';
 				var img = new Image();
@@ -468,7 +469,7 @@
 				name.textContent = alt;
 				var sub = document.createElement('small');
 				sub.className = 'muted';
-				sub.textContent = revealed ? 'Secret found: fully revealed.' : (meta.secretHint ? 'Secret: ' + meta.secretHint : 'Pixelated until you find its secret.');
+				sub.textContent = revealed ? 'Secret found: fully revealed.' : (hint ? 'Secret: ' + hint : 'Pixelated until you find its secret.');
 				t.appendChild(name); t.appendChild(sub);
 				li.appendChild(t);
 			} else {

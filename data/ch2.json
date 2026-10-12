@@ -1127,6 +1127,9 @@
           "card": "cloud-nine"
         },
         {
+          "card": "gold-standard"
+        },
+        {
           "scene": [
             "You hold up the plug. The socket is high in the wall, among pipes that now hang perfectly still, because nothing is ticking to wind them up. Hamilton eyes it from your shoulder.",
             "\"No beat,\" he mutters. \"No seed. Just me and the air.\"",
@@ -1212,6 +1215,11 @@
       "title": "Cloud Nine",
       "who": "Dolly Starling",
       "secretHint": "A full glass is a lonely glass. What do bars do for company?"
+    },
+    "gold-standard": {
+      "title": "Gold Standard",
+      "who": "Goldie Standard",
+      "with": "cloud-nine"
     }
   }
 }

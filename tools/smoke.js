@@ -95,7 +95,7 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	ok(/Welcome back/.test(await logText()), 'autosave restored');
 	// cards from a save made before the gallery was remembered are carried over when the save is restored
 	await page.evaluate(() => localStorage.removeItem('night-shift.gallery')); await page.reload(); await page.waitForFunction(() => window.NightShift);
-	ok(await page.evaluate(() => JSON.parse(localStorage.getItem('night-shift.gallery')).unlocked.length) === 5, 'restoring a save migrates its unlocked cards into the gallery');
+	ok(await page.evaluate(() => JSON.parse(localStorage.getItem('night-shift.gallery')).unlocked.length) === 9, 'restoring a save migrates its unlocked cards into the gallery');
 	ok(/Ch 5/.test(await page.$eval('#score', e => e.textContent)), 'restored on the last chapter');
 
 	// play again, undo, tap noun
@@ -126,8 +126,8 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	await page.click('input[value="hot"]');
 	ok(await page.evaluate(() => JSON.parse(localStorage.getItem('night-shift.settings')).spice) === 'hot', 'hot after age confirm');
 	ok(await page.$eval('#gallery', e => !e.hidden), 'gallery shown on hot');
-	// pictures are pixelated until a card's secret is found (the full run above unlocked all five cards, found no secret)
-	await page.waitForFunction(() => document.querySelectorAll('#cards canvas.pix').length === 5);
+	// pictures are pixelated until a card's secret is found (the full run above unlocked all nine cards, found no secret)
+	await page.waitForFunction(() => document.querySelectorAll('#cards canvas.pix').length === 9);
 	ok((await page.$$('#cards img')).length === 0, 'unlocked cards show pixelated pictures, not the full image');
 	ok((await page.$$eval('#cards small', e => e.map(x => x.textContent))).every(t => /^Secret: .{10,}/.test(t)), 'each card shows its cryptic secret clue');
 	// find chapter 1's secret through the real page: the card's picture is revealed and the find is announced
@@ -138,7 +138,7 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	ok(/Secret found: Mirror Ball/.test(await logText()), 'finding a secret is announced');
 	ok(await page.evaluate(() => JSON.parse(localStorage.getItem('night-shift.gallery')).revealed.includes('mirror-ball')), 'the found secret is remembered across playthroughs');
 	await page.click('#open-settings'); await page.click('#tab-spice');
-	await page.waitForFunction(() => document.querySelectorAll('#cards canvas.pix').length === 4 && document.querySelectorAll('#cards img').length === 1);
+	await page.waitForFunction(() => document.querySelectorAll('#cards canvas.pix').length === 8 && document.querySelectorAll('#cards img').length === 1);
 	ok(/fully revealed/.test(await page.$eval('#cards li:first-child small', e => e.textContent)), 'the revealed card shows the full picture and says so');
 	await page.keyboard.press('Escape');
 	await page.click('#open-settings'); await page.click('#tab-spice');

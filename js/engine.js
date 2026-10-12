@@ -295,6 +295,7 @@
 				if (st.cards.indexOf(e.card) === -1) { st.cards.push(e.card); }
 				out.events.push({ type: 'card', id: e.card });
 			}
+			if (e.secret) { st.flags['secret:' + e.secret] = true; out.events.push({ type: 'reveal', id: e.secret }); }   // an optional secret: fully reveals that gallery card
 			if (e.end) { st.ended = true; out.events.push({ type: 'end' }); }
 		});
 	};

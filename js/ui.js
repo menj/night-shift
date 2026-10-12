@@ -12,7 +12,7 @@
 
 	var Engine = window.NightShiftEngine;
 	var GAME_ID = 'night-shift';
-	var KEY_SAVE = 'night-shift.save', KEY_SET = 'night-shift.settings', KEY_STATS = 'arcade.stats', KEY_SYNC = 'night-shift.sync', KEY_NAME = 'arcade_name';
+	var KEY_SAVE = 'night-shift.save', KEY_SET = 'night-shift.settings', KEY_STATS = 'arcade.stats', KEY_SYNC = 'night-shift.sync', KEY_NAME = 'arcade_name', KEY_GAL = 'night-shift.gallery';
 	var SPICE = ['off', 'mild', 'medium', 'hot'];
 	var TWO = { use: 'on', give: 'to', ask: 'about' };   // verbs that take a second word, and the joining word
 
@@ -50,6 +50,17 @@
 		root.style.setProperty('--text-scale', settings.large ? '1.15' : '1');
 		if (settings.motion) { root.setAttribute('data-reduce-motion', ''); } else { root.removeAttribute('data-reduce-motion'); }
 		Object.keys(engines).forEach(function (k) { engines[k].setSpice(settings.spice); });
+	}
+
+	/* the gallery outlives a single playthrough: which cards were ever unlocked, and which secrets were found */
+	function galleryRead() {
+		var g = {};
+		try { g = JSON.parse(read(KEY_GAL) || '{}') || {}; } catch (e) { g = {}; }
+		return { unlocked: Array.isArray(g.unlocked) ? g.unlocked : [], revealed: Array.isArray(g.revealed) ? g.revealed : [] };
+	}
+	function galleryAdd(kind, id) {
+		var g = galleryRead();
+		if (g[kind].indexOf(id) === -1) { g[kind].push(id); write(KEY_GAL, JSON.stringify(g)); }
 	}
 
 	function updateStats(done) {
@@ -231,6 +242,8 @@
 		var finished = false, lastChapter = false;
 		res.events.forEach(function (e) {
 			if (e.type === 'score') { updateStats(false); }
+			if (e.type === 'card') { galleryAdd('unlocked', e.id); }
+			if (e.type === 'reveal') { galleryAdd('revealed', e.id); }
 			if (e.type === 'end') { finished = true; }
 		});
 		if (finished) {
@@ -247,6 +260,9 @@
 		refresh();
 		playLines(res.lines, function () {
 			res.events.forEach(function (e) {
+				if (e.type === 'reveal') {
+					addLine({ k: 'card', t: 'Secret found: ' + cardMeta(e.id).title + '.' + (settings.spice === 'hot' ? ' Its gallery picture is now fully revealed. (Settings, Spice)' : '') });
+				}
 				if (e.type === 'card' && settings.spice === 'hot') {
 					var cm = cardMeta(e.id);
 					addLine({ k: 'card', t: 'Gallery card unlocked: ' + cm.title + '. (Settings, Spice)' });
@@ -422,17 +438,37 @@
 		if (box.hidden) { return; }
 		var ul = $('cards');
 		ul.textContent = '';
+		var gal = galleryRead();
 		Object.keys(worlds).forEach(function (n) { Object.keys(worlds[n].cards || {}).forEach(function (id) {
-			var meta = worlds[n].cards[id], got = state.cards.indexOf(id) !== -1;
+			var meta = worlds[n].cards[id], got = state.cards.indexOf(id) !== -1 || gal.unlocked.indexOf(id) !== -1;
+			var revealed = gal.revealed.indexOf(id) !== -1;
 			var li = document.createElement('li');
 			if (got) {
+				var alt = meta.title + (meta.who ? ' (' + meta.who + ')' : '');
+				var holder = document.createElement('span');
+				holder.className = 'thumb';
 				var img = new Image();
-				img.alt = meta.title + (meta.who ? ' (' + meta.who + ')' : ''); img.width = 120; img.height = 80;
-				img.onerror = function () { img.remove(); };
+				img.alt = alt; img.width = 120; img.height = 80;
+				img.onerror = function () { holder.remove(); };
+				img.onload = function () {
+					if (revealed) { holder.appendChild(img); return; }
+					// pixelated until its secret is found: draw the picture at a tiny size, then scale it up with hard edges
+					var cv = document.createElement('canvas'), w = 30, h = Math.max(1, Math.round(w * img.naturalHeight / img.naturalWidth));
+					cv.width = w; cv.height = h; cv.className = 'pix';
+					cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', alt + ', pixelated');
+					cv.getContext('2d').drawImage(img, 0, 0, w, h);
+					holder.appendChild(cv);
+				};
 				img.src = 'art/' + id + '.png';
-				li.appendChild(img);
+				li.appendChild(holder);
 				var t = document.createElement('span');
-				t.textContent = meta.title + ' (' + meta.who + ')';
+				t.className = 'cap';
+				var name = document.createElement('b');
+				name.textContent = alt;
+				var sub = document.createElement('small');
+				sub.className = 'muted';
+				sub.textContent = revealed ? 'Secret found: fully revealed.' : (meta.secretHint ? 'Secret: ' + meta.secretHint : 'Pixelated until you find its secret.');
+				t.appendChild(name); t.appendChild(sub);
 				li.appendChild(t);
 			} else {
 				li.className = 'locked';

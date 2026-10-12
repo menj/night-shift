@@ -53,10 +53,13 @@
 	}
 
 	/* the gallery outlives a single playthrough: which cards were ever unlocked, and which secrets were found */
+	var galMem = null;   // the gallery lives in memory too, so a blocked or full localStorage cannot undo a reveal during the session
 	function galleryRead() {
+		if (galMem) { return galMem; }
 		var g = {};
 		try { g = JSON.parse(read(KEY_GAL) || '{}') || {}; } catch (e) { g = {}; }
-		return { unlocked: Array.isArray(g.unlocked) ? g.unlocked : [], revealed: Array.isArray(g.revealed) ? g.revealed : [] };
+		galMem = { unlocked: Array.isArray(g.unlocked) ? g.unlocked : [], revealed: Array.isArray(g.revealed) ? g.revealed : [] };
+		return galMem;
 	}
 	function galleryAdd(kind, id) {
 		var g = galleryRead();
@@ -442,10 +445,11 @@
 		var gal = galleryRead();
 		Object.keys(worlds).forEach(function (n) { Object.keys(worlds[n].cards || {}).forEach(function (id) {
 			var meta = worlds[n].cards[id], got = state.cards.indexOf(id) !== -1 || gal.unlocked.indexOf(id) !== -1;
-			var revealed = gal.revealed.indexOf(id) !== -1;
+			var revealed = gal.revealed.indexOf(id) !== -1 || (!!meta.with && gal.revealed.indexOf(meta.with) !== -1);   // a bonus card opens with its chapter's secret
 			var li = document.createElement('li');
 			if (got) {
 				var alt = meta.title + (meta.who ? ' (' + meta.who + ')' : '');
+				var hint = meta.secretHint || (meta.with ? cardMeta(meta.with).secretHint : '');   // a bonus card shares its chapter's clue
 				var holder = document.createElement('span');
 				holder.className = 'thumb';
 				var img = new Image();
@@ -468,7 +472,7 @@
 				name.textContent = alt;
 				var sub = document.createElement('small');
 				sub.className = 'muted';
-				sub.textContent = revealed ? 'Secret found: fully revealed.' : (meta.secretHint ? 'Secret: ' + meta.secretHint : 'Pixelated until you find its secret.');
+				sub.textContent = revealed ? 'Secret found: fully revealed.' : (hint ? 'Secret: ' + hint : 'Pixelated until you find its secret.');
 				t.appendChild(name); t.appendChild(sub);
 				li.appendChild(t);
 			} else {

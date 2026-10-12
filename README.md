@@ -58,7 +58,7 @@ Code: see LICENSE. Special Elite font: Apache-2.0.
 
 ## Secrets and the gallery
 
-Every chapter hides one optional secret task (see each chapter's `secretHint`). Hot shows a gallery of picture cards that unlock as you finish chapters. Each picture is **pixelated** until you find that chapter's secret, then it is fully revealed. Progress is kept in the browser (`night-shift.gallery`) across playthroughs. The art itself is not in this repo: put `art/<card-id>.png` on the server. Note the pixelation happens in the browser from the full image, so it is a game mechanic and not access control. A secret never scores, ends a chapter or changes the story.
+Every chapter hides one optional secret task (see each chapter's `secretHint`). Hot shows a gallery of nine picture cards that unlock as you finish chapters (one to three per chapter; a chapter's extra cards open with its secret too). Each picture is **pixelated** until you find that chapter's secret, then it is fully revealed. Progress is kept in the browser (`night-shift.gallery`) across playthroughs. The art itself is not in this repo: put `art/<card-id>.png` on the server. Note the pixelation happens in the browser from the full image, so it is a game mechanic and not access control. A secret never scores, ends a chapter or changes the story.
 
 ## Chapters
 

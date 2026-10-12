@@ -64,6 +64,9 @@ try { secretCmds = fs.readFileSync(path.join(root, 'tests/ch' + n + '-secret.txt
 	ok(world.rules.some(function (r) { return JSON.stringify(r.effects).indexOf('"end"') !== -1; }), 'some rule ends the chapter');
 	ok(Array.isArray(world.hints) && world.hints.length >= 3, 'at least 3 hint stages');
 	ok(world.cards && Object.keys(world.cards).length >= 1, 'declares its gallery card');
+	Object.keys(world.cards || {}).forEach(function (id) { var c = world.cards[id]; if (c.with) { ok(world.cards[c.with], 'bonus card ' + id + ' opens with a card this chapter declares (' + c.with + ')'); } });
+	var cardEffects = []; world.rules.forEach(function (r) { r.effects.forEach(function (e) { if (e.card) { cardEffects.push(e.card); } }); });
+	Object.keys(world.cards || {}).forEach(function (id) { ok(cardEffects.indexOf(id) !== -1, 'card ' + id + ' is unlocked by some rule'); });
 	ok(world.rules.some(function (r) { return JSON.stringify(r.effects).indexOf('carry:') !== -1; }) || n === 5, 'sets a carry: flag for the next chapter (except the last)');
 })();
 

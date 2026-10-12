@@ -95,7 +95,7 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	ok(/Welcome back/.test(await logText()), 'autosave restored');
 	// cards from a save made before the gallery was remembered are carried over when the save is restored
 	await page.evaluate(() => localStorage.removeItem('night-shift.gallery')); await page.reload(); await page.waitForFunction(() => window.NightShift);
-	ok(await page.evaluate(() => JSON.parse(localStorage.getItem('night-shift.gallery')).unlocked.length) === 5, 'restoring a save migrates its unlocked cards into the gallery');
+	ok(await page.evaluate(() => JSON.parse(localStorage.getItem('night-shift.gallery')).unlocked.length) === 9, 'restoring a save migrates its unlocked cards into the gallery');
 	ok(/Ch 5/.test(await page.$eval('#score', e => e.textContent)), 'restored on the last chapter');
 
 	// play again, undo, tap noun
@@ -126,8 +126,8 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	await page.click('input[value="hot"]');
 	ok(await page.evaluate(() => JSON.parse(localStorage.getItem('night-shift.settings')).spice) === 'hot', 'hot after age confirm');
 	ok(await page.$eval('#gallery', e => !e.hidden), 'gallery shown on hot');
-	// pictures are pixelated until a card's secret is found (the full run above unlocked all five cards, found no secret)
-	await page.waitForFunction(() => document.querySelectorAll('#cards canvas.pix').length === 5);
+	// pictures are pixelated until a card's secret is found (the full run above unlocked all nine cards, found no secret)
+	await page.waitForFunction(() => document.querySelectorAll('#cards canvas.pix').length === 9);
 	ok((await page.$$('#cards img')).length === 0, 'unlocked cards show pixelated pictures, not the full image');
 	ok((await page.$$eval('#cards small', e => e.map(x => x.textContent))).every(t => /^Secret: .{10,}/.test(t)), 'each card shows its cryptic secret clue');
 	// find chapter 1's secret through the real page: the card's picture is revealed and the find is announced
@@ -138,7 +138,7 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	ok(/Secret found: Mirror Ball/.test(await logText()), 'finding a secret is announced');
 	ok(await page.evaluate(() => JSON.parse(localStorage.getItem('night-shift.gallery')).revealed.includes('mirror-ball')), 'the found secret is remembered across playthroughs');
 	await page.click('#open-settings'); await page.click('#tab-spice');
-	await page.waitForFunction(() => document.querySelectorAll('#cards canvas.pix').length === 4 && document.querySelectorAll('#cards img').length === 1);
+	await page.waitForFunction(() => document.querySelectorAll('#cards canvas.pix').length === 8 && document.querySelectorAll('#cards img').length === 1);
 	ok(/fully revealed/.test(await page.$eval('#cards li:first-child small', e => e.textContent)), 'the revealed card shows the full picture and says so');
 	await page.keyboard.press('Escape');
 	await page.click('#open-settings'); await page.click('#tab-spice');
@@ -152,6 +152,18 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	await page.evaluate(() => { document.querySelector('.btn.ghost'); });
 	await page.click('#open-settings'); await page.click('#tab-game'); await page.click('#new-game');
 	ok(!(await page.$('.scene-ctl')) && (await page.$$('#log .beat')).length >= 2, 'skip-cutscenes setting shows the opening in one go');
+
+	// storage that refuses to save the gallery (private mode, quota): a found secret still shows for the session
+	const ctx2 = await browser.newContext({ viewport: { width: 1000, height: 760 }, reducedMotion: 'reduce' });
+	await ctx2.route('**/art/*.png', r => r.fulfill({ contentType: 'image/png', body: PNG }));
+	await ctx2.addInitScript(() => { const set = Storage.prototype.setItem; Storage.prototype.setItem = function (k, v) { if (k === 'night-shift.gallery') { throw new Error('quota'); } return set.call(this, k, v); }; localStorage.setItem('night-shift.settings', JSON.stringify({ spice: 'hot', ageOk: true, skipScenes: true })); });
+	const pg2 = await ctx2.newPage(); pg2.on('pageerror', e => errors.push(String(e)));
+	await pg2.goto(base); await pg2.waitForFunction(() => window.NightShift);
+	for (const c of secretChap(1)) { await pg2.fill('#input', c); await pg2.press('#input', 'Enter'); }
+	await pg2.click('#open-settings'); await pg2.click('#tab-spice');
+	await pg2.waitForFunction(() => document.querySelectorAll('#cards img').length === 1);
+	ok(true, 'a found secret still reveals its card when the gallery cannot be saved');
+	await ctx2.close();
 
 	// mobile
 	const m = await browser.newContext({ viewport: { width: 390, height: 780 }, hasTouch: true, isMobile: true });

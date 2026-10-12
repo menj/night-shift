@@ -427,7 +427,7 @@
 			var li = document.createElement('li');
 			if (got) {
 				var img = new Image();
-				img.alt = ''; img.width = 56; img.height = 72;
+				img.alt = meta.title + (meta.who ? ' (' + meta.who + ')' : ''); img.width = 120; img.height = 80;
 				img.onerror = function () { img.remove(); };
 				img.src = 'art/' + id + '.png';
 				li.appendChild(img);

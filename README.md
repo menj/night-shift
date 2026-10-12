@@ -28,7 +28,7 @@ Tap the buttons and highlighted words, or type commands (`look`, `take token`, `
     js/ui.js          DOM, autosave, undo, settings tabs, arcade.stats
     data/ch1.json .. ch5.json   one world per chapter: rooms, items, people, rules, hints
     data/chapters.json   the chapter list (built by tools/build-index.js)
-    tools/test.js     engine checks: parser, every chapter's playthrough, cutscenes, secrets, carry-over
+    tools/test.js     parser and chapter-1 engine checks (the other chapters are covered by check-chapter.js)
     tools/check-chapter.js <N>   the per-chapter checker: lint, walkthrough, Spice, hints, purity, exhaustive dead-end search
     tools/build-index.js         regenerates data/chapters.json
     tools/smoke.js    headless-browser test of the real page (static mode)
@@ -47,7 +47,7 @@ Without PHP or a database the game is static and saves in the browser. Open `ins
 ## Tests
 
     for n in 1 2 3 4 5; do node tools/check-chapter.js $n; done   # every chapter: 0 dead ends
-    node tools/test.js                                   # engine checks (parser, playthroughs, cutscenes, secrets)
+    node tools/test.js                                   # parser + chapter 1 engine checks
     NODE_PATH=$(npm root -g) node tools/smoke.js         # needs Playwright + Chromium
     NODE_PATH=$(npm root -g) node tools/server-test.js   # also needs php with pdo_sqlite
 
@@ -65,7 +65,7 @@ Code: see LICENSE. Special Elite font: Apache-2.0.
 
 ## Cutscenes
 
-Chapter intros and endings can be paced scenes: the text arrives one beat at a time with **Continue** and **Skip** buttons, sometimes with a pixel-art still from `img/scenes/`. While a scene is paused the other controls are inert. A scene is authored as a `scene` effect (see DESIGN.md) and never changes the score or the rules.
+The chapter intro (`intro` in the chapter file) and any `scene` effect in a rule, such as the ending, are paced: the text arrives one beat at a time with **Continue** and **Skip** buttons, sometimes with a pixel-art still from `img/scenes/`. While a scene is paused the other controls are inert. An intro is a list of beats; an ending or other scene is authored as a `scene` effect (see DESIGN.md). Neither changes the score or the rules.
 
 ## Secrets and the gallery
 

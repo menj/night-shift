@@ -65,7 +65,7 @@ Code: see LICENSE. Special Elite font: Apache-2.0.
 
 ## Cutscenes
 
-The chapter intro (`intro` in the chapter file) and any `scene` effect in a rule, such as the ending, are paced: the text arrives one beat at a time with **Continue** and **Skip** buttons, sometimes with a pixel-art still from `img/scenes/`. While a scene is paused the other controls are inert. An intro is a list whose first entry is the title card, followed by the paced beats; an ending or other scene is authored as a `scene` effect (see DESIGN.md). The scene effect itself only presents text; other effects in the same rule, such as the ending's score and `end`, still apply.
+The chapter intro (`intro` in the chapter file) and any `scene` effect in a rule, such as the ending, are paced: the text arrives one beat at a time with **Continue** and **Skip** buttons, sometimes with a pixel-art still from `img/scenes/`. While a scene is paused the other controls are inert. An intro is a list whose first entry is the title card, followed by the paced beats; an ending or other scene is authored as a `scene` effect (see DESIGN.md). The scene effect itself only presents the beats and an optional still image; other effects in the same rule, such as the ending's score and `end`, still apply.
 
 ## Secrets and the gallery
 

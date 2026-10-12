@@ -3,7 +3,11 @@
   "chapter": "Chapter 4: Cable Maze",
   "start": "landing",
   "maxScore": 5,
-  "carry": ["carry:ch1", "carry:ch2", "carry:ch3"],
+  "carry": [
+    "carry:ch1",
+    "carry:ch2",
+    "carry:ch3"
+  ],
   "intro": [
     "NIGHT SHIFT: CHAPTER 4",
     "Behind the prize counter, under a trapdoor marked AUTHORISED PERSONNEL ONLY (and, in smaller letters, NOT YOU), lies the machine room. That is where the Glitch keeps its tendrils: colour-coded, knotted, and humming a tune you almost recognise.",
@@ -20,14 +24,22 @@
       "desc": [
         "The bottom of a steep metal stair, under the [[hatch|trapdoor]] you fell through. Fluorescent tubes buzz overhead and a dusty console holds a handheld [[radio|radio]]. A bolted [[panel|training panel]] by the iron gate to the north has one lonely [[testcable|training cable]] hanging from it.",
         {
-          "when": [{ "flag": "unlock:landing:n" }],
+          "when": [
+            {
+              "flag": "unlock:landing:n"
+            }
+          ],
           "t": "The iron gate to the north stands open."
         }
       ],
       "exits": {
         "n": {
           "to": "hall",
-          "needs": [{ "flag": "unlock:landing:n" }],
+          "needs": [
+            {
+              "flag": "unlock:landing:n"
+            }
+          ],
           "blocked": "The iron gate is latched shut. A cable runs from the latch to the training panel, as if it wants to be pulled."
         }
       }
@@ -37,15 +49,39 @@
       "desc": [
         "A long concrete hall where the Glitch's tendrils hang from the ceiling in a [[tangle|vast tangle]]: a [[red|red cable]], a [[blue|blue cable]], a [[green|green cable]] and a [[yellow|yellow cable]], all plaited through each other and all plugged into one huge [[board|master board]].",
         {
-          "when": [{ "not": { "flag": "untangled" } }, { "not": { "flag": "fanOff" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "untangled"
+              }
+            },
+            {
+              "not": {
+                "flag": "fanOff"
+              }
+            }
+          ],
           "t": "A hot wind from the east keeps the whole tangle dancing, which does not help."
         },
         {
-          "when": [{ "flag": "fanOff" }, { "not": { "flag": "untangled" } }],
+          "when": [
+            {
+              "flag": "fanOff"
+            },
+            {
+              "not": {
+                "flag": "untangled"
+              }
+            }
+          ],
           "t": "The wind from the east has stopped, and the tangle hangs slack and sleepy."
         },
         {
-          "when": [{ "flag": "untangled" }],
+          "when": [
+            {
+              "flag": "untangled"
+            }
+          ],
           "t": "The tendrils lie in loose, harmless loops on the floor. The passage north is clear."
         },
         "A closet door is to the west, a hot gallery to the east, and steps lead down into the sump. The stairs back are south."
@@ -56,12 +92,20 @@
         "e": "fanroom",
         "d": {
           "to": "sump",
-          "needs": [{ "flag": "booted" }],
+          "needs": [
+            {
+              "flag": "booted"
+            }
+          ],
           "blocked": "Down the steps, the sump is knee-deep in black water. Your shoes are not that kind of brave. You would want boots."
         },
         "n": {
           "to": "doorroom",
-          "needs": [{ "flag": "unlock:hall:n" }],
+          "needs": [
+            {
+              "flag": "unlock:hall:n"
+            }
+          ],
           "blocked": "The tangle hangs across the north passage like a bead curtain made of angry spaghetti. Untangle it first."
         }
       }
@@ -71,18 +115,26 @@
       "desc": [
         "A cupboard of a room, wallpapered in warnings. A bank of [[fuses|fuse boxes]] hums beside a scrap of paper pinned to the wall, a [[page|torn page]] in careful, panicked handwriting. A pair of yellow rubber [[boots|boots]] stands in the corner."
       ],
-      "exits": { "e": "hall" }
+      "exits": {
+        "e": "hall"
+      }
     },
     "fanroom": {
       "name": "Cooling Fan Gallery",
       "desc": [
         "A gallery dominated by an enormous [[fan|cooling fan]] roaring in a steel cage. Its wind blows west down the hall, which is why nothing in there ever sits still. A [[chain|pull chain]] swings in the gale beside the cage.",
         {
-          "when": [{ "flag": "fanOff" }],
+          "when": [
+            {
+              "flag": "fanOff"
+            }
+          ],
           "t": "The fan is slowing, blade by sulky blade."
         }
       ],
-      "exits": { "w": "hall" }
+      "exits": {
+        "w": "hall"
+      }
     },
     "sump": {
       "name": "The Sump",
@@ -94,7 +146,11 @@
         "u": "hall",
         "e": {
           "to": "catwalk",
-          "needs": [{ "flag": "ladderTested" }],
+          "needs": [
+            {
+              "flag": "ladderTested"
+            }
+          ],
           "blocked": "The ladder looks like tetanus with rungs. You should test it before trusting your whole weight to it."
         }
       }
@@ -104,11 +160,17 @@
       "desc": [
         "A narrow iron catwalk above the sump, where the air is dry and warm. A red-handled [[breaker|main breaker]] the size of a park bench juts from the wall, humming with intent. The ladder is to the west.",
         {
-          "when": [{ "flag": "breakerHeld" }],
+          "when": [
+            {
+              "flag": "breakerHeld"
+            }
+          ],
           "t": "The breaker lever sits locked down, wearing a tiny blue glow."
         }
       ],
-      "exits": { "w": "sump" }
+      "exits": {
+        "w": "sump"
+      }
     },
     "doorroom": {
       "name": "The Last Door",
@@ -116,27 +178,39 @@
         "A short corridor, cleaner than the rest, ends at one wide steel [[powerdoor|door]] stamped POWER ROOM. Something on the other side is humming, very quietly, the way you hum when you are waiting for someone.",
         "The Tangle is south."
       ],
-      "exits": { "s": "hall" }
+      "exits": {
+        "s": "hall"
+      }
     }
   },
   "items": {
     "radio": {
       "name": "radio",
-      "aliases": ["radio", "handheld radio", "handheld"],
+      "aliases": [
+        "radio",
+        "handheld radio",
+        "handheld"
+      ],
       "fixed": true,
       "loc": "landing",
       "desc": "A battered handheld radio with a sticker that says PROPERTY OF DJ MIRA. DO NOT LICK. (Someone clearly tried.)"
     },
     "hatch": {
       "name": "trapdoor",
-      "aliases": ["trapdoor", "hatch"],
+      "aliases": [
+        "trapdoor",
+        "hatch"
+      ],
       "fixed": true,
       "loc": "landing",
       "desc": "The trapdoor you came through is now sixteen feet above you and firmly shut. The sign on it still says NOT YOU."
     },
     "panel": {
       "name": "training panel",
-      "aliases": ["panel", "training panel"],
+      "aliases": [
+        "panel",
+        "training panel"
+      ],
       "fixed": true,
       "loc": "landing",
       "desc": "A small panel with a stencilled sign: TRAINING. 1. PULL the cable. 2. See what it does. 3. Feel better about yourself.",
@@ -144,24 +218,57 @@
     },
     "testcable": {
       "name": "training cable",
-      "aliases": ["training cable", "test cable", "tab"],
+      "aliases": [
+        "training cable",
+        "test cable",
+        "tab"
+      ],
       "fixed": true,
       "loc": "landing",
       "desc": [
-        { "when": [{ "not": { "flag": "unlock:landing:n" } }], "t": "A short green training cable with a tag: PULL ME. It is attached to the gate latch. It is the friendliest cable you have ever met." },
-        { "when": [{ "flag": "unlock:landing:n" }], "t": "The training cable dangles, job done, looking smug." }
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "unlock:landing:n"
+              }
+            }
+          ],
+          "t": "A short green training cable with a tag: PULL ME. It is attached to the gate latch. It is the friendliest cable you have ever met."
+        },
+        {
+          "when": [
+            {
+              "flag": "unlock:landing:n"
+            }
+          ],
+          "t": "The training cable dangles, job done, looking smug."
+        }
       ]
     },
     "tangle": {
       "name": "tangle",
-      "aliases": ["tangle", "cable", "cables", "tendrils", "tendril", "wires", "spaghetti"],
+      "aliases": [
+        "tangle",
+        "cable",
+        "cables",
+        "tendrils",
+        "tendril",
+        "wires",
+        "spaghetti"
+      ],
       "fixed": true,
       "loc": "hall",
       "desc": "Four colours of cable, plaited, knotted and bunched around one another like a ball of wool that has been to war. The Glitch's tendrils. You are going to have to take them out one at a time, and the order is going to matter."
     },
     "board": {
       "name": "master board",
-      "aliases": ["board", "master board", "label board", "labels"],
+      "aliases": [
+        "board",
+        "master board",
+        "label board",
+        "labels"
+      ],
       "fixed": true,
       "loc": "hall",
       "desc": "A huge board with four sockets and a laminated label. It reads: DISCONNECT IN ORDER: 1 RED, 2 BLUE, 3 GREEN. Under it, in marker, someone has added: LIES. SEE GUS'S NOTES. YELLOW IS A DIFFERENT PROBLEM.",
@@ -169,44 +276,114 @@
     },
     "red": {
       "name": "red cable",
-      "aliases": ["red", "red cable", "red tendril"],
+      "aliases": [
+        "red",
+        "red cable",
+        "red tendril"
+      ],
       "fixed": true,
       "loc": "hall",
       "desc": [
-        { "when": [{ "not": { "flag": "pulledRed" } }], "t": "The fat red cable. It crackles at you in a way that is hard to take as friendly. The board says it is number one." },
-        { "when": [{ "flag": "pulledRed" }], "t": "The red cable lies on the floor, defeated and smelling slightly of toast." }
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "pulledRed"
+              }
+            }
+          ],
+          "t": "The fat red cable. It crackles at you in a way that is hard to take as friendly. The board says it is number one."
+        },
+        {
+          "when": [
+            {
+              "flag": "pulledRed"
+            }
+          ],
+          "t": "The red cable lies on the floor, defeated and smelling slightly of toast."
+        }
       ]
     },
     "blue": {
       "name": "blue cable",
-      "aliases": ["blue", "blue cable", "blue tendril"],
+      "aliases": [
+        "blue",
+        "blue cable",
+        "blue tendril"
+      ],
       "fixed": true,
       "loc": "hall",
       "desc": [
-        { "when": [{ "not": { "flag": "pulledBlue" } }], "t": "A tight blue cable, humming faint bleeps. It looks like data, or possibly gossip." },
-        { "when": [{ "flag": "pulledBlue" }], "t": "The blue cable lies quiet. Somewhere a screen is relieved." }
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "pulledBlue"
+              }
+            }
+          ],
+          "t": "A tight blue cable, humming faint bleeps. It looks like data, or possibly gossip."
+        },
+        {
+          "when": [
+            {
+              "flag": "pulledBlue"
+            }
+          ],
+          "t": "The blue cable lies quiet. Somewhere a screen is relieved."
+        }
       ]
     },
     "green": {
       "name": "green cable",
-      "aliases": ["green", "green cable", "green tendril"],
+      "aliases": [
+        "green",
+        "green cable",
+        "green tendril"
+      ],
       "fixed": true,
       "loc": "hall",
       "desc": [
-        { "when": [{ "not": { "flag": "pulledGreen" } }], "t": "A thin green cable with a yellow stripe, the same sort as the training cable, only bigger and more experienced." },
-        { "when": [{ "flag": "pulledGreen" }], "t": "The green cable lies on the floor. It had one job and did it." }
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "pulledGreen"
+              }
+            }
+          ],
+          "t": "A thin green cable with a yellow stripe, the same sort as the training cable, only bigger and more experienced."
+        },
+        {
+          "when": [
+            {
+              "flag": "pulledGreen"
+            }
+          ],
+          "t": "The green cable lies on the floor. It had one job and did it."
+        }
       ]
     },
     "yellow": {
       "name": "yellow cable",
-      "aliases": ["yellow", "yellow cable", "yellow tendril"],
+      "aliases": [
+        "yellow",
+        "yellow cable",
+        "yellow tendril"
+      ],
       "fixed": true,
       "loc": "hall",
       "desc": "A yellow cable, thinner than the others, running off along the ceiling toward the stairs. A paper tag reads: RADIO. DON'T."
     },
     "fuses": {
       "name": "fuse boxes",
-      "aliases": ["fuses", "fuse boxes", "fuse box", "fuse", "fusebox"],
+      "aliases": [
+        "fuses",
+        "fuse boxes",
+        "fuse box",
+        "fuse",
+        "fusebox"
+      ],
       "fixed": true,
       "loc": "closet",
       "desc": "Four fuse boxes with hand-lettered tags: RED = POWER (BIGGEST, ANGRIEST). BLUE = DATA. GREEN = EARTH. YELLOW = RADIO. Under GREEN someone has written, in capitals: EARTH FIRST, ALWAYS. THE VOLTS NEED SOMEWHERE TO GO.",
@@ -214,7 +391,13 @@
     },
     "page": {
       "name": "torn page",
-      "aliases": ["page", "torn page", "diagram", "notes", "gus"],
+      "aliases": [
+        "page",
+        "torn page",
+        "diagram",
+        "notes",
+        "gus"
+      ],
       "takeable": true,
       "loc": "closet",
       "points": 1,
@@ -225,63 +408,149 @@
         "Also: the RED needs someone to hold the main breaker down, up the ladder in the sump. Someone who does not mind a shock. Take a robot.",
         "YELLOW: leave it. It is the radio. I pulled it once. The silence was so loud.",
         "If the fan keeps blowing the cables about, STOP THE FAN. Everything calms right down.",
-        { "s": "mild", "t": "P.S. If you hear a woman's voice on the radio, be polite. She is probably the nicest thing in this building. Keep it zipped. Jacket, I mean." }
+        {
+          "s": "mild",
+          "t": "P.S. If you hear a woman's voice on the radio, be polite. She is probably the nicest thing in this building. Keep it zipped. Jacket, I mean."
+        }
       ]
     },
     "boots": {
       "name": "boots",
-      "aliases": ["boots", "rubber boots", "wellies", "boot"],
+      "aliases": [
+        "boots",
+        "rubber boots",
+        "wellies",
+        "boot"
+      ],
       "takeable": true,
       "loc": "closet",
       "desc": "A pair of yellow rubber boots, one size fits all, and no feet fit. A tag inside says PROPERTY OF GUS. They smell of a very long night."
     },
     "fan": {
       "name": "cooling fan",
-      "aliases": ["fan", "cooling fan", "cage"],
+      "aliases": [
+        "fan",
+        "cooling fan",
+        "cage"
+      ],
       "fixed": true,
       "loc": "fanroom",
       "desc": [
-        { "when": [{ "not": { "flag": "fanOff" } }], "t": "An enormous fan in a steel cage, blowing a hot gale down the hall. Every cable in the building is dancing to it, and nothing else is." },
-        { "when": [{ "flag": "fanOff" }], "t": "The fan is winding down, blades visible again, hair-dryer-warm and sulking." }
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "fanOff"
+              }
+            }
+          ],
+          "t": "An enormous fan in a steel cage, blowing a hot gale down the hall. Every cable in the building is dancing to it, and nothing else is."
+        },
+        {
+          "when": [
+            {
+              "flag": "fanOff"
+            }
+          ],
+          "t": "The fan is winding down, blades visible again, hair-dryer-warm and sulking."
+        }
       ]
     },
     "chain": {
       "name": "pull chain",
-      "aliases": ["chain", "pull chain", "cord", "lanyard"],
+      "aliases": [
+        "chain",
+        "pull chain",
+        "cord",
+        "lanyard"
+      ],
       "fixed": true,
       "loc": "fanroom",
       "desc": "A grubby pull chain with a rubber duck on the end, swinging in the gale. A tag: STOP FAN. The duck looks both proud and terrified."
     },
     "water": {
       "name": "black water",
-      "aliases": ["water", "black water", "sump", "puddle", "flood"],
+      "aliases": [
+        "water",
+        "black water",
+        "sump",
+        "puddle",
+        "flood"
+      ],
       "fixed": true,
       "loc": "sump",
       "desc": "Black water, knee-deep. It has a few cable ends drifting in it, a dead battery, and a mood. Do not put anything electrical in it. That includes you."
     },
     "ladder": {
       "name": "rusted ladder",
-      "aliases": ["ladder", "rusted ladder", "rusty ladder", "rungs"],
+      "aliases": [
+        "ladder",
+        "rusted ladder",
+        "rusty ladder",
+        "rungs"
+      ],
       "fixed": true,
       "loc": "sump",
       "desc": [
-        { "when": [{ "not": { "flag": "ladderTested" } }], "t": "A rusted iron ladder going up into the dark. Every rung wears a coat of orange flakes. You would test it before you trusted it." },
-        { "when": [{ "flag": "ladderTested" }], "t": "The ladder, groaning but sound. Up it goes, east and above." }
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "ladderTested"
+              }
+            }
+          ],
+          "t": "A rusted iron ladder going up into the dark. Every rung wears a coat of orange flakes. You would test it before you trusted it."
+        },
+        {
+          "when": [
+            {
+              "flag": "ladderTested"
+            }
+          ],
+          "t": "The ladder, groaning but sound. Up it goes, east and above."
+        }
       ]
     },
     "breaker": {
       "name": "main breaker",
-      "aliases": ["breaker", "main breaker", "lever", "handle"],
+      "aliases": [
+        "breaker",
+        "main breaker",
+        "lever",
+        "handle"
+      ],
       "fixed": true,
       "loc": "catwalk",
       "desc": [
-        { "when": [{ "not": { "flag": "breakerHeld" } }], "t": "A lever as big as a park bench, labelled MAIN. It wants holding down by something that can take a shock. A tiny service port winks beside it, just the right size for a handheld screen." },
-        { "when": [{ "flag": "breakerHeld" }], "t": "The lever is held fast. A small blue light on the service port blinks: HOLDING. NO QUESTIONS." }
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "breakerHeld"
+              }
+            }
+          ],
+          "t": "A lever as big as a park bench, labelled MAIN. It wants holding down by something that can take a shock. A tiny service port winks beside it, just the right size for a handheld screen."
+        },
+        {
+          "when": [
+            {
+              "flag": "breakerHeld"
+            }
+          ],
+          "t": "The lever is held fast. A small blue light on the service port blinks: HOLDING. NO QUESTIONS."
+        }
       ]
     },
     "powerdoor": {
       "name": "power room door",
-      "aliases": ["door", "power room door", "last door", "steel door"],
+      "aliases": [
+        "door",
+        "power room door",
+        "last door",
+        "steel door"
+      ],
       "fixed": true,
       "loc": "doorroom",
       "desc": "A wide steel door stamped POWER ROOM. There is no handle. There is no lock. There is only a faint, patient humming, and, under the door, a thin line of light that flickers like someone peering out."
@@ -290,19 +559,50 @@
   "npcs": {
     "mira": {
       "name": "Mira",
-      "aliases": ["mira", "dj", "mira bell"],
+      "aliases": [
+        "mira",
+        "dj",
+        "mira bell"
+      ],
       "loc": "landing",
       "here": "",
       "desc": [
         "Mira Bell, on the radio. You can hear headphones, a pen tapping, and the distinct sound of someone who has stopped being impressed and is now just entertained.",
-        { "s": "mild", "t": "Her voice has a way of making a safety lecture sound like a bedtime offer." }
+        {
+          "s": "mild",
+          "t": "Her voice has a way of making a safety lecture sound like a bedtime offer."
+        }
       ],
       "talk": [
-        { "t": "\"Radio check,\" says Mira. \"Tell me something that is not a pickup line.\" You tell her she has a voice like warm vinyl. \"That was a pickup line,\" she says. She does not hang up." },
-        { "when": [{ "not": { "flag": "pts:page" } }], "t": "\"The fuse closet, west of the hall,\" says Mira. \"Someone wrote the answer down. It is always written down.\"" },
-        { "s": "mild", "t": "\"Say it again,\" says Mira, \"but about the cables.\" You say the cables look very long. There is a pause. \"Moving on.\"" },
-        { "when": [{ "flag": "untangled" }], "t": "\"The tangle is down? I can hear it in the line. Go see what is behind the door. And Attendant? Come back in one piece.\"" },
-        { "s": "medium", "t": "\"If you come back up in one piece,\" says Mira, \"I will show you the lighting rig. All of it. The wiring is surprisingly intimate.\" The radio clicks off at the best possible moment." }
+        {
+          "t": "\"Radio check,\" says Mira. \"Tell me something that is not a pickup line.\" You tell her she has a voice like warm vinyl. \"That was a pickup line,\" she says. She does not hang up."
+        },
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "pts:page"
+              }
+            }
+          ],
+          "t": "\"The fuse closet, west of the hall,\" says Mira. \"Someone wrote the answer down. It is always written down.\""
+        },
+        {
+          "s": "mild",
+          "t": "\"Say it again,\" says Mira, \"but about the cables.\" You say the cables look very long. There is a pause. \"Moving on.\""
+        },
+        {
+          "when": [
+            {
+              "flag": "untangled"
+            }
+          ],
+          "t": "\"The tangle is down? I can hear it in the line. Go see what is behind the door. And Attendant? Come back in one piece.\""
+        },
+        {
+          "s": "medium",
+          "t": "\"If you come back up in one piece,\" says Mira, \"I will show you the lighting rig. All of it. The wiring is surprisingly intimate.\" The radio clicks off at the best possible moment."
+        }
       ],
       "topics": {
         "order": "\"Never trust a numbered list that someone crossed out,\" says Mira. \"Read Gus's page in the fuse closet.\"",
@@ -320,33 +620,55 @@
     },
     "moe": {
       "name": "Moe",
-      "aliases": ["moe", "robot", "bot"],
+      "aliases": [
+        "moe",
+        "robot",
+        "bot"
+      ],
       "loc": "landing",
       "here": "[[moe|Moe]] sits on the dusty console, his blue face glowing on a handheld screen.",
       "hereFollow": "[[moe|Moe]], a small blue face on a handheld screen, bobs along at your elbow.",
       "desc": "Moe, a robot who lives on screens. His face is a blue rectangle with two very sincere eyes. He is looking at the cables with a mixture of hunger and respect.",
       "talk": [
-        { "t": "\"ATTENDANT,\" says Moe. \"THESE ARE VERY LONG CABLES. I WOULD LIKE TO SAY HELLO TO ALL OF THEM.\"" },
-        { "t": "\"I CAN PLUG INTO ANYTHING,\" says Moe. \"I HAVE NEVER BEEN ASKED NOT TO.\"" },
-        { "s": "medium", "t": "\"BZZT. THE RADIO WOMAN IS FLIRTING WITH YOU,\" says Moe. \"I WILL DELETE THIS FROM MY MEMORY. I WILL NOT.\"" }
+        {
+          "t": "\"ATTENDANT,\" says Moe. \"THESE ARE VERY LONG CABLES. I WOULD LIKE TO SAY HELLO TO ALL OF THEM.\""
+        },
+        {
+          "t": "\"I CAN PLUG INTO ANYTHING,\" says Moe. \"I HAVE NEVER BEEN ASKED NOT TO.\""
+        },
+        {
+          "s": "medium",
+          "t": "\"BZZT. THE RADIO WOMAN IS FLIRTING WITH YOU,\" says Moe. \"I WILL DELETE THIS FROM MY MEMORY. I WILL NOT.\""
+        }
       ],
       "topics": {
         "hint": "HINT",
         "help": "HINT",
         "breaker": "\"I CAN HOLD A LEVER,\" says Moe proudly. \"I HAVE HELD HANDS WITH WORSE.\"",
-        "cable": "\"THE COLOURS MEAN THINGS,\" says Moe. \"GREEN IS EARTH. SOMEONE WROTE THAT DOWN.\""
+        "cable": "\"THE COLOURS MEAN THINGS,\" says Moe. \"GREEN IS EARTH. SOMEONE WROTE THAT DOWN.\"",
+        "yellow": "\"THE TAG SAYS DON'T,\" says Moe. \"IT DOES NOT SAY DON'T TO ME. I HAVE NEVER BEEN ASKED NOT TO.\""
       }
     },
     "hamilton": {
       "name": "Hamilton",
-      "aliases": ["hamilton", "bird"],
+      "aliases": [
+        "hamilton",
+        "bird"
+      ],
       "loc": "fanroom",
       "here": "[[hamilton|Hamilton]] clings to the fan cage, feathers streaming sideways, with great dignity.",
       "desc": "A small, round, very serious bird, holding on to a steel cage in a hurricane. He does not look at you. He is concentrating.",
       "talk": [
-        { "t": "\"Do not mind me,\" says Hamilton, through a beak full of feathers. \"I am not aerodynamically involved.\"" },
-        { "t": "\"The chain stops the fan,\" says Hamilton. \"I have been watching it for an hour. I am a bird of principle. I will not pull a chain.\"" },
-        { "s": "mild", "t": "\"I was told there would be a breeze,\" Hamilton says. \"Not a hairdryer in a cage. This is not the sort of place a respectable bird takes a lady.\"" }
+        {
+          "t": "\"Do not mind me,\" says Hamilton, through a beak full of feathers. \"I am not aerodynamically involved.\""
+        },
+        {
+          "t": "\"The chain stops the fan,\" says Hamilton. \"I have been watching it for an hour. I am a bird of principle. I will not pull a chain.\""
+        },
+        {
+          "s": "mild",
+          "t": "\"I was told there would be a breeze,\" Hamilton says. \"Not a hairdryer in a cage. This is not the sort of place a respectable bird takes a lady.\""
+        }
       ],
       "topics": {
         "fan": "\"It blows the whole tangle about,\" says Hamilton. \"Stop it and the cables sit still.\"",
@@ -357,231 +679,581 @@
   },
   "rules": [
     {
+      "id": "secret-moe-yellow",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "ask",
+            "play"
+          ],
+          "noun": "moe",
+          "with": "yellow"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "secret:live-wire"
+        }
+      ],
+      "skipText": "Moe is already plugged into the yellow line, singing along. You have done enough damage here.",
+      "requires": [
+        {
+          "follow": "moe"
+        }
+      ],
+      "else": "Moe would love to plug into the yellow cable. Moe is, however, not with you.",
+      "effects": [
+        {
+          "say": [
+            "You hold Moe's handheld up to the yellow cable, the one tagged DON'T. \"THE TAG DOES NOT SAY DON'T TO ME,\" says Moe, and plugs in.",
+            "The radio crackles. Every speaker in the building coughs up the same hum, then a bass line, then Mira's voice, wildly off-key and singing along to a song she thinks nobody can hear. Moe harmonises. The Glitch, somewhere in the walls, joins in on the chorus.",
+            {
+              "s": "mild",
+              "t": "\"That was a private line,\" says Mira, when the song ends. \"You have heard nothing. You owe me a very long evening.\""
+            },
+            "Moe unplugs, glowing with pride. A card flutters out of the board: LIVE WIRE. (You found a secret.)"
+          ]
+        },
+        {
+          "secret": "live-wire"
+        }
+      ]
+    },
+    {
       "id": "take-radio",
       "on": [
-        { "verb": ["take", "use", "play"], "noun": "radio" }
+        {
+          "verb": [
+            "take",
+            "use",
+            "play"
+          ],
+          "noun": "radio"
+        }
       ],
-      "skipIf": [{ "has": "radio" }],
+      "skipIf": [
+        {
+          "has": "radio"
+        }
+      ],
       "skipText": [
         "You thumb the button. \"Mira here,\" crackles the handheld. \"Quit breathing into it.\"",
-        { "when": [{ "not": { "flag": "pts:page" } }], "t": "\"The cables are plaited in a very specific way,\" says Mira. \"Somebody wrote the right order down. Try the fuse closet, west of the hall.\"" },
-        { "when": [{ "flag": "pts:page" }, { "not": { "flag": "untangled" } }], "t": "\"Read Gus's page twice,\" says Mira. \"Then do it in that order, not the one on the board.\"" },
-        { "s": "mild", "t": "You tell the radio it has a lovely voice. \"I am the radio,\" says Mira. \"I have a lovely voice. It is a very different thing.\" She is smiling. You can hear it." },
-        { "s": "medium", "t": "You ask the radio what Mira is wearing. \"Safety goggles,\" she says, \"and a very short fuse. Ask again and the fuse gets shorter.\" There is a pause. \"But keep talking.\"" }
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "pts:page"
+              }
+            }
+          ],
+          "t": "\"The cables are plaited in a very specific way,\" says Mira. \"Somebody wrote the right order down. Try the fuse closet, west of the hall.\""
+        },
+        {
+          "when": [
+            {
+              "flag": "pts:page"
+            },
+            {
+              "not": {
+                "flag": "untangled"
+              }
+            }
+          ],
+          "t": "\"Read Gus's page twice,\" says Mira. \"Then do it in that order, not the one on the board.\""
+        },
+        {
+          "s": "mild",
+          "t": "You tell the radio it has a lovely voice. \"I am the radio,\" says Mira. \"I have a lovely voice. It is a very different thing.\" She is smiling. You can hear it."
+        },
+        {
+          "s": "medium",
+          "t": "You ask the radio what Mira is wearing. \"Safety goggles,\" she says, \"and a very short fuse. Ask again and the fuse gets shorter.\" There is a pause. \"But keep talking.\""
+        }
       ],
       "effects": [
-        { "give": "radio" },
-        { "follow": "mira" },
-        { "say": [
-          "You pick up the handheld radio. It crackles, and a familiar voice comes out.",
-          "\"Attendant,\" says Mira. \"I'm on the other end of this. You're on your own down there, but you'll hear me.\"",
-          { "s": "mild", "t": "You tell her it is lovely to hear her voice. \"Say that to my face,\" she says. \"After the rescue.\"" },
-          "(Mira will now ride along on the radio. Try ASK MIRA ABOUT ORDER, or USE RADIO.)"
-        ] }
+        {
+          "give": "radio"
+        },
+        {
+          "follow": "mira"
+        },
+        {
+          "say": [
+            "You pick up the handheld radio. It crackles, and a familiar voice comes out.",
+            "\"Attendant,\" says Mira. \"I'm on the other end of this. You're on your own down there, but you'll hear me.\"",
+            {
+              "s": "mild",
+              "t": "You tell her it is lovely to hear her voice. \"Say that to my face,\" she says. \"After the rescue.\""
+            },
+            "(Mira will now ride along on the radio. Try ASK MIRA ABOUT ORDER, or USE RADIO.)"
+          ]
+        }
       ]
     },
     {
       "id": "take-moe",
       "on": [
-        { "verb": ["take", "use"], "noun": "moe" }
+        {
+          "verb": [
+            "take",
+            "use"
+          ],
+          "noun": "moe"
+        }
       ],
-      "skipIf": [{ "follow": "moe" }],
+      "skipIf": [
+        {
+          "follow": "moe"
+        }
+      ],
       "skipText": "Moe is already on your handheld, happily whirring.",
       "effects": [
-        { "follow": "moe" },
-        { "say": "You lift Moe's handheld from the console. \"ROGER,\" says Moe. \"I AM NOW PORTABLE. ALSO YOU HAVE A BIG HEAD IN THE CAMERA.\" (Moe will now follow you.)" }
+        {
+          "follow": "moe"
+        },
+        {
+          "say": "You lift Moe's handheld from the console. \"ROGER,\" says Moe. \"I AM NOW PORTABLE. ALSO YOU HAVE A BIG HEAD IN THE CAMERA.\" (Moe will now follow you.)"
+        }
       ]
     },
     {
       "id": "pull-test",
       "on": [
-        { "verb": ["play", "use"], "noun": "testcable" }
+        {
+          "verb": [
+            "play",
+            "use"
+          ],
+          "noun": "testcable"
+        }
       ],
-      "skipIf": [{ "flag": "unlock:landing:n" }],
+      "skipIf": [
+        {
+          "flag": "unlock:landing:n"
+        }
+      ],
       "skipText": "You have pulled that one. The training cable looks smug about it.",
       "effects": [
-        { "unlock": "landing:n" },
-        { "score": 1 },
-        { "say": [
-          "You give the training cable a firm pull. Somewhere in the dark, a latch goes clunk, and a tiny lightbulb lights over the panel. 'WELL DONE,' says a stencilled sign. 'NOW THE HARD ONE.'",
-          "The iron gate to the north swings open. You feel the glow of a proud, small hero."
-        ] }
+        {
+          "unlock": "landing:n"
+        },
+        {
+          "score": 1
+        },
+        {
+          "say": [
+            "You give the training cable a firm pull. Somewhere in the dark, a latch goes clunk, and a tiny lightbulb lights over the panel. 'WELL DONE,' says a stencilled sign. 'NOW THE HARD ONE.'",
+            "The iron gate to the north swings open. You feel the glow of a proud, small hero."
+          ]
+        }
       ]
     },
     {
       "id": "wear-boots",
       "on": [
-        { "verb": ["use", "climb"], "noun": "boots" }
+        {
+          "verb": [
+            "use",
+            "climb"
+          ],
+          "noun": "boots"
+        }
       ],
-      "skipIf": [{ "flag": "booted" }],
+      "skipIf": [
+        {
+          "flag": "booted"
+        }
+      ],
       "skipText": "You are already wearing the boots. They squelch in agreement.",
-      "requires": [{ "has": "boots" }],
+      "requires": [
+        {
+          "has": "boots"
+        }
+      ],
       "else": "You would need to be holding the boots first.",
       "effects": [
-        { "move": ["boots", "gone"] },
-        { "flag": "booted" },
-        { "say": "You pull on the rubber boots. They are two sizes too big and one size too confident. You walk like a duck in a hurry." }
+        {
+          "move": [
+            "boots",
+            "gone"
+          ]
+        },
+        {
+          "flag": "booted"
+        },
+        {
+          "say": "You pull on the rubber boots. They are two sizes too big and one size too confident. You walk like a duck in a hurry."
+        }
       ]
     },
     {
       "id": "test-ladder",
       "on": [
-        { "verb": ["climb", "use"], "noun": "ladder" }
+        {
+          "verb": [
+            "climb",
+            "use"
+          ],
+          "noun": "ladder"
+        }
       ],
-      "skipIf": [{ "flag": "ladderTested" }],
+      "skipIf": [
+        {
+          "flag": "ladderTested"
+        }
+      ],
       "skipText": "The ladder has already been tested. It is still complaining.",
       "effects": [
-        { "flag": "ladderTested" },
-        { "say": "You put one boot on the first rung. It shrieks like a tortured violin, a flake of rust the size of a pancake falls into the water, and the rung holds. The next three do the same. Orange dust gets in your hair. It is a ladder. You may climb it (EAST)." }
+        {
+          "flag": "ladderTested"
+        },
+        {
+          "say": "You put one boot on the first rung. It shrieks like a tortured violin, a flake of rust the size of a pancake falls into the water, and the rung holds. The next three do the same. Orange dust gets in your hair. It is a ladder. You may climb it (EAST)."
+        }
       ]
     },
     {
       "id": "hold-breaker",
       "on": [
-        { "verb": ["use", "play"], "noun": "breaker" },
-        { "verb": ["use", "ask"], "noun": "moe", "with": "breaker" }
+        {
+          "verb": [
+            "use",
+            "play"
+          ],
+          "noun": "breaker"
+        },
+        {
+          "verb": [
+            "use",
+            "ask"
+          ],
+          "noun": "moe",
+          "with": "breaker"
+        }
       ],
-      "skipIf": [{ "flag": "breakerHeld" }],
+      "skipIf": [
+        {
+          "flag": "breakerHeld"
+        }
+      ],
       "skipText": "Moe is already holding the breaker. He does not want to talk about it.",
-      "requires": [{ "follow": "moe" }],
+      "requires": [
+        {
+          "follow": "moe"
+        }
+      ],
       "else": "The breaker is huge and live. It wants something that does not mind a shock to hold it down. Moe is at the foot of the stairs. Perhaps you should bring him.",
       "effects": [
-        { "flag": "breakerHeld" },
-        { "score": 1 },
-        { "say": [
-          "You hold Moe's handheld up to the breaker's service port. The little screen shivers, and blue light runs along the lever.",
-          "\"I HAVE BRIDGED IT,\" says Moe. \"I CAN HOLD IT FROM ANYWHERE. I WILL NOT BE TAKING QUESTIONS.\" The lever clunks down by itself.",
-          "He settles back into your pocket, humming. He is having the best night of his life."
-        ] }
+        {
+          "flag": "breakerHeld"
+        },
+        {
+          "score": 1
+        },
+        {
+          "say": [
+            "You hold Moe's handheld up to the breaker's service port. The little screen shivers, and blue light runs along the lever.",
+            "\"I HAVE BRIDGED IT,\" says Moe. \"I CAN HOLD IT FROM ANYWHERE. I WILL NOT BE TAKING QUESTIONS.\" The lever clunks down by itself.",
+            "He settles back into your pocket, humming. He is having the best night of his life."
+          ]
+        }
       ]
     },
     {
       "id": "pull-chain",
       "on": [
-        { "verb": ["play", "use"], "noun": "chain" }
+        {
+          "verb": [
+            "play",
+            "use"
+          ],
+          "noun": "chain"
+        }
       ],
-      "skipIf": [{ "flag": "fanOff" }],
+      "skipIf": [
+        {
+          "flag": "fanOff"
+        }
+      ],
       "skipText": "The chain is already pulled. The duck is exhausted.",
       "effects": [
-        { "flag": "fanOff" },
-        { "flag": "groundOK" },
-        { "flag": "dataOK" },
-        { "say": [
-          "You tug the rubber duck. The fan gives a long, dying whirr. The gale stops, and down the hall every cable goes quiet.",
-          "\"Excellent,\" says Hamilton, unclenching. \"I did not do that.\"",
-          "Somewhere to the west, a thousand feet of tangle flops to the floor like a sleepy octopus. Now it will let you pull the cables in any order."
-        ] }
+        {
+          "flag": "fanOff"
+        },
+        {
+          "flag": "groundOK"
+        },
+        {
+          "flag": "dataOK"
+        },
+        {
+          "say": [
+            "You tug the rubber duck. The fan gives a long, dying whirr. The gale stops, and down the hall every cable goes quiet.",
+            "\"Excellent,\" says Hamilton, unclenching. \"I did not do that.\"",
+            "Somewhere to the west, a thousand feet of tangle flops to the floor like a sleepy octopus. Now it will let you pull the cables in any order."
+          ]
+        }
       ]
     },
     {
       "id": "pull-green",
       "on": [
-        { "verb": ["play", "use"], "noun": "green" }
+        {
+          "verb": [
+            "play",
+            "use"
+          ],
+          "noun": "green"
+        }
       ],
-      "skipIf": [{ "flag": "pulledGreen" }],
+      "skipIf": [
+        {
+          "flag": "pulledGreen"
+        }
+      ],
       "skipText": "The green cable is already out.",
       "effects": [
-        { "flag": "pulledGreen" },
-        { "flag": "groundOK" },
-        { "say": "You grip the green cable, brace a boot against the board, and pull. It slides out of its socket with a sigh. A fizz of stored volts drains harmlessly away into the ground. The tangle shivers, but nothing bites. The plaits around the blue cable have loosened." }
+        {
+          "flag": "pulledGreen"
+        },
+        {
+          "flag": "groundOK"
+        },
+        {
+          "say": "You grip the green cable, brace a boot against the board, and pull. It slides out of its socket with a sigh. A fizz of stored volts drains harmlessly away into the ground. The tangle shivers, but nothing bites. The plaits around the blue cable have loosened."
+        }
       ]
     },
     {
       "id": "pull-blue",
       "on": [
-        { "verb": ["play", "use"], "noun": "blue" }
+        {
+          "verb": [
+            "play",
+            "use"
+          ],
+          "noun": "blue"
+        }
       ],
-      "skipIf": [{ "flag": "pulledBlue" }],
+      "skipIf": [
+        {
+          "flag": "pulledBlue"
+        }
+      ],
       "skipText": "The blue cable is already out.",
-      "requires": [{ "flag": "groundOK" }],
+      "requires": [
+        {
+          "flag": "groundOK"
+        }
+      ],
       "else": "You pull the blue cable. It does not move: the plaits around it are wound tight as a fist, and the green cable is holding on to it like a drowning man. A small spark bites your sleeve. Something here needs to go first, and it is not blue.",
       "effects": [
-        { "flag": "pulledBlue" },
-        { "flag": "dataOK" },
-        { "say": "The blue cable slides out smoothly. A pulse of gossip rushes down it and into the dark. Somewhere, a screen quietly relaxes. Only the red cable is still plugged in, crackling at you." }
+        {
+          "flag": "pulledBlue"
+        },
+        {
+          "flag": "dataOK"
+        },
+        {
+          "say": "The blue cable slides out smoothly. A pulse of gossip rushes down it and into the dark. Somewhere, a screen quietly relaxes. Only the red cable is still plugged in, crackling at you."
+        }
       ]
     },
     {
       "id": "pull-red",
       "on": [
-        { "verb": ["play", "use"], "noun": "red" }
+        {
+          "verb": [
+            "play",
+            "use"
+          ],
+          "noun": "red"
+        }
       ],
-      "skipIf": [{ "flag": "pulledRed" }],
+      "skipIf": [
+        {
+          "flag": "pulledRed"
+        }
+      ],
       "skipText": "The red cable is already out.",
-      "requires": [{ "flag": "dataOK" }, { "flag": "breakerHeld" }],
+      "requires": [
+        {
+          "flag": "dataOK"
+        },
+        {
+          "flag": "breakerHeld"
+        }
+      ],
       "else": [
-        { "when": [{ "not": { "flag": "dataOK" } }], "t": "You take hold of the big red cable, because the board said it is number one. It bites. Every hair on your body stands up, your jacket stands up, and the Glitch giggles somewhere in the walls. Nothing is hurt but your pride; the cable throws you off. It seems this one is not first." },
-        { "when": [{ "flag": "dataOK" }, { "not": { "flag": "breakerHeld" } }], "t": "You reach for the red cable. It leans away and sparks at the end like a very angry cat. This one has all the volts, and nobody is holding the main breaker. Gus's page said take a robot up the ladder." }
+        {
+          "when": [
+            {
+              "not": {
+                "flag": "dataOK"
+              }
+            }
+          ],
+          "t": "You take hold of the big red cable, because the board said it is number one. It bites. Every hair on your body stands up, your jacket stands up, and the Glitch giggles somewhere in the walls. Nothing is hurt but your pride; the cable throws you off. It seems this one is not first."
+        },
+        {
+          "when": [
+            {
+              "flag": "dataOK"
+            },
+            {
+              "not": {
+                "flag": "breakerHeld"
+              }
+            }
+          ],
+          "t": "You reach for the red cable. It leans away and sparks at the end like a very angry cat. This one has all the volts, and nobody is holding the main breaker. Gus's page said take a robot up the ladder."
+        }
       ],
       "effects": [
-        { "flag": "pulledRed" },
-        { "flag": "untangled" },
-        { "unlock": "hall:n" },
-        { "score": 1 },
-        { "say": [
-          "You take the red cable in both hands. Up on the catwalk, the main breaker holds. You pull, and the cable slides out of the board with a long, relieved POP.",
-          "The Glitch's tendrils drop at once. The whole tangle unravels, loop by loop, into a heap of harmless wire on the floor. Dust settles. For one second the hall is perfectly, beautifully quiet.",
-          { "s": "mild", "t": "\"I heard that pop,\" says Mira on the radio. \"Good work, Attendant. That was very tasteful unplugging.\"" }
-        ] }
+        {
+          "flag": "pulledRed"
+        },
+        {
+          "flag": "untangled"
+        },
+        {
+          "unlock": "hall:n"
+        },
+        {
+          "score": 1
+        },
+        {
+          "say": [
+            "You take the red cable in both hands. Up on the catwalk, the main breaker holds. You pull, and the cable slides out of the board with a long, relieved POP.",
+            "The Glitch's tendrils drop at once. The whole tangle unravels, loop by loop, into a heap of harmless wire on the floor. Dust settles. For one second the hall is perfectly, beautifully quiet.",
+            {
+              "s": "mild",
+              "t": "\"I heard that pop,\" says Mira on the radio. \"Good work, Attendant. That was very tasteful unplugging.\""
+            }
+          ]
+        }
       ]
     },
     {
       "id": "pull-yellow",
       "on": [
-        { "verb": ["play", "use"], "noun": "yellow" }
+        {
+          "verb": [
+            "play",
+            "use"
+          ],
+          "noun": "yellow"
+        }
       ],
       "effects": [
-        { "say": [
-          "You pull the yellow cable. The tag did say DON'T, but the tag did not say why, and you have always been a person who needs to know.",
-          "The radio goes dead in your hand. For a few terrible seconds you are alone in the hum, with nothing to talk to but the cables. Then the yellow cable pops back into the board on its own, and the radio screams: \"Did you just pull my LINE?\"",
-          { "s": "mild", "t": "\"Only a tiny bit,\" you say. \"That's what they all say,\" says Mira." }
-        ] }
+        {
+          "say": [
+            "You pull the yellow cable. The tag did say DON'T, but the tag did not say why, and you have always been a person who needs to know.",
+            "The radio goes dead in your hand. For a few terrible seconds you are alone in the hum, with nothing to talk to but the cables. Then the yellow cable pops back into the board on its own, and the radio screams: \"Did you just pull my LINE?\"",
+            {
+              "s": "mild",
+              "t": "\"Only a tiny bit,\" you say. \"That's what they all say,\" says Mira."
+            }
+          ]
+        }
       ]
     },
     {
       "id": "swim",
       "on": [
-        { "verb": ["use", "play", "climb"], "noun": "water" }
+        {
+          "verb": [
+            "use",
+            "play",
+            "climb"
+          ],
+          "noun": "water"
+        }
       ],
       "effects": [
-        { "say": "You consider putting your hand in the black water, next to a live cable. Your mother's voice, your boss's voice and Moe's voice all say no, all at once. You decide they have a point." }
+        {
+          "say": "You consider putting your hand in the black water, next to a live cable. Your mother's voice, your boss's voice and Moe's voice all say no, all at once. You decide they have a point."
+        }
       ]
     },
     {
       "id": "climb-tangle",
       "on": [
-        { "verb": ["climb", "play", "use"], "noun": "tangle" }
+        {
+          "verb": [
+            "climb",
+            "play",
+            "use"
+          ],
+          "noun": "tangle"
+        }
       ],
       "effects": [
-        { "say": "You grab a handful of the tangle and tug. The tangle tugs back, and the whole mass shifts like a sleeping animal. You let go before it notices you. You will need to be more precise." }
+        {
+          "say": "You grab a handful of the tangle and tug. The tangle tugs back, and the whole mass shifts like a sleeping animal. You let go before it notices you. You will need to be more precise."
+        }
       ]
     },
     {
       "id": "open-door",
       "on": [
-        { "verb": ["open", "use", "play"], "noun": "powerdoor" }
+        {
+          "verb": [
+            "open",
+            "use",
+            "play"
+          ],
+          "noun": "powerdoor"
+        }
       ],
-      "requires": [{ "flag": "untangled" }],
+      "requires": [
+        {
+          "flag": "untangled"
+        }
+      ],
       "else": "The door does not budge. Somewhere behind you, a stray cable twitches.",
       "effects": [
-        { "flag": "complete" },
-        { "flag": "carry:ch4" },
-        { "score": 1 },
-        { "card": "live-wire" },
-        { "say": [
-          "You put your hand on the cold steel. Before you can think of a line, the door slides open on its own.",
-          { "s": "mild", "t": "\"Smooth,\" says Mira, over the radio. \"For once, you did not have to talk your way in.\"" },
-          { "s": "medium", "t": "\"Come up when it is done,\" she says. \"I put the kettle on. And the lights down low.\" Moe is the only one who hears, and he pretends he did not." },
-          "CHAPTER 4 COMPLETE: CABLE MAZE.",
-          "Beyond the door, a vast room of humming machinery waits, and a very small, very lonely voice says: \"Hello? Do you want to play?\" Next: Chapter 5, Last Credit."
-        ] },
-        { "end": true }
+        {
+          "flag": "complete"
+        },
+        {
+          "flag": "carry:ch4"
+        },
+        {
+          "score": 1
+        },
+        {
+          "card": "live-wire"
+        },
+        {
+          "scene": [
+            "You put your hand on the cold steel. Before you can think of a line, the door slides open on its own.",
+            {
+              "s": "mild",
+              "t": "\"Smooth,\" says Mira, over the radio. \"For once, you did not have to talk your way in.\""
+            },
+            {
+              "s": "medium",
+              "t": "\"Come up when it is done,\" she says. \"I put the kettle on. And the lights down low.\" Moe is the only one who hears, and he pretends he did not."
+            },
+            "CHAPTER 4 COMPLETE: CABLE MAZE.",
+            "Beyond the door, a vast room of humming machinery waits, and a very small, very lonely voice says: \"Hello? Do you want to play?\" Next: Chapter 5, Last Credit."
+          ]
+        },
+        {
+          "end": true
+        }
       ]
     }
   ],
   "hints": [
     {
-      "done": [{ "follow": "moe" }],
+      "done": [
+        {
+          "follow": "moe"
+        }
+      ],
       "lines": [
         "Moe is on the console at the foot of the stairs.",
         "Take Moe and he will follow you. The radio is on the console too.",
@@ -589,7 +1261,11 @@
       ]
     },
     {
-      "done": [{ "flag": "unlock:landing:n" }],
+      "done": [
+        {
+          "flag": "unlock:landing:n"
+        }
+      ],
       "lines": [
         "The iron gate north is latched. A cable runs from the latch to the panel.",
         "The training panel says PULL the cable.",
@@ -597,7 +1273,11 @@
       ]
     },
     {
-      "done": [{ "flag": "pts:page" }],
+      "done": [
+        {
+          "flag": "pts:page"
+        }
+      ],
       "lines": [
         "The master board's labels say one thing and someone has written LIES under them. They mention Gus's notes.",
         "Gus left his notes in the fuse closet, west of the hall.",
@@ -605,7 +1285,11 @@
       ]
     },
     {
-      "done": [{ "flag": "booted" }],
+      "done": [
+        {
+          "flag": "booted"
+        }
+      ],
       "lines": [
         "Gus's page mentions a main breaker up the ladder in the sump. The sump is flooded.",
         "There are boots in the fuse closet.",
@@ -613,7 +1297,11 @@
       ]
     },
     {
-      "done": [{ "flag": "ladderTested" }],
+      "done": [
+        {
+          "flag": "ladderTested"
+        }
+      ],
       "lines": [
         "There is a rusted ladder in the sump.",
         "Test it before you trust it.",
@@ -621,7 +1309,11 @@
       ]
     },
     {
-      "done": [{ "flag": "breakerHeld" }],
+      "done": [
+        {
+          "flag": "breakerHeld"
+        }
+      ],
       "lines": [
         "The main breaker is on the catwalk. It needs something that does not mind shocks to hold it.",
         "Moe can plug into things. He is with you.",
@@ -629,7 +1321,11 @@
       ]
     },
     {
-      "done": [{ "flag": "untangled" }],
+      "done": [
+        {
+          "flag": "untangled"
+        }
+      ],
       "lines": [
         "Back in the Tangle, the board's numbers lie. Gus's page and the fuse tags agree on the real order.",
         "Earth first, then data, and power last. (Or find what makes the tangle dance and stop it.)",
@@ -637,7 +1333,11 @@
       ]
     },
     {
-      "done": [{ "flag": "complete" }],
+      "done": [
+        {
+          "flag": "complete"
+        }
+      ],
       "lines": [
         "The passage north is clear now.",
         "Go north to the door, and open it."
@@ -653,7 +1353,8 @@
   "cards": {
     "live-wire": {
       "title": "Live Wire",
-      "who": "Lola Voltage"
+      "who": "Lola Voltage",
+      "secretHint": "Some tags forbid everyone. Not everyone is a someone."
     }
   }
 }

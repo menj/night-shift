@@ -29,6 +29,8 @@ function plain(res) { return res.lines.map(function (l) { return Engine.plain(l.
 var BAD = /The Glitch eats|Nothing happens\.|does not care|do not see any|cannot go that way|Did you mean|Which do you mean|what\?$/i;
 
 console.log(world.chapter);
+var secretCmds = null;
+try { secretCmds = fs.readFileSync(path.join(root, 'tests/ch' + n + '-secret.txt'), 'utf8').split('\n').map(function (l) { return l.trim(); }).filter(function (l) { return l && l[0] !== '#'; }); } catch (e) { /* reported below */ }
 
 /* lint */
 (function () {
@@ -63,6 +65,33 @@ console.log(world.chapter);
 	ok(Array.isArray(world.hints) && world.hints.length >= 3, 'at least 3 hint stages');
 	ok(world.cards && Object.keys(world.cards).length >= 1, 'declares its gallery card');
 	ok(world.rules.some(function (r) { return JSON.stringify(r.effects).indexOf('carry:') !== -1; }) || n === 5, 'sets a carry: flag for the next chapter (except the last)');
+})();
+
+/* secret: one optional task that fully reveals this chapter's gallery card */
+(function () {
+	var rules = world.rules.filter(function (r) { return JSON.stringify(r.effects).indexOf('"secret"') !== -1; });
+	ok(rules.length === 1, 'exactly one rule carries a secret effect (found ' + rules.length + ')');
+	if (rules.length !== 1) { return; }
+	var effs = rules[0].effects, sec = effs.filter(function (e) { return e.secret; })[0];
+	ok(world.cards && world.cards[sec.secret], 'the secret reveals a card this chapter declares (' + sec.secret + ')');
+	ok(world.cards[sec.secret] && typeof world.cards[sec.secret].secretHint === 'string' && world.cards[sec.secret].secretHint.length > 10, 'the card has a secretHint, a cryptic clue shown once the card is unlocked');
+	ok(!effs.some(function (e) { return e.score || e.end || e.flag === 'complete' || (e.flag && e.flag.indexOf('carry:') === 0); }), 'the secret never scores, ends the chapter or carries a flag: it is optional');
+	ok(rules[0].skipIf && rules[0].skipText, 'the secret can only be found once and says so afterwards');
+	ok(secretCmds && secretCmds.length > 0, 'tests/ch' + n + '-secret.txt exists');
+	if (!secretCmds) { return; }
+	var eng = new Engine(world, { spice: 'mild' }), st = eng.newState(carry), revealed = [];
+	secretCmds.forEach(function (c, i) {
+		var r = eng.exec(st, c); st = r.state;
+		var t = plain(r).join(' ');
+		ok(t.length > 0 && !BAD.test(t), 'secret step ' + (i + 1) + ' "' + c + '" is understood and does something (' + t.slice(0, 60) + ')');
+		r.events.forEach(function (e) { if (e.type === 'reveal') { revealed.push(e.id); } });
+	});
+	ok(revealed.length === 1 && revealed[0] === sec.secret, 'the secret playthrough reveals the card exactly once');
+	ok(st.score === world.maxScore && st.ended, 'finding the secret never costs the chapter: full score and the chapter still ends');
+	// the ordinary shortest playthrough must NOT stumble into it
+	var e2 = new Engine(world, { spice: 'mild' }), s2 = e2.newState(carry), stumbled = false;
+	cmds.forEach(function (c) { var r = e2.exec(s2, c); s2 = r.state; if (r.events.some(function (e) { return e.type === 'reveal'; })) { stumbled = true; } });
+	ok(!stumbled, 'the ordinary playthrough does not reveal the secret by accident');
 })();
 
 /* walkthrough */

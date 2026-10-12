@@ -421,7 +421,7 @@
               }
             }
           ],
-          "t": "A dead mirror ball. It has been waiting for this moment all night."
+          "t": "A dead mirror ball, hung well out of reach. Its mount is hand-cranked, and a tiny plaque reads: ELEVATED STAFF ONLY. It has been waiting for this moment all night."
         },
         {
           "when": [
@@ -875,6 +875,47 @@
       ]
     },
     {
+      "id": "secret-spin-ball",
+      "on": [
+        {
+          "verb": [
+            "play"
+          ],
+          "noun": "mirrorball"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "secret:mirror-ball"
+        }
+      ],
+      "skipText": "The mirror ball is still wobbling happily. You have already given it its moment.",
+      "requires": [
+        {
+          "flag": "onStool"
+        },
+        {
+          "on": "stool"
+        }
+      ],
+      "else": "You jump for the crank and miss by a metre. The mirror ball is not impressed. You would need to be a little more elevated.",
+      "effects": [
+        {
+          "say": [
+            "Standing on the stool, you give the hand crank a heroic spin. The mirror ball creaks round once, throws a single wobbling star across the wall, and stops.",
+            {
+              "s": "mild",
+              "t": "Somewhere in the dark, someone laughs softly. \"Nice moves, Attendant.\" You decide it was the Glitch."
+            },
+            "Behind its mount, scratched in tiny letters: MADE WITH LOVE, A STEP STOOL AND NO SUPERVISION. The arcade, you feel, approves of you."
+          ]
+        },
+        {
+          "secret": "mirror-ball"
+        }
+      ]
+    },
+    {
       "id": "give-record",
       "on": [
         {
@@ -916,7 +957,7 @@
           "card": "mirror-ball"
         },
         {
-          "say": [
+          "scene": [
             "Mira takes the record as if it might bite. She blows the dust off, drops the needle, and the first beat rolls through the floor.",
             "The mirror ball shudders, starts to turn, and throws a thousand little stars across the room. Down on the arcade floor, cabinets blink awake one by one.",
             {
@@ -928,7 +969,9 @@
               "t": "\"Meet me by the booth after close,\" she says, and the lights dim just as the shutters rattle. The rest, as they say, is none of the arcade's business."
             },
             "CHAPTER 1 COMPLETE: DEAD AIR. Across the floor, a cabinet marked BEBERD is flickering like a distress signal. Hamilton stares at it and, for once, says nothing. Next: Chapter 2, Flap Zone."
-          ]
+          ],
+          "still": "img/scenes/ch1-end.png",
+          "alt": "Pixel art: the disco comes alive. A mirror ball throws light over Mira at the booth, the Attendant, Hamilton and Moe, with the arcade cabinets glowing."
         },
         {
           "flag": "carry:ch1"
@@ -996,7 +1039,8 @@
   "cards": {
     "mirror-ball": {
       "title": "Mirror Ball",
-      "who": "Mira Bell"
+      "who": "Mira Bell",
+      "secretHint": "Every star in the sky needs a little push, and you will need to stand a bit taller to give it."
     }
   }
 }

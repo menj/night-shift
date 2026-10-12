@@ -198,6 +198,8 @@
 		this.events = [];
 	}
 	Out.prototype.text = function (t) { this.lines.push({ k: 'text', t: t }); };
+	/** A cutscene beat: the page shows these one at a time with Continue and Skip. */
+	Out.prototype.beat = function (t) { this.lines.push({ k: 'beat', t: t }); };
 	Out.prototype.note = function (t) { this.lines.push({ k: 'note', t: t }); };
 
 	Engine.prototype.exec = function (state, input) {
@@ -270,6 +272,11 @@
 		if (rule.requires && !this.check(rule.requires, st)) { this.firstText(rule.else, st).forEach(function (x) { out.text(x); }); return; }
 		(rule.effects || []).forEach(function (e) {
 			if (e.say !== undefined) { texts(e.say); }
+			if (e.scene !== undefined) {
+				if (e.still) { out.lines.push({ k: 'still', t: e.alt || '', src: e.still }); }   // an illustration shown above the beats
+				self.text(e.scene, st).forEach(function (x) { out.beat(x); });
+				out.events.push({ type: 'scene' });
+			}
 			if (e.flag) { st.flags[e.flag] = true; }
 			if (e.unflag) { delete st.flags[e.unflag]; }
 			if (e.move) { st.loc[e.move[0]] = e.move[1]; }
@@ -288,6 +295,7 @@
 				if (st.cards.indexOf(e.card) === -1) { st.cards.push(e.card); }
 				out.events.push({ type: 'card', id: e.card });
 			}
+			if (e.secret) { st.flags['secret:' + e.secret] = true; out.events.push({ type: 'reveal', id: e.secret }); }   // an optional secret: fully reveals that gallery card
 			if (e.end) { st.ended = true; out.events.push({ type: 'end' }); }
 		});
 	};

@@ -265,8 +265,8 @@
       ],
       "fixed": true,
       "loc": "cloudbar",
-      "desc": "TODAY: Gravity, on the rocks. Fog, neat. Tears of a Lesser Pipe (house special). Nothing is priced. Everything is a bit damp.",
-      "read": "TODAY: Gravity, on the rocks. Fog, neat. Tears of a Lesser Pipe (house special). Nothing is priced. Everything is a bit damp."
+      "desc": "TODAY: Gravity, on the rocks. Fog, neat. Tears of a Lesser Pipe (house special). Nothing is priced. Everything is a bit damp. In small chalk at the bottom: \"A full glass is a lonely glass.\"",
+      "read": "TODAY: Gravity, on the rocks. Fog, neat. Tears of a Lesser Pipe (house special). Nothing is priced. Everything is a bit damp. In small chalk at the bottom: \"A full glass is a lonely glass.\""
     },
     "sstand": {
       "name": "seed stand",
@@ -1029,6 +1029,38 @@
       ]
     },
     {
+      "id": "secret-drink-mist",
+      "on": [
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "tumbler"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "secret:cloud-nine"
+        }
+      ],
+      "skipText": "The tumbler is empty and a little embarrassed about it. A faint hiccup of cloud drifts past.",
+      "effects": [
+        {
+          "say": [
+            "You tip the tumbler back and drink the mist. It tastes like a Tuesday morning, and then like nothing at all, and then your feet leave the floor.",
+            "You drift three feet up, do a slow, dignified somersault, and wave at a passing cloud, which waves back. \"Cheers,\" you hiccup, and a small puff comes out. Gravity, offended, sets you down.",
+            {
+              "s": "mild",
+              "t": "\"Smooth,\" says a cloud at the end of the bar, to nobody, and drifts off with a wink you did not know clouds had."
+            }
+          ]
+        },
+        {
+          "secret": "cloud-nine"
+        }
+      ]
+    },
+    {
       "id": "plug-in",
       "on": [
         {
@@ -1095,7 +1127,7 @@
           "card": "cloud-nine"
         },
         {
-          "say": [
+          "scene": [
             "You hold up the plug. The socket is high in the wall, among pipes that now hang perfectly still, because nothing is ticking to wind them up. Hamilton eyes it from your shoulder.",
             "\"No beat,\" he mutters. \"No seed. Just me and the air.\"",
             "He takes the plug in both feet, drops off your shoulder, and flaps upward, wobbling, wheezing, round as a dumpling. \"I'm... not... scared...\" Flap. Wobble. Flap. He slams the plug home with his whole body.",
@@ -1178,7 +1210,8 @@
   "cards": {
     "cloud-nine": {
       "title": "Cloud Nine",
-      "who": "Dolly Starling"
+      "who": "Dolly Starling",
+      "secretHint": "A full glass is a lonely glass. What do bars do for company?"
     }
   }
 }

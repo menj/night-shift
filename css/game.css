@@ -94,6 +94,14 @@ body::after {
 :root[data-reduce-motion] .log .line { animation: none; }
 @media (prefers-reduced-motion: reduce) { .log { scroll-behavior: auto; } .log .line { animation: none; } }
 
+/* cutscenes */
+.log .beat { font-size: 1.04rem; padding-left: 12px; border-left: 2px solid color-mix(in srgb, var(--hot) 60%, transparent); }
+.scene-ctl { display: flex; gap: 8px; }
+.log .still { margin: 0.6em 0; }
+.log .still img { display: block; width: 100%; height: auto; image-rendering: pixelated; border: 1px solid var(--line); border-radius: 8px; }
+.cmd input:disabled { opacity: 0.5; }
+.in-scene .exits, .in-scene .verbs, .in-scene .invlist { opacity: 0.45; }
+
 /* tappable words */
 .noun {
   display: inline; padding: 0 0.15em; margin: 0; border: 0; border-bottom: 1px dashed var(--cool); border-radius: 3px 3px 0 0;
@@ -168,7 +176,12 @@ legend { padding: 0 0 8px; color: var(--muted); font-size: 0.8rem; letter-spacin
 .choice b { display: block; font-weight: 400; color: var(--cool); }
 .cards { list-style: none; margin: 0 0 8px; padding: 0; display: grid; gap: 8px; }
 .cards li { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; }
-.cards img { width: 56px; height: 72px; object-fit: cover; border-radius: 4px; }
+.cards .thumb { flex: none; width: 120px; height: 80px; }
+.cards img, .cards canvas { display: block; width: 120px; height: 80px; object-fit: cover; border-radius: 4px; }
+.cards canvas.pix { image-rendering: pixelated; image-rendering: crisp-edges; }
+.cards .cap { display: grid; gap: 2px; }
+.cards .cap b { font-weight: 400; }
+.cards .cap small { font-size: 0.78rem; }
 .cards .locked { color: var(--muted); }
 h3 { margin: 18px 0 8px; font-size: 0.9rem; font-weight: 400; letter-spacing: 0.14em; text-transform: uppercase; color: var(--cool); }
 

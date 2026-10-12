@@ -56,6 +56,10 @@ Settings, Spice tab: Off, Mild (default), Medium, Hot. Hot needs an 18+ confirma
 
 Code: see LICENSE. Special Elite font: Apache-2.0.
 
+## Secrets and the gallery
+
+Every chapter hides one optional secret task (see each chapter's `secretHint`). Hot shows a gallery of picture cards that unlock as you finish chapters. Each picture is **pixelated** until you find that chapter's secret, then it is fully revealed. Progress is kept in the browser (`night-shift.gallery`) across playthroughs. The art itself is not in this repo: put `art/<card-id>.png` on the server. Note the pixelation happens in the browser from the full image, so it is a game mechanic and not access control. A secret never scores, ends a chapter or changes the story.
+
 ## Chapters
 
 1. Dead Air (the arcade)  2. Flap Zone (inside Beberd)  3. Dune Run (inside Pixel Run)  4. Cable Maze (the machine room)  5. Last Credit (the Power Room). The story, voice and cast are in DESIGN.md. Progress carries between chapters; the leaderboard counts the whole run.

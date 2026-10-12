@@ -12,7 +12,7 @@
 
 	var Engine = window.NightShiftEngine;
 	var GAME_ID = 'night-shift';
-	var KEY_SAVE = 'night-shift.save', KEY_SET = 'night-shift.settings', KEY_STATS = 'arcade.stats', KEY_SYNC = 'night-shift.sync', KEY_NAME = 'arcade_name';
+	var KEY_SAVE = 'night-shift.save', KEY_SET = 'night-shift.settings', KEY_STATS = 'arcade.stats', KEY_SYNC = 'night-shift.sync', KEY_NAME = 'arcade_name', KEY_GAL = 'night-shift.gallery';
 	var SPICE = ['off', 'mild', 'medium', 'hot'];
 	var TWO = { use: 'on', give: 'to', ask: 'about' };   // verbs that take a second word, and the joining word
 
@@ -42,7 +42,7 @@
 		try { s = JSON.parse(read(KEY_SET) || '{}') || {}; } catch (e) { s = {}; }
 		var spice = SPICE.indexOf(s.spice) !== -1 ? s.spice : 'mild';
 		if (spice === 'hot' && !s.ageOk) { spice = 'medium'; }
-		return { spice: spice, ageOk: !!s.ageOk, large: !!s.large, motion: !!s.motion };
+		return { spice: spice, ageOk: !!s.ageOk, large: !!s.large, motion: !!s.motion, skipScenes: !!s.skipScenes };
 	}
 	function saveSettings() { write(KEY_SET, JSON.stringify(settings)); }
 	function applySettings() {
@@ -50,6 +50,17 @@
 		root.style.setProperty('--text-scale', settings.large ? '1.15' : '1');
 		if (settings.motion) { root.setAttribute('data-reduce-motion', ''); } else { root.removeAttribute('data-reduce-motion'); }
 		Object.keys(engines).forEach(function (k) { engines[k].setSpice(settings.spice); });
+	}
+
+	/* the gallery outlives a single playthrough: which cards were ever unlocked, and which secrets were found */
+	function galleryRead() {
+		var g = {};
+		try { g = JSON.parse(read(KEY_GAL) || '{}') || {}; } catch (e) { g = {}; }
+		return { unlocked: Array.isArray(g.unlocked) ? g.unlocked : [], revealed: Array.isArray(g.revealed) ? g.revealed : [] };
+	}
+	function galleryAdd(kind, id) {
+		var g = galleryRead();
+		if (g[kind].indexOf(id) === -1) { g[kind].push(id); write(KEY_GAL, JSON.stringify(g)); }
 	}
 
 	function updateStats(done) {
@@ -85,7 +96,9 @@
 	function scrollDown() { window.requestAnimationFrame(function () { els.log.scrollTop = els.log.scrollHeight; }); }
 	function addLine(line) {
 		var p;
-		if (line.k === 'title') { p = document.createElement('h2'); p.className = 'room line'; p.textContent = line.t; }
+		if (line.k === 'still') { p = document.createElement('figure'); p.className = 'still line'; var im = new Image(); im.src = line.src; im.alt = line.t; im.onerror = function () { p.remove(); }; p.appendChild(im); }
+		else if (line.k === 'titlecard') { p = document.createElement('p'); p.className = 'story title-card line'; p.textContent = line.t; }
+		else if (line.k === 'title') { p = document.createElement('h2'); p.className = 'room line'; p.textContent = line.t; }
 		else if (line.k === 'echo') { p = document.createElement('p'); p.className = 'echo line'; p.textContent = '> ' + line.t; }
 		else if (line.k === 'card') { p = document.createElement('p'); p.className = 'note line'; p.textContent = line.t; }
 		else { p = document.createElement('p'); p.className = (line.k === 'note' ? 'note' : 'story') + ' line'; p.appendChild(markup(line.t)); }
@@ -203,11 +216,11 @@
 	function nextChapter() {
 		var cards = state.cards.slice();
 		useChapter(run_.chapter + 1);
-		state = eng.newState(run_.carry); state.cards = cards; undoStack = []; lastCmd = '';
+		state = eng.newState(run_.carry); state.cards = cards; undoStack = []; lastCmd = ''; meta.scene = null; meta.still = null;
 		els.log.textContent = '';
-		intro();
-		addLines(eng.describeRoom(state));
-		autosave(); refresh(); finishInput();
+		endScene();
+		autosave(); refresh();
+		intro(finishInput);
 	}
 
 	function run(input) {
@@ -226,28 +239,78 @@
 		if (res.state.moves !== state.moves) { undoStack.push(state); if (undoStack.length > 200) { undoStack.shift(); } }
 		state = res.state;
 		lastCmd = input;
-		addLines(res.lines);
-		var finished = false;
+		var finished = false, lastChapter = false;
 		res.events.forEach(function (e) {
 			if (e.type === 'score') { updateStats(false); }
-			if (e.type === 'card' && settings.spice === 'hot') {
-				var cm = cardMeta(e.id);
-				addLine({ k: 'card', t: 'Gallery card unlocked: ' + cm.title + '. (Settings, Spice)' });
-			}
+			if (e.type === 'card') { galleryAdd('unlocked', e.id); }
+			if (e.type === 'reveal') { galleryAdd('revealed', e.id); }
 			if (e.type === 'end') { finished = true; }
 		});
 		if (finished) {
 			var i = run_.chapter - 1;
 			run_.scores[i] = state.score; run_.moves[i] = state.moves;
 			Object.keys(state.flags).forEach(function (f) { if (f.indexOf('carry:') === 0 && run_.carry.indexOf(f) === -1) { run_.carry.push(f); } });
-			var lastChapter = run_.chapter >= chapters.length;
+			lastChapter = run_.chapter >= chapters.length;
 			updateStats(lastChapter);
-			var p = endOfChapter();
-			if (lastChapter) { offerSubmit(p); }
 		}
+		var beats = res.lines.filter(function (l) { return l.k === 'beat'; }).map(function (l) { return l.t; });
+		var still = res.lines.filter(function (l) { return l.k === 'still'; })[0];
+		if (beats.length) { meta.scene = beats; meta.still = still ? { src: still.src, t: still.t } : null; }   // kept so a reload after the ending can show it again
 		autosave();
 		refresh();
-		finishInput();
+		playLines(res.lines, function () {
+			res.events.forEach(function (e) {
+				if (e.type === 'reveal') {
+					addLine({ k: 'card', t: 'Secret found: ' + cardMeta(e.id).title + '.' + (settings.spice === 'hot' ? ' Its gallery picture is now fully revealed. (Settings, Spice)' : '') });
+				}
+				if (e.type === 'card' && settings.spice === 'hot') {
+					var cm = cardMeta(e.id);
+					addLine({ k: 'card', t: 'Gallery card unlocked: ' + cm.title + '. (Settings, Spice)' });
+				}
+			});
+			if (finished) {
+				var p = endOfChapter();
+				if (lastChapter) { offerSubmit(p); }
+			}
+			finishInput();
+		});
+	}
+
+	/* ---------- cutscenes: beats appear one at a time with Continue and Skip ---------- */
+	var sceneStop = null;   // set while a cutscene waits for the player
+	function endScene() { if (sceneStop) { sceneStop = null; els.input.disabled = false; document.body.classList.remove('in-scene'); } }
+	function pauseScene(next) {
+		var p = addLine({ k: 'note', t: '' });
+		p.className = 'scene-ctl line';
+		var go = document.createElement('button'), skip = document.createElement('button');
+		go.type = 'button'; go.className = 'btn'; go.textContent = 'Continue';
+		skip.type = 'button'; skip.className = 'btn ghost'; skip.textContent = 'Skip scene';
+		p.appendChild(go); p.appendChild(skip);
+		els.input.disabled = true; document.body.classList.add('in-scene');
+		function done(all) { sceneStop = null; p.remove(); els.input.disabled = false; document.body.classList.remove('in-scene'); next(all); }
+		go.addEventListener('click', function () { done(false); });
+		skip.addEventListener('click', function () { done(true); });
+		sceneStop = done;
+		go.focus();
+	}
+	/** Show lines in order. Ordinary lines at once; cutscene beats one by one unless the player skips. */
+	function playLines(lines, finish) {
+		var i = 0;
+		(function step() {
+			while (i < lines.length) {
+				var l = lines[i++];
+				if (l.k !== 'beat') { addLine(l); continue; }
+				var p = addLine({ k: 'story', t: l.t });
+				p.className += ' beat';
+				if (settings.skipScenes || i >= lines.length || lines[i].k !== 'beat') { continue; }   // the last beat needs no pause
+				pauseScene(function (all) {
+					if (all) { while (i < lines.length && lines[i].k === 'beat') { addLine({ k: 'story', t: lines[i++].t }).className += ' beat'; } }
+					step();
+				});
+				return;
+			}
+			if (finish) { finish(); }
+		})();
 	}
 
 	function handleUi(verb) {
@@ -316,7 +379,7 @@
 	function readSave() {
 		try {
 			var raw = JSON.parse(read(KEY_SAVE) || 'null');
-			if (raw && raw.meta && typeof raw.meta.hints === 'number' && typeof raw.meta.t0 === 'number') { meta = { hints: raw.meta.hints, t0: raw.meta.t0, posted: !!raw.meta.posted }; }
+			if (raw && raw.meta && typeof raw.meta.hints === 'number' && typeof raw.meta.t0 === 'number') { meta = { hints: raw.meta.hints, t0: raw.meta.t0, posted: !!raw.meta.posted, scene: Array.isArray(raw.meta.scene) ? raw.meta.scene.filter(function (t) { return typeof t === 'string'; }) : null, still: raw.meta.still && typeof raw.meta.still.src === 'string' ? { src: raw.meta.still.src, t: String(raw.meta.still.t || '') } : null }; }
 			var ch = raw && raw.v === 2 && raw.run ? raw.run.chapter : 1;
 			if (raw && (raw.v === 1 || raw.v === 2) && worlds[ch] && raw.state && raw.state.room && worlds[ch].rooms[raw.state.room] && raw.state.loc) {
 				if (raw.v === 2) { run_ = { chapter: ch, carry: raw.run.carry || [], scores: raw.run.scores || [], moves: raw.run.moves || [] }; }
@@ -326,11 +389,9 @@
 		} catch (e) { /* damaged save: ignore it */ }
 		return null;
 	}
-	function intro() {
-		world.intro.forEach(function (t, i) {
-			var p = addLine({ k: 'story', t: t });
-			if (i === 0) { p.className = 'story title-card line'; }
-		});
+	function intro(then) {
+		var lines = world.intro.map(function (t, i) { return i === 0 ? { k: 'titlecard', t: t } : { k: 'beat', t: t }; });
+		playLines(lines, function () { addLines(eng.describeRoom(state)); if (then) { then(); } });
 	}
 	function newGame(askFirst) {
 		if (askFirst && !window.confirm('Start a new game? Your saved progress will be erased.')) { return; }
@@ -338,16 +399,19 @@
 		run_ = { chapter: 1, carry: [], scores: [], moves: [] }; useChapter(1);
 		state = eng.newState(); undoStack = []; lastCmd = ''; meta = { hints: 0, t0: Date.now() };
 		els.log.textContent = '';
-		intro();
-		addLines(eng.describeRoom(state));
-		autosave(); refresh(); finishInput();
+		endScene();
+		autosave(); refresh();
+		intro(finishInput);
 		if (els.dlg.open) { els.dlg.close(); }
 	}
 	function start() {
 		var saved = readSave();
 		if (saved) {
 			state = saved;
+			state.cards.forEach(function (id) { galleryAdd('unlocked', id); });   // cards earned before the gallery was remembered survive a new game
 			addLine({ k: 'note', t: 'Welcome back. Your game was restored.' });
+			if (state.ended && meta.still && /^img\/scenes\/[\w.-]+\.png$/.test(meta.still.src)) { addLine({ k: 'still', src: meta.still.src, t: meta.still.t || '' }); }
+			if (state.ended && meta.scene) { meta.scene.forEach(function (t) { addLine({ k: 'story', t: t }).className += ' beat'; }); }
 			addLines(eng.describeRoom(state));
 			if (state.ended) {
 				var ep = endOfChapter();
@@ -356,9 +420,8 @@
 		} else {
 			useChapter(1);
 			state = eng.newState();
-			intro();
-			addLines(eng.describeRoom(state));
 			autosave();
+			intro(function () { if (!coarse) { els.input.focus(); } });
 		}
 		refresh();
 		if (!coarse) { els.input.focus(); }
@@ -376,17 +439,37 @@
 		if (box.hidden) { return; }
 		var ul = $('cards');
 		ul.textContent = '';
+		var gal = galleryRead();
 		Object.keys(worlds).forEach(function (n) { Object.keys(worlds[n].cards || {}).forEach(function (id) {
-			var meta = worlds[n].cards[id], got = state.cards.indexOf(id) !== -1;
+			var meta = worlds[n].cards[id], got = state.cards.indexOf(id) !== -1 || gal.unlocked.indexOf(id) !== -1;
+			var revealed = gal.revealed.indexOf(id) !== -1;
 			var li = document.createElement('li');
 			if (got) {
+				var alt = meta.title + (meta.who ? ' (' + meta.who + ')' : '');
+				var holder = document.createElement('span');
+				holder.className = 'thumb';
 				var img = new Image();
-				img.alt = ''; img.width = 56; img.height = 72;
-				img.onerror = function () { img.remove(); };
+				img.alt = alt; img.width = 120; img.height = 80;
+				img.onerror = function () { holder.remove(); };
+				img.onload = function () {
+					if (revealed) { holder.appendChild(img); return; }
+					// pixelated until its secret is found: draw the picture at a tiny size, then scale it up with hard edges
+					var cv = document.createElement('canvas'), w = 30, h = Math.max(1, Math.round(w * img.naturalHeight / img.naturalWidth));
+					cv.width = w; cv.height = h; cv.className = 'pix';
+					cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', alt + ', pixelated');
+					cv.getContext('2d').drawImage(img, 0, 0, w, h);
+					holder.appendChild(cv);
+				};
 				img.src = 'art/' + id + '.png';
-				li.appendChild(img);
+				li.appendChild(holder);
 				var t = document.createElement('span');
-				t.textContent = meta.title + ' (' + meta.who + ')';
+				t.className = 'cap';
+				var name = document.createElement('b');
+				name.textContent = alt;
+				var sub = document.createElement('small');
+				sub.className = 'muted';
+				sub.textContent = revealed ? 'Secret found: fully revealed.' : (meta.secretHint ? 'Secret: ' + meta.secretHint : 'Pixelated until you find its secret.');
+				t.appendChild(name); t.appendChild(sub);
 				li.appendChild(t);
 			} else {
 				li.className = 'locked';
@@ -399,7 +482,9 @@
 	function setupSettings() {
 		var dlg = els.dlg;
 		if (!dlg || typeof dlg.showModal !== 'function') { els.openSettings.hidden = true; return; }
-		var large = $('opt-large'), motion = $('opt-motion');
+		var large = $('opt-large'), motion = $('opt-motion'), skipS = $('opt-skip');
+		skipS.checked = settings.skipScenes;
+		skipS.addEventListener('change', function () { settings.skipScenes = skipS.checked; saveSettings(); });
 		large.checked = settings.large; motion.checked = settings.motion;
 		large.addEventListener('change', function () { settings.large = large.checked; saveSettings(); applySettings(); });
 		motion.addEventListener('change', function () { settings.motion = motion.checked; saveSettings(); applySettings(); });
@@ -447,7 +532,7 @@
 				if (!window.confirm('Replace the game on this device with the cloud save?')) { return; }
 				run_ = { chapter: ch, carry: rs.run.carry || [], scores: rs.run.scores || [], moves: rs.run.moves || [] }; delete rs.run; delete rs.chapter;
 				useChapter(ch); state = rs; undoStack = []; write(KEY_SYNC, code); $('sync-on').hidden = true;
-				els.log.textContent = ''; addLine({ k: 'note', t: 'Loaded your cloud save.' }); addLines(eng.describeRoom(state));
+				els.log.textContent = ''; endScene(); addLine({ k: 'note', t: 'Loaded your cloud save.' }); addLines(eng.describeRoom(state));
 				autosave(); refresh(); setSyncState('Cloud save is on. Your code: ' + code); els.dlg.close();
 			}).catch(function () { setSyncState('Could not reach the server.'); });
 		});
@@ -457,7 +542,7 @@
 
 	/* ---------- events ---------- */
 	function wire() {
-		els.form.addEventListener('submit', function (e) { e.preventDefault(); run(els.input.value); });
+		els.form.addEventListener('submit', function (e) { e.preventDefault(); if (!sceneStop) { run(els.input.value); } });
 		els.input.addEventListener('input', function () {
 			if (pending) {
 				var typed = els.input.value.replace(/^\s+/, '').split(' ')[0];
@@ -470,9 +555,15 @@
 			else if (e.key === 'Tab' && els.input.value && !e.shiftKey) { complete(e); }
 			else if (e.key === 'Escape') { clearPending(); }
 		});
+		document.addEventListener('keydown', function (e) {
+			if (!sceneStop || els.dlg.open) { return; }
+			if (e.key === 'Escape') { e.preventDefault(); sceneStop(true); }
+			else if ((e.key === 'Enter' || e.key === ' ') && !(e.target && e.target.closest && e.target.closest('button'))) { e.preventDefault(); sceneStop(false); }
+		});
 		document.addEventListener('click', function (e) {
 			var t = e.target;
 			if (!t || !t.closest) { return; }
+			if (sceneStop && !t.closest('.scene-ctl')) { return; }   // a paused cutscene owns the screen: no commands until it is continued or skipped
 			var noun = t.closest('.noun');
 			if (noun) { pickNoun(noun.getAttribute('data-say')); return; }
 			var go = t.closest('[data-go]');

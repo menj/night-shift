@@ -3,7 +3,10 @@
   "chapter": "Chapter 3: Dune Run",
   "start": "line",
   "maxScore": 5,
-  "carry": ["carry:ch1", "carry:ch2"],
+  "carry": [
+    "carry:ch1",
+    "carry:ch2"
+  ],
   "intro": [
     "NIGHT SHIFT",
     "You press your nose to the glass of the runner cabinet to see what Eeny is so upset about, and the cabinet, which has been waiting all night for someone this gullible, pulls you in. You land face first in warm pixel sand.",
@@ -21,19 +24,47 @@
       "desc": [
         "A stripe of chequered pixels runs across the sand: the starting line of Pixel Run. A wooden [[signboard|daily-challenge signboard]] is planted beside it, next to a dented [[crate|power-up crate]] stencilled POWER-UPS, PLEASE TAKE ONE. WE KNOW YOU WILL NOT.",
         {
-          "when": [{ "not": { "flag": "noon" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "noon"
+              }
+            }
+          ],
           "t": "The [[sun|sun]] is a pink smudge on the horizon, and the whole desert is the colour of weak lemonade. Dawn."
         },
         {
-          "when": [{ "flag": "noon" }, { "not": { "flag": "dusk" } }],
+          "when": [
+            {
+              "flag": "noon"
+            },
+            {
+              "not": {
+                "flag": "dusk"
+              }
+            }
+          ],
           "t": "The [[sun|sun]] is straight overhead and has opinions about your jacket. Noon."
         },
         {
-          "when": [{ "flag": "dusk" }, { "not": { "flag": "night" } }],
+          "when": [
+            {
+              "flag": "dusk"
+            },
+            {
+              "not": {
+                "flag": "night"
+              }
+            }
+          ],
           "t": "The [[sun|sun]] sinks, red as a stop sign, and your shadow stretches halfway to the next level. Dusk."
         },
         {
-          "when": [{ "flag": "night" }],
+          "when": [
+            {
+              "flag": "night"
+            }
+          ],
           "t": "The [[sun|sun]] is long gone. The dunes are silver under the stars, and the sand has stopped trying to cook you. Night."
         },
         "North is a tin checkpoint hut, east is a field of cacti, and a path leads west toward a tall mesa."
@@ -43,7 +74,11 @@
         "n": "checkpoint",
         "w": {
           "to": "mesa",
-          "needs": [{ "flag": "noon" }],
+          "needs": [
+            {
+              "flag": "noon"
+            }
+          ],
           "blocked": "At this hour the mesa is a wall of blue shadow and the path up it has not rendered yet. The sun will have to climb a bit first."
         }
       }
@@ -53,11 +88,21 @@
       "desc": [
         "The course runs straight through a field of [[cacti|cacti]], standing shoulder to shoulder with more spines than a hedgehog convention. The way back is west.",
         {
-          "when": [{ "not": { "flag": "night" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "night"
+              }
+            }
+          ],
           "t": "They bristle in the sun and block the way north entirely."
         },
         {
-          "when": [{ "flag": "night" }],
+          "when": [
+            {
+              "flag": "night"
+            }
+          ],
           "t": "Under the stars the cacti have folded their spines like umbrellas, and a soft path winds north between them."
         }
       ],
@@ -65,7 +110,11 @@
         "w": "line",
         "n": {
           "to": "oasis",
-          "needs": [{ "flag": "night" }],
+          "needs": [
+            {
+              "flag": "night"
+            }
+          ],
           "blocked": "The cacti are packed solid to the north. Sharp, rude and in no mood to be hugged."
         }
       }
@@ -113,25 +162,58 @@
   "items": {
     "signboard": {
       "name": "signboard",
-      "aliases": ["signboard", "sign", "board", "daily challenge"],
+      "aliases": [
+        "signboard",
+        "sign",
+        "board",
+        "daily challenge"
+      ],
       "fixed": true,
       "loc": "line",
       "desc": "A weather-beaten board headed DAILY CHALLENGE. The writing on it changes with the time of day. Try reading it.",
       "read": [
         {
-          "when": [{ "not": { "flag": "noon" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "noon"
+              }
+            }
+          ],
           "t": "DAILY CHALLENGE (DAWN): Cacti are sharp until dark. A runner with a power-up goes through spines like they were a rumour. Shields turn them. Bombs scare them."
         },
         {
-          "when": [{ "flag": "noon" }, { "not": { "flag": "dusk" } }],
+          "when": [
+            {
+              "flag": "noon"
+            },
+            {
+              "not": {
+                "flag": "dusk"
+              }
+            }
+          ],
           "t": "DAILY CHALLENGE (NOON): The mesa is open. Birds circle it and they hate two things: loud bangs and a well-held shield. Only one runner is stuck up there, and she is not shy about it."
         },
         {
-          "when": [{ "flag": "dusk" }, { "not": { "flag": "night" } }],
+          "when": [
+            {
+              "flag": "dusk"
+            },
+            {
+              "not": {
+                "flag": "night"
+              }
+            }
+          ],
           "t": "DAILY CHALLENGE (DUSK): The last red light is the best light. Machines that run on sunshine drink it best, if somebody can aim it for them."
         },
         {
-          "when": [{ "flag": "night" }],
+          "when": [
+            {
+              "flag": "night"
+            }
+          ],
           "t": "DAILY CHALLENGE (NIGHT): The cacti sleep. The stars are the way home, though lately they hang crooked. Somebody is waiting where the water is, and has been for quite a while."
         },
         {
@@ -142,7 +224,11 @@
     },
     "crate": {
       "name": "crate",
-      "aliases": ["crate", "power crate", "lid"],
+      "aliases": [
+        "crate",
+        "power crate",
+        "lid"
+      ],
       "fixed": true,
       "loc": "line",
       "container": true,
@@ -152,84 +238,155 @@
     },
     "shield": {
       "name": "shield",
-      "aliases": ["shield", "bubble"],
+      "aliases": [
+        "shield",
+        "bubble"
+      ],
       "takeable": true,
       "loc": "in:crate",
       "desc": "A power-up shield: a shimmering blue bubble the size of a dinner plate. It stops one hit, politely."
     },
     "bomb": {
       "name": "bomb",
-      "aliases": ["bomb", "red bomb"],
+      "aliases": [
+        "bomb",
+        "red bomb"
+      ],
       "takeable": true,
       "loc": "in:crate",
       "desc": "A round black power-up bomb with a fuse and a smiley face. The smiley face is not reassuring."
     },
     "mirror": {
       "name": "hand mirror",
-      "aliases": ["mirror", "hand mirror"],
+      "aliases": [
+        "mirror",
+        "hand mirror"
+      ],
       "takeable": true,
       "loc": "gone",
       "desc": "A little silver hand mirror with MEENY engraved on the back, in case anyone else tries to claim it."
     },
     "sun": {
       "name": "sun",
-      "aliases": ["sun", "sky"],
+      "aliases": [
+        "sun",
+        "sky"
+      ],
       "fixed": true,
       "loc": "line",
       "desc": [
         {
-          "when": [{ "not": { "flag": "noon" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "noon"
+              }
+            }
+          ],
           "t": "A low, pink sun. It looks as if it would rather stay in bed."
         },
         {
-          "when": [{ "flag": "noon" }, { "not": { "flag": "dusk" } }],
+          "when": [
+            {
+              "flag": "noon"
+            },
+            {
+              "not": {
+                "flag": "dusk"
+              }
+            }
+          ],
           "t": "A fierce white sun, right overhead. You do not stare. You stare."
         },
         {
-          "when": [{ "flag": "dusk" }, { "not": { "flag": "night" } }],
+          "when": [
+            {
+              "flag": "dusk"
+            },
+            {
+              "not": {
+                "flag": "night"
+              }
+            }
+          ],
           "t": "A fat red sun resting on the dunes, throwing long light along the sand."
         },
         {
-          "when": [{ "flag": "night" }],
+          "when": [
+            {
+              "flag": "night"
+            }
+          ],
           "t": "No sun. Just a dark sky full of crooked stars."
         }
       ]
     },
     "cacti": {
       "name": "cacti",
-      "aliases": ["cacti", "cactus", "cactuses", "spines"],
+      "aliases": [
+        "cacti",
+        "cactus",
+        "cactuses",
+        "spines"
+      ],
       "fixed": true,
       "loc": "cacti",
       "desc": [
         {
-          "when": [{ "not": { "flag": "night" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "night"
+              }
+            }
+          ],
           "t": "Rows of cacti, each with a face of permanent disapproval. You would not hug one of these."
         },
         {
-          "when": [{ "flag": "night" }],
+          "when": [
+            {
+              "flag": "night"
+            }
+          ],
           "t": "The cacti are asleep, spines tucked in, small white flowers open on their heads. They look almost shy."
         }
       ]
     },
     "birds": {
       "name": "birds",
-      "aliases": ["birds", "flock", "vultures"],
+      "aliases": [
+        "birds",
+        "flock",
+        "vultures"
+      ],
       "fixed": true,
       "loc": "mesa",
       "desc": [
         {
-          "when": [{ "not": { "flag": "meenyFree" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "meenyFree"
+              }
+            }
+          ],
           "t": "A flock of loud birds circling the ledge. They are not Hamilton. Hamilton would never be that undignified."
         },
         {
-          "when": [{ "flag": "meenyFree" }],
+          "when": [
+            {
+              "flag": "meenyFree"
+            }
+          ],
           "t": "The birds have drifted off to complain about it somewhere else."
         }
       ]
     },
     "radio": {
       "name": "radio",
-      "aliases": ["radio"],
+      "aliases": [
+        "radio"
+      ],
       "fixed": true,
       "loc": "checkpoint",
       "desc": "An old radio on the checkpoint counter, hissing softly. A sticker on the side says MIRA'S ARCADE FM. Try reading it.",
@@ -247,14 +404,22 @@
     },
     "stars": {
       "name": "stars",
-      "aliases": ["stars", "star", "constellations"],
+      "aliases": [
+        "stars",
+        "star",
+        "constellations"
+      ],
       "fixed": true,
       "loc": "oasis",
       "desc": "Hundreds of stars, all slightly crooked, like a picture on a wall that a toddler has been at. The big ones are in the wrong places."
     },
     "arch": {
       "name": "finish arch",
-      "aliases": ["arch", "finish arch", "finish"],
+      "aliases": [
+        "arch",
+        "finish arch",
+        "finish"
+      ],
       "fixed": true,
       "loc": "finish",
       "desc": "A chequered arch with a dark banner reading FINISH. It looks as if it needs a whole team to wake it up."
@@ -263,31 +428,61 @@
   "npcs": {
     "eeny": {
       "name": "Eeny",
-      "aliases": ["eeny", "dino", "dinosaur"],
+      "aliases": [
+        "eeny",
+        "dino",
+        "dinosaur"
+      ],
       "loc": "cacti",
       "here": "[[eeny|Eeny]] the dinosaur is stuck nose-first in the front row of cacti, still trying to jump the lot.",
       "hereFollow": "[[eeny|Eeny]] the dinosaur bounces along beside you, shield glowing, looking for something to jump.",
       "desc": [
         {
-          "when": [{ "not": { "flag": "eenyFree" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "eenyFree"
+              }
+            }
+          ],
           "t": "Eeny the dinosaur, brave to his green little bones, who has been jumping into the same cactus all night and cannot work out why it is not working."
         },
         {
-          "when": [{ "flag": "eenyFree" }],
+          "when": [
+            {
+              "flag": "eenyFree"
+            }
+          ],
           "t": "Eeny the dinosaur, vibrating with the joy of having got past a cactus at last."
         }
       ],
       "talk": [
         {
-          "when": [{ "not": { "flag": "eenyFree" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "eenyFree"
+              }
+            }
+          ],
           "t": "\"I'M GOING TO JUMP IT!\" shouts Eeny, jumping it again. \"THIS TIME FOR SURE!\" He lands in the same cactus."
         },
         {
-          "when": [{ "not": { "flag": "eenyFree" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "eenyFree"
+              }
+            }
+          ],
           "t": "\"I THINK IT'S GETTING EASIER!\" says Eeny, bleeding pixels. It is not."
         },
         {
-          "when": [{ "flag": "eenyFree" }],
+          "when": [
+            {
+              "flag": "eenyFree"
+            }
+          ],
           "t": "\"I JUMPED A CACTUS!\" Eeny says, for the eleventh time. \"I'M A HERO!\" You decide not to argue."
         }
       ],
@@ -295,32 +490,57 @@
         "cacti": "\"THEY'RE SPIKY,\" says Eeny. \"I'M SPIKIER IN MY HEART.\"",
         "cactus": "\"THEY'RE SPIKY,\" says Eeny. \"I'M SPIKIER IN MY HEART.\"",
         "shield": "\"A SHIELD!\" says Eeny. \"I LOVE SHIELDS. I DON'T KNOW WHY I LOVE THEM.\"",
-        "bomb": "\"I LOVE BOMBS TOO,\" says Eeny, wistfully. \"BUT MY LAST TWO WENT OFF IN MY HANDS.\""
+        "bomb": "\"I LOVE BOMBS TOO,\" says Eeny, wistfully. \"BUT MY LAST TWO WENT OFF IN MY HANDS.\"",
+        "mirror": "\"I'VE ALWAYS WANTED TO MEET ANOTHER DINOSAUR,\" says Eeny. \"I SAW ONE ONCE, IN A PUDDLE. HE COPIED EVERYTHING I DID. VERY RUDE. VERY HANDSOME.\"",
+        "puddle": "\"I'VE ALWAYS WANTED TO MEET ANOTHER DINOSAUR,\" says Eeny. \"I SAW ONE ONCE, IN A PUDDLE. HE COPIED EVERYTHING I DID. VERY RUDE. VERY HANDSOME.\""
       }
     },
     "meeny": {
       "name": "Meeny",
-      "aliases": ["meeny", "cat"],
+      "aliases": [
+        "meeny",
+        "cat"
+      ],
       "loc": "mesa",
       "here": "[[meeny|Meeny]] the cat sits on a ledge halfway up the mesa, grooming furiously while the birds heckle.",
       "hereFollow": "[[meeny|Meeny]] the cat pads alongside you, checking her reflection in everything shiny.",
       "desc": [
         {
-          "when": [{ "not": { "flag": "meenyFree" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "meenyFree"
+              }
+            }
+          ],
           "t": "Meeny the cat: long-limbed, fast as a bad rumour and extremely sure of her own good looks. The birds overhead have been unkind to her fur."
         },
         {
-          "when": [{ "flag": "meenyFree" }],
+          "when": [
+            {
+              "flag": "meenyFree"
+            }
+          ],
           "t": "Meeny the cat, feeling much better about herself, which is dangerous for everyone else."
         }
       ],
       "talk": [
         {
-          "when": [{ "not": { "flag": "meenyFree" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "meenyFree"
+              }
+            }
+          ],
           "t": "\"I am not coming down while those lunatics are flying about,\" says Meeny. \"I have a coat to think of. Bang them or block them. Do something useful for once.\""
         },
         {
-          "when": [{ "flag": "meenyFree" }],
+          "when": [
+            {
+              "flag": "meenyFree"
+            }
+          ],
           "t": "\"Do not look at me like that,\" says Meeny. \"You will get used to it. Everyone does. Eventually.\""
         },
         {
@@ -336,27 +556,51 @@
     },
     "moe": {
       "name": "Moe",
-      "aliases": ["moe", "robot", "bot"],
+      "aliases": [
+        "moe",
+        "robot",
+        "bot"
+      ],
       "loc": "checkpoint",
       "here": "[[moe|Moe]], a small blue robot, hangs from the solar panel on the roof like a very sad ornament, screen grey and eyes closed.",
       "hereFollow": "[[moe|Moe]], the small blue robot, rolls along at your heel, eyes bright.",
       "desc": [
         {
-          "when": [{ "not": { "flag": "moeFree" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "moeFree"
+              }
+            }
+          ],
           "t": "Moe, hanging off the roof panel. A gauge on his chest reads CHARGE 0%. He is solar-powered, and it has been a long night without sun."
         },
         {
-          "when": [{ "flag": "moeFree" }],
+          "when": [
+            {
+              "flag": "moeFree"
+            }
+          ],
           "t": "Moe, fully charged, in a state of constant mild alarm."
         }
       ],
       "talk": [
         {
-          "when": [{ "not": { "flag": "moeFree" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "moeFree"
+              }
+            }
+          ],
           "t": "\"CHARGE... ZERO PERCENT,\" Moe whispers, eyes still shut. \"THE PANEL NEEDS... A BIG BRIGHT... SOMETHING. AIMED. AT THE... PANEL.\""
         },
         {
-          "when": [{ "flag": "moeFree" }],
+          "when": [
+            {
+              "flag": "moeFree"
+            }
+          ],
           "t": "\"I AM AT ONE HUNDRED PERCENT,\" says Moe. \"I WOULD LIKE TO REMAIN AT ONE HUNDRED PERCENT FOR AS LONG AS POSSIBLE.\""
         },
         {
@@ -373,31 +617,60 @@
     },
     "miny": {
       "name": "Miny",
-      "aliases": ["miny", "penguin"],
+      "aliases": [
+        "miny",
+        "penguin"
+      ],
       "loc": "oasis",
       "here": "[[miny|Miny]] the penguin stands at the water's edge with one flipper raised, looking up at the sky, quite still.",
       "hereFollow": "[[miny|Miny]] the penguin walks at your side, entirely unbothered.",
       "desc": [
         {
-          "when": [{ "not": { "flag": "minyFree" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "minyFree"
+              }
+            }
+          ],
           "t": "Miny the penguin, in his tiny racing goggles. He has the air of someone who has been waiting for a bus for a very long time and has stopped minding."
         },
         {
-          "when": [{ "flag": "minyFree" }],
+          "when": [
+            {
+              "flag": "minyFree"
+            }
+          ],
           "t": "Miny the penguin, goggles up, calm as a pond."
         }
       ],
       "talk": [
         {
-          "when": [{ "not": { "flag": "minyFree" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "minyFree"
+              }
+            }
+          ],
           "t": "\"Hello,\" says Miny. \"I would follow the stars, but they are crooked. I am a penguin. I do not do crooked.\""
         },
         {
-          "when": [{ "not": { "flag": "minyFree" } }],
+          "when": [
+            {
+              "not": {
+                "flag": "minyFree"
+              }
+            }
+          ],
           "t": "\"I have been standing here since the Glitch,\" says Miny. \"It is fine. I have been thinking about fish.\""
         },
         {
-          "when": [{ "flag": "minyFree" }],
+          "when": [
+            {
+              "flag": "minyFree"
+            }
+          ],
           "t": "\"Thanks,\" says Miny. \"That was nicely done. I would clap, but, flippers.\""
         }
       ],
@@ -413,19 +686,53 @@
     {
       "id": "shield-eeny",
       "on": [
-        { "verb": ["use", "give"], "noun": "shield", "with": "eeny" },
-        { "verb": ["use"], "noun": "shield", "with": "cacti" }
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "shield",
+          "with": "eeny"
+        },
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "shield",
+          "with": "cacti"
+        }
       ],
-      "skipIf": [{ "flag": "eenyFree" }],
+      "skipIf": [
+        {
+          "flag": "eenyFree"
+        }
+      ],
       "skipText": "Eeny has already got through the cacti, and is sulking about not being asked to do it twice.",
-      "requires": [{ "has": "shield" }],
+      "requires": [
+        {
+          "has": "shield"
+        }
+      ],
       "else": "You are not carrying a shield.",
       "effects": [
-        { "move": ["shield", "gone"] },
-        { "flag": "eenyFree" },
-        { "follow": "eeny" },
-        { "flag": "noon" },
-        { "score": 1 },
+        {
+          "move": [
+            "shield",
+            "gone"
+          ]
+        },
+        {
+          "flag": "eenyFree"
+        },
+        {
+          "follow": "eeny"
+        },
+        {
+          "flag": "noon"
+        },
+        {
+          "score": 1
+        },
         {
           "say": [
             "You pop the shield over Eeny like a hat. A blue bubble swells around him, and he looks at it, then at the cacti, then at you. \"I'M READY!\" he yells, and charges.",
@@ -438,18 +745,46 @@
     {
       "id": "bomb-cacti",
       "on": [
-        { "verb": ["use", "give"], "noun": "bomb", "with": "cacti" }
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "bomb",
+          "with": "cacti"
+        }
       ],
-      "skipIf": [{ "flag": "eenyFree" }],
+      "skipIf": [
+        {
+          "flag": "eenyFree"
+        }
+      ],
       "skipText": "The cacti have suffered enough for one morning.",
-      "requires": [{ "has": "bomb" }],
+      "requires": [
+        {
+          "has": "bomb"
+        }
+      ],
       "else": "You are not carrying a bomb.",
       "effects": [
-        { "move": ["bomb", "gone"] },
-        { "flag": "eenyFree" },
-        { "follow": "eeny" },
-        { "flag": "noon" },
-        { "score": 1 },
+        {
+          "move": [
+            "bomb",
+            "gone"
+          ]
+        },
+        {
+          "flag": "eenyFree"
+        },
+        {
+          "follow": "eeny"
+        },
+        {
+          "flag": "noon"
+        },
+        {
+          "score": 1
+        },
         {
           "say": [
             "You light the fuse, lob the bomb into the cacti and dive behind Eeny, who is not much of a shelter. BOOM. When the dust settles, the front row of cacti has retired in disgrace and Eeny is blinking in a cloud of pixels.",
@@ -462,29 +797,76 @@
     {
       "id": "bomb-eeny",
       "on": [
-        { "verb": ["use", "give"], "noun": "bomb", "with": "eeny" }
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "bomb",
+          "with": "eeny"
+        }
       ],
-      "requires": [{ "flag": "never" }],
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
       "else": "Eeny catches the bomb, looks at it with great love, and offers it back. \"AGAIN?\" Gently, you take it back. (Aim it at something spiky, or something loud.)",
       "effects": []
     },
     {
       "id": "shield-meeny",
       "on": [
-        { "verb": ["use", "give"], "noun": "shield", "with": "meeny" },
-        { "verb": ["use"], "noun": "shield", "with": "birds" }
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "shield",
+          "with": "meeny"
+        },
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "shield",
+          "with": "birds"
+        }
       ],
-      "skipIf": [{ "flag": "meenyFree" }],
+      "skipIf": [
+        {
+          "flag": "meenyFree"
+        }
+      ],
       "skipText": "Meeny is already free, and fussing over her fur.",
-      "requires": [{ "has": "shield" }],
+      "requires": [
+        {
+          "has": "shield"
+        }
+      ],
       "else": "You are not carrying a shield.",
       "effects": [
-        { "move": ["shield", "gone"] },
-        { "flag": "meenyFree" },
-        { "follow": "meeny" },
-        { "flag": "dusk" },
-        { "give": "mirror" },
-        { "score": 1 },
+        {
+          "move": [
+            "shield",
+            "gone"
+          ]
+        },
+        {
+          "flag": "meenyFree"
+        },
+        {
+          "follow": "meeny"
+        },
+        {
+          "flag": "dusk"
+        },
+        {
+          "give": "mirror"
+        },
+        {
+          "score": 1
+        },
         {
           "say": [
             "You climb up the ledge, hold the shield over Meeny like a parasol and wave the other hand at the sky. A whole squadron of birds makes a bombing run and bounces off the bubble with a dozen wet SPLATs. After a few goes, the flock gives up and goes to complain at somebody else.",
@@ -506,20 +888,56 @@
     {
       "id": "bomb-meeny",
       "on": [
-        { "verb": ["use", "give"], "noun": "bomb", "with": "birds" },
-        { "verb": ["use"], "noun": "bomb", "with": "meeny" }
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "bomb",
+          "with": "birds"
+        },
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "bomb",
+          "with": "meeny"
+        }
       ],
-      "skipIf": [{ "flag": "meenyFree" }],
+      "skipIf": [
+        {
+          "flag": "meenyFree"
+        }
+      ],
       "skipText": "Meeny is already free, and the birds have had enough surprises.",
-      "requires": [{ "has": "bomb" }],
+      "requires": [
+        {
+          "has": "bomb"
+        }
+      ],
       "else": "You are not carrying a bomb.",
       "effects": [
-        { "move": ["bomb", "gone"] },
-        { "flag": "meenyFree" },
-        { "follow": "meeny" },
-        { "flag": "dusk" },
-        { "give": "mirror" },
-        { "score": 1 },
+        {
+          "move": [
+            "bomb",
+            "gone"
+          ]
+        },
+        {
+          "flag": "meenyFree"
+        },
+        {
+          "follow": "meeny"
+        },
+        {
+          "flag": "dusk"
+        },
+        {
+          "give": "mirror"
+        },
+        {
+          "score": 1
+        },
         {
           "say": [
             "You light the bomb, which turns out to be a polite sort of bomb: it goes POP and rains confetti. The birds scatter in a flurry of offended feathers. (The twist: it only scares things, it does not hurt them. The cacti would have a different opinion.)",
@@ -541,18 +959,46 @@
     {
       "id": "mirror-moe",
       "on": [
-        { "verb": ["use", "give"], "noun": "mirror", "with": "moe" },
-        { "verb": ["fix"], "noun": "moe" }
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "mirror",
+          "with": "moe"
+        },
+        {
+          "verb": [
+            "fix"
+          ],
+          "noun": "moe"
+        }
       ],
-      "skipIf": [{ "flag": "moeFree" }],
+      "skipIf": [
+        {
+          "flag": "moeFree"
+        }
+      ],
       "skipText": "Moe is at a hundred percent and wants it to stay that way.",
-      "requires": [{ "has": "mirror" }],
+      "requires": [
+        {
+          "has": "mirror"
+        }
+      ],
       "else": "Moe's panel is flat and the sun is not helping. You have nothing to aim the light with. A shiny thing would do it, if you knew whose.",
       "effects": [
-        { "flag": "moeFree" },
-        { "follow": "moe" },
-        { "flag": "night" },
-        { "score": 1 },
+        {
+          "flag": "moeFree"
+        },
+        {
+          "follow": "moe"
+        },
+        {
+          "flag": "night"
+        },
+        {
+          "score": 1
+        },
         {
           "say": [
             "The sun is a red coin balanced on the dunes. You stand on the counter, tilt Meeny's mirror and catch the last light. A bar of fire hits the panel on the roof.",
@@ -565,17 +1011,43 @@
     {
       "id": "moe-stars",
       "on": [
-        { "verb": ["use"], "noun": "moe", "with": "stars" },
-        { "verb": ["use"], "noun": "moe", "with": "miny" }
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "moe",
+          "with": "stars"
+        },
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "moe",
+          "with": "miny"
+        }
       ],
-      "skipIf": [{ "flag": "minyFree" }],
+      "skipIf": [
+        {
+          "flag": "minyFree"
+        }
+      ],
       "skipText": "The stars are already straight, and Moe is looking smug about it.",
-      "requires": [{ "follow": "moe" }],
+      "requires": [
+        {
+          "follow": "moe"
+        }
+      ],
       "else": "You wave at the stars. They do not rearrange themselves. This needs someone who knows machines.",
       "effects": [
-        { "flag": "minyFree" },
-        { "follow": "miny" },
-        { "score": 1 },
+        {
+          "flag": "minyFree"
+        },
+        {
+          "follow": "miny"
+        },
+        {
+          "score": 1
+        },
         {
           "say": [
             "Moe peers at the sky, then at the pool, and his eyes whirr. \"THE STAR MAP IS UPSIDE DOWN,\" he says. \"WHO DOES THAT.\" He rolls to the water's edge, beeps three times at a bright star and gives it a nudge. One by one the whole sky rolls into place.",
@@ -587,17 +1059,44 @@
     {
       "id": "mirror-miny",
       "on": [
-        { "verb": ["use", "give"], "noun": "mirror", "with": "miny" },
-        { "verb": ["use"], "noun": "mirror", "with": "stars" }
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "mirror",
+          "with": "miny"
+        },
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "mirror",
+          "with": "stars"
+        }
       ],
-      "skipIf": [{ "flag": "minyFree" }],
+      "skipIf": [
+        {
+          "flag": "minyFree"
+        }
+      ],
       "skipText": "Miny is already on his way, and has no need to look at himself.",
-      "requires": [{ "has": "mirror" }],
+      "requires": [
+        {
+          "has": "mirror"
+        }
+      ],
       "else": "You are not carrying a mirror.",
       "effects": [
-        { "flag": "minyFree" },
-        { "follow": "miny" },
-        { "score": 1 },
+        {
+          "flag": "minyFree"
+        },
+        {
+          "follow": "miny"
+        },
+        {
+          "score": 1
+        },
         {
           "say": [
             "You hold Meeny's mirror over the black water so the sky bounces in. In the reflection, every star hangs the right way up. Miny looks at it for a long, calm moment.",
@@ -609,16 +1108,40 @@
     {
       "id": "finish",
       "on": [
-        { "verb": ["use"], "noun": "arch" }
+        {
+          "verb": [
+            "use"
+          ],
+          "noun": "arch"
+        }
       ],
-      "requires": [{ "flag": "eenyFree" }, { "flag": "meenyFree" }, { "flag": "moeFree" }, { "flag": "minyFree" }],
+      "requires": [
+        {
+          "flag": "eenyFree"
+        },
+        {
+          "flag": "meenyFree"
+        },
+        {
+          "flag": "moeFree"
+        },
+        {
+          "flag": "minyFree"
+        }
+      ],
       "else": "The arch stays dark. It wants all four runners under it at once, and someone is still missing.",
       "effects": [
-        { "score": 1 },
-        { "flag": "complete" },
-        { "card": "sundown-sprint" },
         {
-          "say": [
+          "score": 1
+        },
+        {
+          "flag": "complete"
+        },
+        {
+          "card": "sundown-sprint"
+        },
+        {
+          "scene": [
             "You march your team under the arch: a dinosaur, a cat, a penguin, a robot and an attendant in a tragic jacket. The arch flares into life and the sand shakes with a fanfare. FINISH! The whole desert flickers back to its proper colours.",
             "\"DID WE WIN?\" shouts Eeny. \"YOU WERE NEVER RACING,\" says Moe. \"WE WON!\" Eeny shouts. Miny nods. \"We did.\"",
             "A trophy presenter wanders in from the corner of the screen: Zara Sol, in a sparkly desert-rally jumpsuit that fits like an unspoken promise. She pins a medal on your name badge.",
@@ -634,54 +1157,178 @@
             "Out in the real arcade the floor is humming under every cabinet, and a trapdoor behind the prize counter has swung open onto a machine room. Next: Chapter 4, Cable Maze."
           ]
         },
-        { "flag": "carry:ch3" },
-        { "end": true }
+        {
+          "flag": "carry:ch3"
+        },
+        {
+          "end": true
+        }
+      ]
+    },
+    {
+      "id": "secret-eeny-mirror",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "mirror",
+          "with": "eeny"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "metTwin"
+        }
+      ],
+      "skipText": "Eeny is still telling the mirror about his day. The mirror is a great listener.",
+      "requires": [
+        {
+          "has": "mirror"
+        }
+      ],
+      "else": "You are not carrying a mirror.",
+      "effects": [
+        {
+          "flag": "metTwin"
+        },
+        {
+          "say": [
+            "You hold Meeny's mirror up to Eeny. He freezes. A second dinosaur, just as green and just as loud, stares right back at him.",
+            "\"YOU,\" whispers Eeny. \"YOU'RE THE ONE FROM THE PUDDLE.\" He waves. The dinosaur waves. He jumps. The dinosaur jumps. \"WE ARE IN PERFECT SYNC,\" he sobs. \"I HAVE NEVER FELT SO UNDERSTOOD.\"",
+            {
+              "s": "mild",
+              "t": "He puckers up for a big smoochy goodbye. The mirror gets a very wet, very green kiss, and you get a very good look at his tonsils."
+            },
+            "Far away, the whole course gives a small, pleased chime, and somewhere a picture sharpens up a little. You wipe the mirror on your jacket. It is fine. Mostly."
+          ]
+        },
+        {
+          "secret": "sundown-sprint"
+        }
       ]
     },
     {
       "id": "silly-sign",
       "on": [
-        { "verb": ["use", "give"], "noun": "bomb", "with": "signboard" },
-        { "verb": ["use", "give"], "noun": "shield", "with": "signboard" },
-        { "verb": ["use", "give"], "noun": "mirror", "with": "signboard" }
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "bomb",
+          "with": "signboard"
+        },
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "shield",
+          "with": "signboard"
+        },
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "mirror",
+          "with": "signboard"
+        }
       ],
-      "requires": [{ "flag": "never" }],
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
       "else": "The signboard says, in small print, NO BOMBS, NO SHIELDS, NO MIRRORS ON SIGNBOARDS. You read it after. It is always after.",
       "effects": []
     },
     {
       "id": "silly-moe",
       "on": [
-        { "verb": ["use", "give"], "noun": "bomb", "with": "moe" },
-        { "verb": ["use", "give"], "noun": "shield", "with": "moe" }
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "bomb",
+          "with": "moe"
+        },
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "shield",
+          "with": "moe"
+        }
       ],
-      "requires": [{ "flag": "never" }],
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
       "else": "\"BZZT,\" says Moe, \"I AM NOT A CACTUS. I AM NOT A BIRD. I AM A ROBOT WITH ANXIETY. PLEASE STOP.\"",
       "effects": []
     },
     {
       "id": "silly-sun",
       "on": [
-        { "verb": ["use", "give"], "noun": "mirror", "with": "sun" }
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "mirror",
+          "with": "sun"
+        }
       ],
-      "requires": [{ "flag": "never" }],
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
       "else": "You flash the sun with Meeny's mirror. The sun flashes back, with considerably more authority. You see spots for a while. (It needs aiming at something that wants sunshine.)",
       "effects": []
     },
     {
       "id": "silly-cacti-mirror",
       "on": [
-        { "verb": ["use", "give"], "noun": "mirror", "with": "cacti" },
-        { "verb": ["use", "give"], "noun": "mirror", "with": "birds" }
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "mirror",
+          "with": "cacti"
+        },
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "mirror",
+          "with": "birds"
+        }
       ],
-      "requires": [{ "flag": "never" }],
+      "requires": [
+        {
+          "flag": "never"
+        }
+      ],
       "else": "Hold up Meeny's mirror and the whole row stares at itself, then, politely, away. Vanity is catching. It does not solve anything.",
       "effects": []
     }
   ],
   "hints": [
     {
-      "done": [{ "flag": "eenyFree" }],
+      "done": [
+        {
+          "flag": "eenyFree"
+        }
+      ],
       "lines": [
         "It is dawn. Eeny is east in the Cactus Field, jumping the wrong way. A crate at the Starting Line holds power-ups.",
         "Open the crate and take both the shield and the bomb. Read the signboard.",
@@ -689,7 +1336,11 @@
       ]
     },
     {
-      "done": [{ "flag": "meenyFree" }],
+      "done": [
+        {
+          "flag": "meenyFree"
+        }
+      ],
       "lines": [
         "The sun has climbed. The mesa to the west is open now. Someone up there is being heckled.",
         "Meeny is on the ledge, and the birds will not let her down. The signboard says what they hate.",
@@ -697,7 +1348,11 @@
       ]
     },
     {
-      "done": [{ "flag": "moeFree" }],
+      "done": [
+        {
+          "flag": "moeFree"
+        }
+      ],
       "lines": [
         "It is dusk. Moe is somewhere with a solar panel, and he is out of charge.",
         "Moe is in the Checkpoint hut north of the Starting Line. The sun is low and red. What did Meeny give you?",
@@ -705,7 +1360,11 @@
       ]
     },
     {
-      "done": [{ "flag": "minyFree" }],
+      "done": [
+        {
+          "flag": "minyFree"
+        }
+      ],
       "lines": [
         "It is night. The cacti are asleep and the path north through the Cactus Field is open.",
         "Miny is at the Oasis, and the stars are hung wrong. Moe knows machines. Meeny's mirror knows reflections.",
@@ -713,7 +1372,11 @@
       ]
     },
     {
-      "done": [{ "flag": "complete" }],
+      "done": [
+        {
+          "flag": "complete"
+        }
+      ],
       "lines": [
         "All four runners are with you. Time to finish the race.",
         "Go east from the Oasis to the Finish Line.",
@@ -730,7 +1393,8 @@
   "cards": {
     "sundown-sprint": {
       "title": "Sundown Sprint",
-      "who": "Zara Sol"
+      "who": "Zara Sol",
+      "secretHint": "Some dinosaurs just want to meet someone who looks exactly like them."
     }
   }
 }

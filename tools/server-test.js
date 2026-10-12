@@ -109,13 +109,14 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 		await page.goto(base); await page.waitForFunction(() => window.NightShift);
 		await page.waitForFunction(() => !document.getElementById('tab-board').hidden);
 		ok(true, 'leaderboard tab appears when the server answers');
-		const type = async c => { await page.fill('#input', c); await page.press('#input', 'Enter'); };
+		const skipScenes = async () => { while (await page.$('.scene-ctl')) { await page.click('.scene-ctl >> text=Skip scene'); } };
+		const type = async c => { await skipScenes(); await page.fill('#input', c); await page.press('#input', 'Enter'); };
 		const idx = JSON.parse(fs.readFileSync(src + '/data/chapters.json', 'utf8')).chapters;
 		const chap = n => fs.readFileSync(src + '/tests/ch' + n + '.txt', 'utf8').split('\n').map(s => s.trim()).filter(s => s && s[0] !== '#');
 		const totalScore = idx.reduce((a, c) => a + c.maxScore, 0), totalMoves = idx.reduce((a, c) => a + c.minMoves, 0);
 		await page.click('#open-settings'); await page.click('#sync-on'); await page.keyboard.press('Escape');
-		for (let n = 1; n <= idx.length; n++) { for (const c of chap(n)) await type(c); if (n < idx.length) await page.click('text=Next chapter'); }
-		await page.fill('.namebox input', 'Tester'); await page.click('text=Post score');
+		for (let n = 1; n <= idx.length; n++) { for (const c of chap(n)) await type(c); await skipScenes(); if (n < idx.length) await page.click('button:has-text("Next chapter")'); }
+		await skipScenes(); await page.fill('.namebox input', 'Tester'); await page.click('text=Post score');
 		await page.waitForFunction(() => /Leaderboard: you are number/.test(document.getElementById('log').innerText));
 		ok(true, 'finish posted through the page');
 		await page.click('#open-settings'); await page.click('#tab-board');
@@ -127,11 +128,18 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 		r = await load(code2); ok(r.s === 200 && r.b.state.run && r.b.state.chapter === idx.length, 'cloud save followed the game');
 		// a fresh browser profile loads it with the code
 		const p2 = await (await br.newContext()).newPage(); p2.on('dialog', x => x.accept());
-		await p2.goto(base); await p2.waitForFunction(() => window.NightShift && !document.getElementById('cloud').hidden === true || window.NightShift);
+		await p2.goto(base); await p2.waitForSelector('#log .scene-ctl', { timeout: 5000 }).then(() => p2.click('.scene-ctl >> text=Skip scene')).catch(() => {}); await p2.waitForFunction(() => window.NightShift && !document.getElementById('cloud').hidden === true || window.NightShift);
 		await p2.waitForFunction(() => !document.getElementById('cloud').hidden);
 		await p2.click('#open-settings'); await p2.fill('#sync-code', code2); await p2.click('#sync-load');
 		await p2.waitForFunction(() => /Ch 5/.test(document.getElementById('score').textContent));
 		ok(true, 'sync code restores the game on another device');
+		// loading a cloud save while an opening cutscene waits must not leave that scene running
+		const p3 = await (await br.newContext()).newPage(); p3.on('dialog', x => x.accept());
+		await p3.goto(base); await p3.waitForSelector('.scene-ctl'); await p3.waitForFunction(() => !document.getElementById('cloud').hidden);
+		await p3.click('#open-settings'); await p3.fill('#sync-code', code2); await p3.click('#sync-load');
+		await p3.waitForFunction(() => /Ch 5/.test(document.getElementById('score').textContent));
+		await p3.keyboard.press('Enter');
+		ok(!(await p3.$('.scene-ctl')) && !(await p3.$eval('#input', e => e.disabled)) && !/name badge TRAINEE/.test(await p3.$eval('#log', e => e.innerText)), 'cloud load during a cutscene leaves no stale scene and unlocks the input');
 		ok(errs.length === 0, 'no page errors: ' + errs.join('|'));
 		await br.close();
 	} catch (e) { fails++; console.log('ERROR', e); }

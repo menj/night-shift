@@ -212,7 +212,7 @@
       ],
       "takeable": true,
       "loc": "door",
-      "desc": "A single brass credit, worn smooth. It is, you realise, your very last one. Your whole wage this month.",
+      "desc": "A single brass credit, worn smooth. It is, you realise, your very last one. Your whole wage this month. One face has a tiny cherry stamped on it. The other face has a tiny cherry stamped on it too. Somebody was optimistic.",
       "points": 0
     },
     "pipes": {
@@ -1281,7 +1281,7 @@
           "card": "neon-cherry"
         },
         {
-          "say": [
+          "scene": [
             "You press START. The Glitch lets go of its unplugged controller, takes the second one and, for the first time in a very long time, someone plays with it.",
             "The game is silly and fast and a little bit broken. You lose. You lose a lot. The Glitch laughs, a rising sound like a modem trying to sing. Behind you, Hamilton flaps the gap in the pipes, Eeny charges a cactus, Meeny dodges a beam, Miny ducks a bird, Moe plugs in a cable and Mira lets a record play. It is not the plan, exactly. It is just the whole team, being what it is.",
             "\"2 PLAYERS,\" says the screen. \"THANK YOU FOR PLAYING.\" Every dead cabinet in the Pixel Palace blinks, then shines. Upstairs the shutters roll up, the neon sign finds its colour, and the mirror ball starts to turn.",
@@ -1297,10 +1297,55 @@
               "t": "\"Come on,\" she says, taking your hand. \"The booth. I have a record I want you to hear.\" The door of the DJ booth closes with a soft, final click, and a single bar of bass slides under it. Out on the floor, six friends who have never been more tactful look in six different directions and agree that none of this is their business. The mirror ball keeps turning. The night keeps going. Fade to black."
             },
             "THE END. Insert coin to play again."
-          ]
+          ],
+          "still": "img/scenes/ch5-end.png",
+          "alt": "Pixel art: the whole gang lined up in the lit-up arcade, Hamilton, Eeny, Meeny, Miny, Moe, Mira and the Attendant, with the little Glitch smiling above them."
         },
         {
           "end": true
+        }
+      ]
+    },
+    {
+      "id": "secret-cherry-spin",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "credit",
+          "with": "turntable"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "cherrySpun"
+        }
+      ],
+      "skipText": "The credit lies on the deck, cherry up. You decide not to push your luck twice.",
+      "requires": [
+        {
+          "has": "credit"
+        }
+      ],
+      "else": "You pat your pockets for a coin to spin. It is back at the door, being shiny.",
+      "effects": [
+        {
+          "flag": "cherrySpun"
+        },
+        {
+          "say": [
+            "You set the last credit on the Glitch's bare turntable and give it a hopeful flick. It spins, and spins, and spins, a brass blur with a cherry in it, and the whole room leans in.",
+            {
+              "s": "mild",
+              "t": "It wobbles to a stop, cherry up. \"Three cherries,\" says Mira, from somewhere behind you, in a voice that is not entirely about the coin. \"Lucky you.\""
+            },
+            "Somewhere in the walls, a slot machine you did not know about plays a tiny fanfare. A neon cherry blinks on above the core and winks at you. Then it is gone. You pocket the credit, feeling oddly rich."
+          ]
+        },
+        {
+          "secret": "neon-cherry"
         }
       ]
     },
@@ -1616,7 +1661,8 @@
   "cards": {
     "neon-cherry": {
       "title": "Neon Cherry",
-      "who": "Cherry Voltage"
+      "who": "Cherry Voltage",
+      "secretHint": "Fortune favours whoever gives the last coin a spin, somewhere with a deck."
     }
   }
 }

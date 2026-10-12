@@ -262,7 +262,7 @@
 
 	/* ---------- cutscenes: beats appear one at a time with Continue and Skip ---------- */
 	var sceneStop = null;   // set while a cutscene waits for the player
-	function endScene() { if (sceneStop) { sceneStop = null; els.input.disabled = false; } }
+	function endScene() { if (sceneStop) { sceneStop = null; els.input.disabled = false; document.body.classList.remove('in-scene'); } }
 	function pauseScene(next) {
 		var p = addLine({ k: 'note', t: '' });
 		p.className = 'scene-ctl line';
@@ -270,8 +270,8 @@
 		go.type = 'button'; go.className = 'btn'; go.textContent = 'Continue';
 		skip.type = 'button'; skip.className = 'btn ghost'; skip.textContent = 'Skip scene';
 		p.appendChild(go); p.appendChild(skip);
-		els.input.disabled = true;
-		function done(all) { sceneStop = null; p.remove(); els.input.disabled = false; next(all); }
+		els.input.disabled = true; document.body.classList.add('in-scene');
+		function done(all) { sceneStop = null; p.remove(); els.input.disabled = false; document.body.classList.remove('in-scene'); next(all); }
 		go.addEventListener('click', function () { done(false); });
 		skip.addEventListener('click', function () { done(true); });
 		sceneStop = done;
@@ -495,7 +495,7 @@
 				if (!window.confirm('Replace the game on this device with the cloud save?')) { return; }
 				run_ = { chapter: ch, carry: rs.run.carry || [], scores: rs.run.scores || [], moves: rs.run.moves || [] }; delete rs.run; delete rs.chapter;
 				useChapter(ch); state = rs; undoStack = []; write(KEY_SYNC, code); $('sync-on').hidden = true;
-				els.log.textContent = ''; addLine({ k: 'note', t: 'Loaded your cloud save.' }); addLines(eng.describeRoom(state));
+				els.log.textContent = ''; endScene(); addLine({ k: 'note', t: 'Loaded your cloud save.' }); addLines(eng.describeRoom(state));
 				autosave(); refresh(); setSyncState('Cloud save is on. Your code: ' + code); els.dlg.close();
 			}).catch(function () { setSyncState('Could not reach the server.'); });
 		});
@@ -505,7 +505,7 @@
 
 	/* ---------- events ---------- */
 	function wire() {
-		els.form.addEventListener('submit', function (e) { e.preventDefault(); run(els.input.value); });
+		els.form.addEventListener('submit', function (e) { e.preventDefault(); if (!sceneStop) { run(els.input.value); } });
 		els.input.addEventListener('input', function () {
 			if (pending) {
 				var typed = els.input.value.replace(/^\s+/, '').split(' ')[0];
@@ -526,6 +526,7 @@
 		document.addEventListener('click', function (e) {
 			var t = e.target;
 			if (!t || !t.closest) { return; }
+			if (sceneStop && !t.closest('.scene-ctl')) { return; }   // a paused cutscene owns the screen: no commands until it is continued or skipped
 			var noun = t.closest('.noun');
 			if (noun) { pickNoun(noun.getAttribute('data-say')); return; }
 			var go = t.closest('[data-go]');

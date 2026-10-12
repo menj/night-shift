@@ -100,6 +100,7 @@ body::after {
 .log .still { margin: 0.6em 0; }
 .log .still img { display: block; width: 100%; height: auto; image-rendering: pixelated; border: 1px solid var(--line); border-radius: 8px; }
 .cmd input:disabled { opacity: 0.5; }
+.in-scene .exits, .in-scene .verbs, .in-scene .invlist { opacity: 0.45; }
 
 /* tappable words */
 .noun {

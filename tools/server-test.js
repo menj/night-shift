@@ -133,6 +133,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 		await p2.click('#open-settings'); await p2.fill('#sync-code', code2); await p2.click('#sync-load');
 		await p2.waitForFunction(() => /Ch 5/.test(document.getElementById('score').textContent));
 		ok(true, 'sync code restores the game on another device');
+		// loading a cloud save while an opening cutscene waits must not leave that scene running
+		const p3 = await (await br.newContext()).newPage(); p3.on('dialog', x => x.accept());
+		await p3.goto(base); await p3.waitForSelector('.scene-ctl'); await p3.waitForFunction(() => !document.getElementById('cloud').hidden);
+		await p3.click('#open-settings'); await p3.fill('#sync-code', code2); await p3.click('#sync-load');
+		await p3.waitForFunction(() => /Ch 5/.test(document.getElementById('score').textContent));
+		await p3.keyboard.press('Enter');
+		ok(!(await p3.$('.scene-ctl')) && !(await p3.$eval('#input', e => e.disabled)) && !/name badge TRAINEE/.test(await p3.$eval('#log', e => e.innerText)), 'cloud load during a cutscene leaves no stale scene and unlocks the input');
 		ok(errs.length === 0, 'no page errors: ' + errs.join('|'));
 		await br.close();
 	} catch (e) { fails++; console.log('ERROR', e); }

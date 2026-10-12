@@ -32,6 +32,10 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	const type = async c => { await skipScenes(); await page.fill('#input', c); await page.press('#input', 'Enter'); };
 	ok(/Night Shift/i.test(await logText()), 'intro shown');
 	ok(!!(await page.$('.scene-ctl')), 'the opening is a cutscene with Continue / Skip');
+	// while the opening waits, the exits, verbs and words do nothing
+	const roomBefore = await page.evaluate(() => window.NightShift.state.room), movesBefore = await page.evaluate(() => window.NightShift.state.moves);
+	await page.click('.exits button >> nth=0', { force: true }); await page.click('.verb[data-verb="take"]', { force: true });
+	ok(await page.evaluate(() => window.NightShift.state.moves) === movesBefore && await page.evaluate(() => window.NightShift.state.room) === roomBefore && !!(await page.$('.scene-ctl')), 'controls are inert while a cutscene waits');
 	await skipScenes();
 	ok((await page.$$('#log .noun')).length > 0, 'tappable words rendered');
 	await page.screenshot({ path: out + '/desktop-start.png' });

@@ -645,7 +645,8 @@
         "hint": "HINT",
         "help": "HINT",
         "breaker": "\"I CAN HOLD A LEVER,\" says Moe proudly. \"I HAVE HELD HANDS WITH WORSE.\"",
-        "cable": "\"THE COLOURS MEAN THINGS,\" says Moe. \"GREEN IS EARTH. SOMEONE WROTE THAT DOWN.\""
+        "cable": "\"THE COLOURS MEAN THINGS,\" says Moe. \"GREEN IS EARTH. SOMEONE WROTE THAT DOWN.\"",
+        "yellow": "\"THE TAG SAYS DON'T,\" says Moe. \"IT DOES NOT SAY DON'T TO ME. I HAVE NEVER BEEN ASKED NOT TO.\""
       }
     },
     "hamilton": {
@@ -677,6 +678,48 @@
     }
   },
   "rules": [
+    {
+      "id": "secret-moe-yellow",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "ask",
+            "play"
+          ],
+          "noun": "moe",
+          "with": "yellow"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "secret:live-wire"
+        }
+      ],
+      "skipText": "Moe is already plugged into the yellow line, singing along. You have done enough damage here.",
+      "requires": [
+        {
+          "follow": "moe"
+        }
+      ],
+      "else": "Moe would love to plug into the yellow cable. Moe is, however, not with you.",
+      "effects": [
+        {
+          "say": [
+            "You hold Moe's handheld up to the yellow cable, the one tagged DON'T. \"THE TAG DOES NOT SAY DON'T TO ME,\" says Moe, and plugs in.",
+            "The radio crackles. Every speaker in the building coughs up the same hum, then a bass line, then Mira's voice, wildly off-key and singing along to a song she thinks nobody can hear. Moe harmonises. The Glitch, somewhere in the walls, joins in on the chorus.",
+            {
+              "s": "mild",
+              "t": "\"That was a private line,\" says Mira, when the song ends. \"You have heard nothing. You owe me a very long evening.\""
+            },
+            "Moe unplugs, glowing with pride. A card flutters out of the board: LIVE WIRE. (You found a secret.)"
+          ]
+        },
+        {
+          "secret": "live-wire"
+        }
+      ]
+    },
     {
       "id": "take-radio",
       "on": [
@@ -1310,7 +1353,8 @@
   "cards": {
     "live-wire": {
       "title": "Live Wire",
-      "who": "Lola Voltage"
+      "who": "Lola Voltage",
+      "secretHint": "Some tags forbid everyone. Not everyone is a someone."
     }
   }
 }

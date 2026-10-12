@@ -490,7 +490,9 @@
         "cacti": "\"THEY'RE SPIKY,\" says Eeny. \"I'M SPIKIER IN MY HEART.\"",
         "cactus": "\"THEY'RE SPIKY,\" says Eeny. \"I'M SPIKIER IN MY HEART.\"",
         "shield": "\"A SHIELD!\" says Eeny. \"I LOVE SHIELDS. I DON'T KNOW WHY I LOVE THEM.\"",
-        "bomb": "\"I LOVE BOMBS TOO,\" says Eeny, wistfully. \"BUT MY LAST TWO WENT OFF IN MY HANDS.\""
+        "bomb": "\"I LOVE BOMBS TOO,\" says Eeny, wistfully. \"BUT MY LAST TWO WENT OFF IN MY HANDS.\"",
+        "mirror": "\"I'VE ALWAYS WANTED TO MEET ANOTHER DINOSAUR,\" says Eeny. \"I SAW ONE ONCE, IN A PUDDLE. HE COPIED EVERYTHING I DID. VERY RUDE. VERY HANDSOME.\"",
+        "puddle": "\"I'VE ALWAYS WANTED TO MEET ANOTHER DINOSAUR,\" says Eeny. \"I SAW ONE ONCE, IN A PUDDLE. HE COPIED EVERYTHING I DID. VERY RUDE. VERY HANDSOME.\""
       }
     },
     "meeny": {
@@ -1164,6 +1166,50 @@
       ]
     },
     {
+      "id": "secret-eeny-mirror",
+      "on": [
+        {
+          "verb": [
+            "use",
+            "give"
+          ],
+          "noun": "mirror",
+          "with": "eeny"
+        }
+      ],
+      "skipIf": [
+        {
+          "flag": "metTwin"
+        }
+      ],
+      "skipText": "Eeny is still telling the mirror about his day. The mirror is a great listener.",
+      "requires": [
+        {
+          "has": "mirror"
+        }
+      ],
+      "else": "You are not carrying a mirror.",
+      "effects": [
+        {
+          "flag": "metTwin"
+        },
+        {
+          "say": [
+            "You hold Meeny's mirror up to Eeny. He freezes. A second dinosaur, just as green and just as loud, stares right back at him.",
+            "\"YOU,\" whispers Eeny. \"YOU'RE THE ONE FROM THE PUDDLE.\" He waves. The dinosaur waves. He jumps. The dinosaur jumps. \"WE ARE IN PERFECT SYNC,\" he sobs. \"I HAVE NEVER FELT SO UNDERSTOOD.\"",
+            {
+              "s": "mild",
+              "t": "He puckers up for a big smoochy goodbye. The mirror gets a very wet, very green kiss, and you get a very good look at his tonsils."
+            },
+            "Far away, the whole course gives a small, pleased chime, and somewhere a picture sharpens up a little. You wipe the mirror on your jacket. It is fine. Mostly."
+          ]
+        },
+        {
+          "secret": "sundown-sprint"
+        }
+      ]
+    },
+    {
       "id": "silly-sign",
       "on": [
         {
@@ -1347,7 +1393,8 @@
   "cards": {
     "sundown-sprint": {
       "title": "Sundown Sprint",
-      "who": "Zara Sol"
+      "who": "Zara Sol",
+      "secretHint": "Some dinosaurs just want to meet someone who looks exactly like them."
     }
   }
 }

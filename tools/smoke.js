@@ -20,6 +20,9 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	const errors = [];
 	// reduced motion: the log's smooth scrolling otherwise races Playwright's own scrolling before a click
 	const ctx = await browser.newContext({ viewport: { width: 1000, height: 760 }, reducedMotion: 'reduce' });
+	// the gallery art is not in the repo: serve a 1x1 stand-in for every card so the test never depends on it
+	const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
+	await ctx.route('**/art/*.png', r => r.fulfill({ contentType: 'image/png', body: PNG }));
 	const page = await ctx.newPage();
 	page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
 	page.on('response', r => { if (r.status() >= 400) console.log('HTTP', r.status(), r.url()); });
@@ -47,6 +50,7 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	await type('open desk'); // typed override
 	// typed walkthrough
 	await page.evaluate(() => { document.querySelector('[data-act="i"]'); });
+	const secretChap = n => fs.readFileSync(path.join(root, 'tests/ch' + n + '-secret.txt'), 'utf8').split('\n').map(s => s.trim()).filter(s => s && s[0] !== '#');
 	const chap = n => fs.readFileSync(path.join(root, 'tests/ch' + n + '.txt'), 'utf8').split('\n').map(s => s.trim()).filter(s => s && s[0] !== '#');
 	const N = JSON.parse(fs.readFileSync(path.join(root, 'data/chapters.json'), 'utf8')).chapters.length;
 	const maxes = JSON.parse(fs.readFileSync(path.join(root, 'data/chapters.json'), 'utf8')).chapters.map(c => c.maxScore);
@@ -119,6 +123,22 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	await page.click('input[value="hot"]');
 	ok(await page.evaluate(() => JSON.parse(localStorage.getItem('night-shift.settings')).spice) === 'hot', 'hot after age confirm');
 	ok(await page.$eval('#gallery', e => !e.hidden), 'gallery shown on hot');
+	// pictures are pixelated until a card's secret is found (the full run above unlocked all five cards, found no secret)
+	await page.waitForFunction(() => document.querySelectorAll('#cards canvas.pix').length === 5);
+	ok((await page.$$('#cards img')).length === 0, 'unlocked cards show pixelated pictures, not the full image');
+	ok((await page.$$eval('#cards small', e => e.map(x => x.textContent))).every(t => /^Secret: .{10,}/.test(t)), 'each card shows its cryptic secret clue');
+	// find chapter 1's secret through the real page: the card's picture is revealed and the find is announced
+	await page.keyboard.press('Escape');
+	await page.click('#open-settings'); await page.click('#tab-game'); await page.click('#new-game'); await skipScenes();
+	for (const c of secretChap(1)) await type(c);
+	await skipScenes();
+	ok(/Secret found: Mirror Ball/.test(await logText()), 'finding a secret is announced');
+	ok(await page.evaluate(() => JSON.parse(localStorage.getItem('night-shift.gallery')).revealed.includes('mirror-ball')), 'the found secret is remembered across playthroughs');
+	await page.click('#open-settings'); await page.click('#tab-spice');
+	await page.waitForFunction(() => document.querySelectorAll('#cards canvas.pix').length === 4 && document.querySelectorAll('#cards img').length === 1);
+	ok(/fully revealed/.test(await page.$eval('#cards li:first-child small', e => e.textContent)), 'the revealed card shows the full picture and says so');
+	await page.keyboard.press('Escape');
+	await page.click('#open-settings'); await page.click('#tab-spice');
 	await page.click('input[value="off"]');
 	ok(await page.$eval('#gallery', e => e.hidden), 'gallery hidden when off');
 	await page.screenshot({ path: out + '/desktop-settings.png' });

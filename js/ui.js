@@ -53,10 +53,13 @@
 	}
 
 	/* the gallery outlives a single playthrough: which cards were ever unlocked, and which secrets were found */
+	var galMem = null;   // the gallery lives in memory too, so a blocked or full localStorage cannot undo a reveal during the session
 	function galleryRead() {
+		if (galMem) { return galMem; }
 		var g = {};
 		try { g = JSON.parse(read(KEY_GAL) || '{}') || {}; } catch (e) { g = {}; }
-		return { unlocked: Array.isArray(g.unlocked) ? g.unlocked : [], revealed: Array.isArray(g.revealed) ? g.revealed : [] };
+		galMem = { unlocked: Array.isArray(g.unlocked) ? g.unlocked : [], revealed: Array.isArray(g.revealed) ? g.revealed : [] };
+		return galMem;
 	}
 	function galleryAdd(kind, id) {
 		var g = galleryRead();

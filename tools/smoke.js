@@ -153,6 +153,18 @@ const ok = (c, m) => { n++; if (!c) { fails++; console.log('FAIL', m); } };
 	await page.click('#open-settings'); await page.click('#tab-game'); await page.click('#new-game');
 	ok(!(await page.$('.scene-ctl')) && (await page.$$('#log .beat')).length >= 2, 'skip-cutscenes setting shows the opening in one go');
 
+	// storage that refuses to save the gallery (private mode, quota): a found secret still shows for the session
+	const ctx2 = await browser.newContext({ viewport: { width: 1000, height: 760 }, reducedMotion: 'reduce' });
+	await ctx2.route('**/art/*.png', r => r.fulfill({ contentType: 'image/png', body: PNG }));
+	await ctx2.addInitScript(() => { const set = Storage.prototype.setItem; Storage.prototype.setItem = function (k, v) { if (k === 'night-shift.gallery') { throw new Error('quota'); } return set.call(this, k, v); }; localStorage.setItem('night-shift.settings', JSON.stringify({ spice: 'hot', ageOk: true, skipScenes: true })); });
+	const pg2 = await ctx2.newPage(); pg2.on('pageerror', e => errors.push(String(e)));
+	await pg2.goto(base); await pg2.waitForFunction(() => window.NightShift);
+	for (const c of secretChap(1)) { await pg2.fill('#input', c); await pg2.press('#input', 'Enter'); }
+	await pg2.click('#open-settings'); await pg2.click('#tab-spice');
+	await pg2.waitForFunction(() => document.querySelectorAll('#cards img').length === 1);
+	ok(true, 'a found secret still reveals its card when the gallery cannot be saved');
+	await ctx2.close();
+
 	// mobile
 	const m = await browser.newContext({ viewport: { width: 390, height: 780 }, hasTouch: true, isMobile: true });
 	const mp = await m.newPage();
